@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { ImageGridWithViewer } from '../../components/common';
-import { MapPin, ArrowLeft, User, CheckCircle, Loader, Clock } from 'lucide-react';
+import { ImageGridWithViewer, BackButton } from '../../components/common';
+import { MapPin, User, CheckCircle, Loader, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface SolicitudDetalle {
@@ -104,22 +104,14 @@ export function SolicitudDetalle() {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
         <p className="text-gray-600">Solicitud no encontrada</p>
-        <Link to="/tecnico/dashboard" className="text-primary-600 mt-4 inline-block">
-          Volver al dashboard
-        </Link>
+        <BackButton to="/tecnico/dashboard" text="Volver al dashboard" className="mt-4" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <Link
-        to="/tecnico/dashboard"
-        className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 mb-6 font-medium"
-      >
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Volver a solicitudes
-      </Link>
+      <BackButton to="/tecnico/dashboard" text="Volver a solicitudes" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
