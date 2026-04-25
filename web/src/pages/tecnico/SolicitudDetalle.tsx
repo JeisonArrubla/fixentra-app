@@ -176,7 +176,7 @@ export function SolicitudDetalle() {
               <button
                 onClick={aceptarSolicitud}
                 disabled={aceptando}
-                className="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
+                className="w-full flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
               >
                 {aceptando ? (
                   <Loader className="h-5 w-5 animate-spin mr-2" />
