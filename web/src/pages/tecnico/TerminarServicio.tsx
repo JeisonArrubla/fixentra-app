@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { BackButton } from '../../components/common/BackButton';
+import { NavigationButton } from '../../components/common/NavigationButton';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { MapPin, CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -86,14 +86,14 @@ export function TerminarServicio() {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
         <p className="text-gray-600">Solicitud no encontrada</p>
-        <BackButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
+        <NavigationButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <BackButton to={`/tecnico/solicitud/${id}`} text="Volver al detalle" />
+      <NavigationButton to={`/tecnico/solicitud/${id}`} text="Volver al detalle" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">

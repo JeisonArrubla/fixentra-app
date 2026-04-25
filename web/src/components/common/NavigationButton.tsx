@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
-interface BackButtonProps {
+interface NavigationButtonProps {
   to: string;
   text?: string;
   className?: string;
 }
 
-export function BackButton({ to, text = 'Volver', className = '' }: BackButtonProps) {
+export function NavigationButton({ to, text = 'Volver', className = '' }: NavigationButtonProps) {
   return (
     <Link
       to={to}

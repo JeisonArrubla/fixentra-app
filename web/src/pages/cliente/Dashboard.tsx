@@ -44,8 +44,8 @@ export function ClienteDashboard() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Mis Direcciones</h3>
-              <p className="text-gray-600">Gestiona tus direcciones de servicio</p>
+              <h3 className="text-lg font-semibold text-gray-900">Mis direcciones</h3>
+              <p className="text-gray-600">Gestiona dónde recibirás los servicios</p>
             </div>
             <MapPin className="h-8 w-8 text-primary-600" />
           </div>
@@ -57,7 +57,7 @@ export function ClienteDashboard() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Mis Solicitudes</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Mis solicitudes</h3>
               <p className="text-gray-600">Historial de servicios solicitados</p>
             </div>
             <ArrowRight className="h-8 w-8 text-primary-600" />

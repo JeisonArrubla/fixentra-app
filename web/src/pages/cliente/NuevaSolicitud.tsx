@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
-import { BackButton } from '../../components/common/BackButton';
+import { NavigationButton } from '../../components/common/NavigationButton';
 import { MapPin, Plus, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { SubmitButton } from '../../components/common/SubmitButton';
@@ -61,14 +61,14 @@ export function NuevaSolicitud() {
         <p className="text-gray-600 mb-4">
           Primero necesitas tener al menos una dirección registrada.
         </p>
-        <BackButton to="/cliente/direcciones" text="Ir a direcciones" />
+        <NavigationButton to="/cliente/direcciones" text="Ir a direcciones" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <BackButton to="/cliente/solicitudes" text="Cancelar" />
+      <NavigationButton to="/cliente/solicitudes" text="Cancelar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">

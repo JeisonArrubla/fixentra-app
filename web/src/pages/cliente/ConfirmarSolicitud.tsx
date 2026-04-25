@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSolicitud } from '../../contexts/SolicitudContext';
 import { solicitudesApi, clientesApi } from '../../services/api';
-import { BackButton, SubmitButton, CancelButton } from '../../components/common';
+import { NavigationButton, SubmitButton, CancelButton } from '../../components/common';
 import { MapPin, Clock, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -48,7 +48,7 @@ export function ConfirmarSolicitud() {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 text-center">
         <p className="text-gray-600 mb-4">No hay datos de solicitud para confirmar.</p>
-        <BackButton to="/cliente/solicitudes" text="Volver a solicitudes" />
+        <NavigationButton to="/cliente/solicitudes" text="Volver a solicitudes" />
       </div>
     );
   }
@@ -83,7 +83,7 @@ export function ConfirmarSolicitud() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <BackButton to="/cliente/solicitudes/nueva" text="Regresar" />
+      <NavigationButton to="/cliente/solicitudes/nueva" text="Regresar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">

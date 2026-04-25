@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { BackButton } from '../../components/common/BackButton';
+import { NavigationButton } from '../../components/common/NavigationButton';
 import { Plus, MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
 import toast from 'react-hot-toast';
@@ -97,7 +97,7 @@ export function ClienteSolicitudes() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <BackButton to="/cliente/dashboard" text="Volver" />
+      <NavigationButton to="/cliente/dashboard" text="Volver" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Mis Solicitudes</h1>
         <button

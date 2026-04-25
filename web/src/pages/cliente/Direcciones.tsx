@@ -104,7 +104,7 @@ export function ClienteDirecciones() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Mis Direcciones</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Mis direcciones</h1>
         <button
           onClick={() => setMostrarFormulario(!mostrarFormulario)}
           className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
@@ -116,7 +116,7 @@ export function ClienteDirecciones() {
 
       {mostrarFormulario && (
         <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-          <h3 className="text-lg font-semibold mb-4">Nueva Dirección</h3>
+          <h3 className="text-lg font-semibold mb-4">Nueva dirección</h3>
           <form onSubmit={guardarDireccion} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Dirección</label>

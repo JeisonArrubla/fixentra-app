@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { ImageGridWithViewer, BackButton } from '../../components/common';
+import { ImageGridWithViewer, NavigationButton } from '../../components/common';
 import { MapPin, User, CheckCircle, Loader, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -104,14 +104,14 @@ export function SolicitudDetalle() {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
         <p className="text-gray-600">Solicitud no encontrada</p>
-        <BackButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
+        <NavigationButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <BackButton to="/tecnico/dashboard" text="Volver a solicitudes" />
+      <NavigationButton to="/tecnico/dashboard" text="Volver a solicitudes" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
