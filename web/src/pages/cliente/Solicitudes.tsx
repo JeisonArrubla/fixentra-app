@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { clientesApi, solicitudesApi } from '../../services/api';
+import { solicitudesApi } from '../../services/api';
 import { BackButton } from '../../components/common/BackButton';
 import { Plus, MapPin, Clock, Loader, Trash2 } from 'lucide-react';
-import { ImageUpload } from '../../components/common/ImageUpload';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
-import { useSolicitud } from '../../contexts/SolicitudContext';
 import toast from 'react-hot-toast';
 
 interface Solicitud {
@@ -19,63 +17,27 @@ interface Solicitud {
   createdAt: string;
 }
 
-interface Direccion {
-  id: string;
-  direccion: string;
-}
-
 export function ClienteSolicitudes() {
   const navigate = useNavigate();
-  const { setDraft, draft } = useSolicitud();
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
-  const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
   const [solicitudAEliminar, setSolicitudAEliminar] = useState<Solicitud | null>(null);
   const [eliminando, setEliminando] = useState(false);
-  const [formData, setFormData] = useState(draft);
-  const [imagenes, setImagenes] = useState<string[]>(draft.imagenes);
 
   useEffect(() => {
     cargarDatos();
   }, []);
 
-  useEffect(() => {
-    if (mostrarFormulario) {
-      setFormData(draft);
-      setImagenes(draft.imagenes);
-    }
-  }, [mostrarFormulario, draft]);
-
   const cargarDatos = async () => {
     try {
-      const [solsRes, dirsRes] = await Promise.all([
-        solicitudesApi.getMisSolicitudes('cliente'),
-        clientesApi.getDirecciones(),
-      ]);
+      const solsRes = await solicitudesApi.getMisSolicitudes('cliente');
       setSolicitudes(solsRes.data);
-      setDirecciones(dirsRes.data);
     } catch (err) {
       console.error(err);
     } finally {
       setCargando(false);
     }
-  };
-
-  const crearSolicitud = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.direccionId) {
-      toast.error('Selecciona una dirección');
-      return;
-    }
-    if (!formData.descripcion.trim()) {
-      toast.error('Ingresa una descripción');
-      return;
-    }
-
-    setDraft({ ...formData, imagenes });
-    navigate('/cliente/solicitudes/nueva/confirmar');
   };
 
   const getEstadoColor = (estado: string) => {
@@ -139,80 +101,13 @@ export function ClienteSolicitudes() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Mis Solicitudes</h1>
         <button
-          onClick={() => {
-            if (direcciones.length === 0) {
-              toast.error('Primero agrega una dirección');
-              return;
-            }
-            setMostrarFormulario(!mostrarFormulario);
-          }}
+          onClick={() => navigate('/cliente/solicitudes/nueva')}
           className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >
           <Plus className="mr-2 h-4 w-4" />
           Nueva Solicitud
         </button>
       </div>
-
-      {mostrarFormulario && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-          <h3 className="text-lg font-semibold mb-4">Nueva Solicitud de Servicio</h3>
-          <form onSubmit={crearSolicitud} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Dirección</label>
-              <select
-                required
-                value={formData.direccionId}
-                onChange={(e) => setFormData({ ...formData, direccionId: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="">Selecciona una dirección</option>
-                {direcciones.map((dir) => (
-                  <option key={dir.id} value={dir.id}>
-                    {dir.direccion}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Descripción del servicio
-              </label>
-              <textarea
-                required
-                rows={4}
-                value={formData.descripcion}
-                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Describe el servicio que necesitas..."
-              />
-            </div>
-            <ImageUpload
-              images={imagenes}
-              onChange={setImagenes}
-              maxImages={2}
-            />
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setMostrarFormulario(false);
-                  setFormData({ direccionId: '', descripcion: '', imagenes: [] });
-                  setImagenes([]);
-                }}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-              >
-                Continuar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
       {solicitudes.length === 0 ? (
         <div className="text-center py-12 text-gray-600">

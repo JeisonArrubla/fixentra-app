@@ -6,6 +6,7 @@ import { Register } from './pages/auth/Register';
 import { ClienteDashboard } from './pages/cliente/Dashboard';
 import { ClienteDirecciones } from './pages/cliente/Direcciones';
 import { ClienteSolicitudes } from './pages/cliente/Solicitudes';
+import { NuevaSolicitud } from './pages/cliente/NuevaSolicitud';
 import { ConfirmarSolicitud } from './pages/cliente/ConfirmarSolicitud';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
@@ -38,6 +39,7 @@ function AppRoutes() {
           <Route path="cliente/dashboard" element={<ClienteDashboard />} />
           <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
           <Route path="cliente/solicitudes" element={<ClienteSolicitudes />} />
+          <Route path="cliente/solicitudes/nueva" element={<NuevaSolicitud />} />
           <Route path="cliente/solicitudes/nueva/confirmar" element={<ConfirmarSolicitud />} />
           
           <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
