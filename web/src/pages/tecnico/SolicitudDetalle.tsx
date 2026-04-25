@@ -111,11 +111,11 @@ export function SolicitudDetalle() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <NavigationButton to="/tecnico/dashboard" text="Volver a solicitudes" />
+      <NavigationButton to="/tecnico/dashboard" text="Volver" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Detalle de Solicitud</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Detalles del servicio</h1>
           <span className={`px-3 py-1 rounded-full text-sm ${getEstadoColor(solicitud.estado)}`}>
             {getEstadoLabel(solicitud.estado)}
           </span>
@@ -187,7 +187,7 @@ export function SolicitudDetalle() {
                 className="w-full flex items-center justify-center px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
               >
                 <CheckCircle className="h-5 w-5 mr-2" />
-                Terminar Servicio
+                Terminar servicio
               </Link>
             </div>
           )}
