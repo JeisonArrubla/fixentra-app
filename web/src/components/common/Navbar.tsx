@@ -24,7 +24,7 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex items-center">
-              <Wrench className="h-8 w-8 text-primary-600" />
+              <Wrench className="h-8 w-8 text-icon" />
               <span className="ml-2 text-xl font-bold text-gray-900">Fixentra</span>
             </div>
           </div>

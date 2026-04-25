@@ -47,7 +47,7 @@ export function ClienteDashboard() {
               <h3 className="text-lg font-semibold text-gray-900">Mis direcciones</h3>
               <p className="text-gray-600">Gestiona dónde recibirás los servicios</p>
             </div>
-            <MapPin className="h-8 w-8 text-primary-600" />
+            <MapPin className="h-8 w-8 text-icon" />
           </div>
         </Link>
 
@@ -60,7 +60,7 @@ export function ClienteDashboard() {
               <h3 className="text-lg font-semibold text-gray-900">Mis solicitudes</h3>
               <p className="text-gray-600">Historial de servicios solicitados</p>
             </div>
-            <ArrowRight className="h-8 w-8 text-primary-600" />
+            <ArrowRight className="h-8 w-8 text-icon" />
           </div>
         </Link>
       </div>

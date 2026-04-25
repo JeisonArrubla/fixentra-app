@@ -58,7 +58,7 @@ export function TecnicoDashboard() {
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary-600" />
+        <Loader className="h-8 w-8 animate-spin text-icon" />
       </div>
     );
   }
@@ -118,7 +118,7 @@ export function TecnicoDashboard() {
               <h3 className="text-lg font-semibold text-gray-900">Mis Trabajos</h3>
               <p className="text-gray-600">Historial de servicios realizados</p>
             </div>
-            <ArrowRight className="h-8 w-8 text-primary-600" />
+            <ArrowRight className="h-8 w-8 text-icon" />
           </div>
         </Link>
       </div>
@@ -130,7 +130,7 @@ export function TecnicoDashboard() {
         
         {cargandoSolicitudes ? (
           <div className="flex items-center justify-center py-8">
-            <Loader className="h-6 w-6 animate-spin text-primary-600" />
+            <Loader className="h-6 w-6 animate-spin text-icon" />
           </div>
         ) : solicitudes.length === 0 ? (
           <p className="text-gray-600 py-4">No hay solicitudes nuevas</p>
