@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { MapPin, Clock, Loader, CheckCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { MapPin, Clock, Loader } from 'lucide-react';
 
 interface Solicitud {
   id: string;
@@ -17,7 +16,6 @@ interface Solicitud {
 export function TecnicoMisTrabajos() {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [terminando, setTerminando] = useState<string | null>(null);
 
   useEffect(() => {
     cargarDatos();
@@ -31,20 +29,6 @@ export function TecnicoMisTrabajos() {
       console.error(err);
     } finally {
       setCargando(false);
-    }
-  };
-
-  const terminarSolicitud = async (id: string) => {
-    if (!confirm('¿Marcar esta solicitud como terminada?')) return;
-    setTerminando(id);
-    try {
-      await solicitudesApi.terminar(id);
-      toast.success('Solicitud marcada como terminada');
-      cargarDatos();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al terminar');
-    } finally {
-      setTerminando(null);
     }
   };
 
@@ -129,24 +113,6 @@ export function TecnicoMisTrabajos() {
                   <span className="text-xs text-gray-500">
                     {new Date(sol.createdAt).toLocaleDateString()}
                   </span>
-                  {sol.estado === 'ASIGNADA' && (
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        terminarSolicitud(sol.id);
-                      }}
-                      disabled={terminando === sol.id}
-                      className="mt-2 flex items-center px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
-                    >
-                      {terminando === sol.id ? (
-                        <Loader className="h-3 w-3 animate-spin mr-1" />
-                      ) : (
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                      )}
-                      Terminar
-                    </button>
-                  )}
                 </div>
               </div>
             </Link>
