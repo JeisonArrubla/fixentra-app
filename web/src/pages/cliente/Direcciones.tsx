@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { clientesApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { Plus, MapPin, Trash2, Star, Loader } from 'lucide-react';
+import { MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
 import { CancelButton, SubmitButton } from '../../components/common';
@@ -110,7 +110,6 @@ export function ClienteDirecciones() {
           onClick={() => setMostrarFormulario(!mostrarFormulario)}
           className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          <Plus className="mr-2 h-4 w-4" />
           Nueva dirección
         </button>
       </div>

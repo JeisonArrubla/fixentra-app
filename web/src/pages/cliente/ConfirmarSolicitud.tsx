@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSolicitud } from '../../contexts/SolicitudContext';
 import { solicitudesApi, clientesApi } from '../../services/api';
 import { NavigationButton, SubmitButton, CancelButton } from '../../components/common';
-import { MapPin, Clock, XCircle } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -140,14 +140,12 @@ export function ConfirmarSolicitud() {
             <CancelButton
               text={`Cancelar (${segundosRestantes}s)`}
               onClick={cancelarEnvio}
-              icon={<XCircle className="h-5 w-5" />}
             />
           ) : (
             <SubmitButton
               text="Enviar Solicitud"
               onClick={iniciarConteo}
               loading={enviando}
-              icon={<Clock className="h-5 w-5" />}
             />
           )}
         </div>

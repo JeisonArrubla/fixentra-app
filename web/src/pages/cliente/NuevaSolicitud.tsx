@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
-import { MapPin, Plus, Loader } from 'lucide-react';
+import { MapPin, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { SubmitButton } from '../../components/common/SubmitButton';
 import { useSolicitud } from '../../contexts/SolicitudContext';
@@ -129,7 +129,6 @@ export function NuevaSolicitud() {
             <SubmitButton
               text="Continuar"
               onClick={handleContinuar}
-              icon={<Plus className="h-5 w-5" />}
             />
           </div>
         </div>

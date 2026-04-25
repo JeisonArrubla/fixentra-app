@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Plus, MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 
 export function ClienteDashboard() {
   const { user } = useAuth();
@@ -76,7 +76,6 @@ export function ClienteDashboard() {
           to="/cliente/solicitudes/nueva"
           className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          <Plus className="mr-2 h-4 w-4" />
           Nueva solicitud
         </Link>
       </div>

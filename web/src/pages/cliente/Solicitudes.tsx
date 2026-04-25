@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
-import { Plus, MapPin, Clock, Loader, Trash2 } from 'lucide-react';
+import { MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
 import toast from 'react-hot-toast';
 
@@ -104,7 +104,6 @@ export function ClienteSolicitudes() {
           onClick={() => navigate('/cliente/solicitudes/nueva')}
           className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          <Plus className="mr-2 h-4 w-4" />
           Nueva solicitud
         </button>
       </div>
