@@ -34,7 +34,8 @@ function AppRoutes() {
       
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<Navbar />}>
-          <Route path="dashboard" element={<Navigate to="/cliente/dashboard" replace />} />
+          <Route path="" element={user && user.tipo === 'tecnico' ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
+          <Route path="dashboard" element={<Navigate to={user && user.tipo === 'tecnico' ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
           
           <Route path="cliente/dashboard" element={<ClienteDashboard />} />
           <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
