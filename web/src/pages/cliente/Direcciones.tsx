@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Plus, MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
+import { CancelButton, SubmitButton } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface Direccion {
@@ -107,10 +108,10 @@ export function ClienteDirecciones() {
         <h1 className="text-2xl font-bold text-gray-900">Mis direcciones</h1>
         <button
           onClick={() => setMostrarFormulario(!mostrarFormulario)}
-          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Nueva Dirección
+          Nueva dirección
         </button>
       </div>
 
@@ -147,20 +148,17 @@ export function ClienteDirecciones() {
               </label>
             </div>
             <div className="flex justify-end space-x-3">
-              <button
-                type="button"
+              <CancelButton
+                text="Cancelar"
                 onClick={() => setMostrarFormulario(false)}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Cancelar
-              </button>
-              <button
+                fullWidth={false}
+              />
+              <SubmitButton
+                text={guardando ? 'Guardando...' : 'Guardar'}
                 type="submit"
-                disabled={guardando}
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
-              >
-                {guardando ? 'Guardando...' : 'Guardar'}
-              </button>
+                loading={guardando}
+                fullWidth={false}
+              />
             </div>
           </form>
         </div>
