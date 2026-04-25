@@ -70,7 +70,7 @@ export function TecnicoMisTrabajos() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <NavigationButton to="/tecnico/dashboard" text="Volver" />
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+      <h1 className="text-2xl font-light text-gray-900 mb-8">
         Mis servicios
       </h1>
 

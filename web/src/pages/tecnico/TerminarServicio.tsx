@@ -96,7 +96,7 @@ export function TerminarServicio() {
       <NavigationButton to={`/tecnico/solicitud/${id}`} text="Volver al detalle" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <h1 className="text-2xl font-light text-gray-900 mb-6">
           Completar Servicio
         </h1>
 

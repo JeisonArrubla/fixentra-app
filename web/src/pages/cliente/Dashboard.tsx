@@ -33,9 +33,24 @@ export function ClienteDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+      <h1 className="text-2xl font-light text-gray-900 mb-8">
         Te damos la bienvenida, {user?.nombre}
       </h1>
+
+      <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          ¿Necesitas un técnico?
+        </h3>
+        <p className="text-gray-600 mb-4">
+          Crea una nueva solicitud de servicio y técnicos cercanos te contactarán.
+        </p>
+        <Link
+          to="/cliente/solicitudes/nueva"
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+        >
+          Nueva solicitud
+        </Link>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <Link
@@ -62,21 +77,6 @@ export function ClienteDashboard() {
             </div>
             <ArrowRight className="h-8 w-8 text-icon" />
           </div>
-        </Link>
-      </div>
-
-      <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          ¿Necesitas un técnico?
-        </h3>
-        <p className="text-gray-600 mb-4">
-          Crea una nueva solicitud de servicio y técnicos cercanos te contactarán.
-        </p>
-        <Link
-          to="/cliente/solicitudes/nueva"
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-        >
-          Nueva solicitud
         </Link>
       </div>
     </div>

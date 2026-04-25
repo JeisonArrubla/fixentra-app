@@ -115,7 +115,7 @@ export function SolicitudDetalle() {
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Detalles del servicio</h1>
+          <h1 className="text-2xl font-light text-gray-900">Detalles del servicio</h1>
           <span className={`px-3 py-1 rounded-full text-sm ${getEstadoColor(solicitud.estado)}`}>
             {getEstadoLabel(solicitud.estado)}
           </span>

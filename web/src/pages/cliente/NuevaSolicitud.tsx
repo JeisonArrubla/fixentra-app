@@ -71,7 +71,7 @@ export function NuevaSolicitud() {
       <NavigationButton to="/cliente/solicitudes" text="Cancelar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <h1 className="text-2xl font-light text-gray-900 mb-6">
           Crear nueva solicitud
         </h1>
 
