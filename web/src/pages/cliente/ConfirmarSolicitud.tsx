@@ -83,7 +83,7 @@ export function ConfirmarSolicitud() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <BackButton to="/cliente/solicitudes" text="Regresar" />
+      <BackButton to="/cliente/solicitudes/nueva" text="Regresar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">
