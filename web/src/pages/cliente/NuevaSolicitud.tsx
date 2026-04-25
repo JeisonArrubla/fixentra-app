@@ -72,7 +72,7 @@ export function NuevaSolicitud() {
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          Nueva Solicitud de Servicio
+          Crear nueva solicitud
         </h1>
 
         <div className="space-y-6">

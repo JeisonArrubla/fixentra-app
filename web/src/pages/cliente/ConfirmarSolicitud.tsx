@@ -87,12 +87,12 @@ export function ConfirmarSolicitud() {
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          Confirmar Solicitud
+          Confirma los datos de tu solicitud
         </h1>
 
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <h2 className="text-sm font-medium text-gray-500 mb-3">
-            Detalles de tu Solicitud
+            Detalles del servicio solicitado
           </h2>
 
           <div className="space-y-4">
@@ -108,7 +108,7 @@ export function ConfirmarSolicitud() {
 
             <div>
               <h3 className="text-sm font-medium text-gray-500">
-                Descripción del Servicio
+                Descripción del servicio
               </h3>
               <p className="text-gray-900 mt-1 whitespace-pre-wrap">
                 {draft.descripcion}
