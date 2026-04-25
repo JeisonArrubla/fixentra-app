@@ -86,7 +86,7 @@ export function TerminarServicio() {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
         <p className="text-gray-600">Solicitud no encontrada</p>
-        <BackButton to="/tecnico/dashboard" text="Volver al dashboard" className="mt-4" />
+        <BackButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
       </div>
     );
   }

@@ -97,7 +97,7 @@ export function ClienteSolicitudes() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <BackButton to="/cliente/dashboard" text="Volver al dashboard" />
+      <BackButton to="/cliente/dashboard" text="Volver" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Mis Solicitudes</h1>
         <button
