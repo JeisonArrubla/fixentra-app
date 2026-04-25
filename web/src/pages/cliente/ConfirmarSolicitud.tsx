@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSolicitud } from '../../contexts/SolicitudContext';
 import { solicitudesApi, clientesApi } from '../../services/api';
-import { BackButton } from '../../components/common/BackButton';
+import { BackButton, SubmitButton, CancelButton } from '../../components/common';
 import { MapPin, Clock, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -135,33 +135,20 @@ export function ConfirmarSolicitud() {
           </div>
         </div>
 
-        <div className="pt-4 border-t flex justify-end">
+        <div className="pt-4 border-t">
           {contadorActivo ? (
-            <button
+            <CancelButton
+              text={`Cancelar (${segundosRestantes}s)`}
               onClick={cancelarEnvio}
-              className="inline-flex items-center justify-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition-colors"
-            >
-              <XCircle className="h-5 w-5 mr-2" />
-              Cancelar ({segundosRestantes}s)
-            </button>
+              icon={<XCircle className="h-5 w-5" />}
+            />
           ) : (
-            <button
+            <SubmitButton
+              text="Enviar Solicitud"
               onClick={iniciarConteo}
-              disabled={enviando}
-              className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {enviando ? (
-                <>
-                  <Clock className="h-5 w-5 animate-spin mr-2" />
-                  Enviando...
-                </>
-              ) : (
-                <>
-                  <Clock className="h-5 w-5 mr-2" />
-                  Enviar Solicitud
-                </>
-              )}
-            </button>
+              loading={enviando}
+              icon={<Clock className="h-5 w-5" />}
+            />
           )}
         </div>
       </div>
