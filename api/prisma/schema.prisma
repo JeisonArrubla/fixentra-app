@@ -19,6 +19,7 @@ enum EstadoSolicitud {
   NUEVA
   ASIGNADA
   TERMINADA
+  COMPLETADO
 }
 
 enum EstadoPago {
@@ -95,6 +96,7 @@ model SolicitudServicio {
   direccion    Direccion      @relation(fields: [direccionId], references: [id])
   descripcion  String
   estado       EstadoSolicitud @default(NUEVA)
+  detallesCompletado String?       @map("detalles_completado")
   tecnicoId    String?        @map("tecnico_id")
   tecnico      Usuario?       @relation("SolicitudTecnico", fields: [tecnicoId], references: [id])
   pago         Pago?

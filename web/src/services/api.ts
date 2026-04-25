@@ -132,6 +132,9 @@ export const solicitudesApi = {
 
   aceptar: (id: string) => api.post(`/solicitudes/${id}/aceptar`),
 
+  completar: (id: string, data: { detalles: string; imagenes: string[] }) =>
+    api.patch(`/solicitudes/${id}/completar`, data),
+
   terminar: (id: string) => api.patch(`/solicitudes/${id}/terminar`),
 
   eliminar: (id: string) => api.delete(`/solicitudes/${id}`),

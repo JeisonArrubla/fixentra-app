@@ -276,8 +276,8 @@ export function ClienteSolicitudes() {
         isOpen={mostrarModalEliminar}
         onClose={() => setMostrarModalEliminar(false)}
         onConfirm={eliminarSolicitud}
-        title="Eliminar Solicitud"
-        message={`¿Eliminar la solicitud "${solicitudAEliminar?.descripcion}"?`}
+        title="Eliminar solicitud"
+        message={`¿Eliminar la solicitud  ?`}
         confirmText="Eliminar"
         loading={eliminando}
       />

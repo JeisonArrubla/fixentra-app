@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EstadoSolicitud } from '@prisma/client';
 
@@ -24,6 +24,19 @@ export class AceptarSolicitudDto {
   @IsString()
   @IsNotEmpty()
   tecnicoId: string;
+}
+
+export class CompletarSolicitudDto {
+  @ApiProperty({ description: 'Detalles del servicio prestado', example: 'Se reparó el lavaplatos, se cambió el sable y se verificó el funcionamiento' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(400)
+  detalles: string;
+
+  @ApiProperty({ type: [String], description: 'URLs de imágenes del resultado (mínimo 1, máximo 2)' })
+  @IsArray()
+  @IsNotEmpty()
+  imagenes: string[];
 }
 
 export class UpdateEstadoSolicitudDto {

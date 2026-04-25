@@ -8,6 +8,7 @@ import { PrismaService } from '../../shared/prisma.service';
 import {
   CreateSolicitudDto,
   UpdateEstadoSolicitudDto,
+  CompletarSolicitudDto,
 } from './dto/solicitudes.dto';
 
 @Injectable()
@@ -223,6 +224,55 @@ export class SolicitudesService {
         imagenes: true,
       },
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async completarSolicitud(
+    solicitudId: string,
+    tecnicoId: string,
+    dto: CompletarSolicitudDto,
+  ): Promise<any> {
+    const solicitud = await this.prisma.solicitudServicio.findUnique({
+      where: { id: solicitudId },
+    });
+
+    if (!solicitud) {
+      throw new NotFoundException('Solicitud no encontrada');
+    }
+
+    if (solicitud.tecnicoId !== tecnicoId) {
+      throw new ForbiddenException(
+        'No tienes autorización para completar esta solicitud',
+      );
+    }
+
+    if (solicitud.estado !== 'ASIGNADA') {
+      throw new BadRequestException(
+        'La solicitud no está en estado asignada',
+      );
+    }
+
+    if (dto.imagenes.length < 1 || dto.imagenes.length > 2) {
+      throw new BadRequestException(
+        'Debes cargar entre 1 y 2 imágenes',
+      );
+    }
+
+    return this.prisma.solicitudServicio.update({
+      where: { id: solicitudId },
+      data: {
+        estado: 'COMPLETADO',
+        detallesCompletado: dto.detalles,
+        imagenes: {
+          create: dto.imagenes.map((url) => ({ url })),
+        },
+      },
+      include: {
+        direccion: true,
+        cliente: true,
+        tecnico: true,
+        imagenes: true,
+      },
     });
   }
 

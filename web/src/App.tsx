@@ -8,6 +8,7 @@ import { ClienteSolicitudes } from './pages/cliente/Solicitudes';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
 import { SolicitudDetalle } from './pages/tecnico/SolicitudDetalle';
+import { TerminarServicio } from './pages/tecnico/TerminarServicio';
 import { Navbar } from './components/common/Navbar';
 import { PrivateRoute } from './components/common/PrivateRoute';
 import { ImageViewerProvider } from './components/common/ImageViewer';
@@ -38,6 +39,7 @@ function AppRoutes() {
           
           <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
           <Route path="tecnico/solicitud/:id" element={<SolicitudDetalle />} />
+          <Route path="tecnico/solicitud/:id/terminar" element={<TerminarServicio />} />
           <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
         </Route>
       </Route>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
 import { ImageGridWithViewer, BackButton } from '../../components/common';
 import { MapPin, User, CheckCircle, Loader, Clock } from 'lucide-react';
@@ -177,6 +177,18 @@ export function SolicitudDetalle() {
                 )}
                 {aceptando ? 'Aceptando...' : 'Aceptar Solicitud'}
               </button>
+            </div>
+          )}
+
+          {solicitud.estado === 'ASIGNADA' && (
+            <div className="pt-4 border-t">
+              <Link
+                to={`/tecnico/solicitud/${id}/terminar`}
+                className="w-full flex items-center justify-center px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
+              >
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Terminar Servicio
+              </Link>
             </div>
           )}
         </div>

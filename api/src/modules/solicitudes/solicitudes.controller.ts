@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { CreateSolicitudDto, UpdateEstadoSolicitudDto } from './dto/solicitudes.dto';
+import { CreateSolicitudDto, UpdateEstadoSolicitudDto, CompletarSolicitudDto } from './dto/solicitudes.dto';
 
 interface UserPayload {
   id: string;
@@ -96,6 +96,17 @@ export class SolicitudesController {
     @CurrentUser() user: UserPayload,
   ) {
     return this.solicitudesService.terminarSolicitud(id, user.id);
+  }
+
+  @Patch(':id/completar')
+  @Roles('tecnico')
+  @ApiOperation({ summary: 'Completar servicio con detalles e imágenes' })
+  async completarSolicitud(
+    @Param('id') id: string,
+    @CurrentUser() user: UserPayload,
+    @Body() dto: CompletarSolicitudDto,
+  ) {
+    return this.solicitudesService.completarSolicitud(id, user.id, dto);
   }
 
   @Delete(':id')
