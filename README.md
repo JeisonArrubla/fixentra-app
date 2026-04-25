@@ -1,6 +1,6 @@
 # Fixentra - Marketplace de Servicios del Hogar
 
-Plataforma marketplace para servicios técnicos del hogar (como Uber para técnicos).
+Plataforma marketplace para servicios técnicos del hogar.
 
 ## Tech Stack
 
@@ -140,7 +140,8 @@ fixentra-app/
 | GET | /api/solicitudes/disponibles | Listar nuevas |
 | GET | /api/solicitudes/mis-solicitudes | Mis pedidos |
 | POST | /api/solicitudes/:id/aceptar | Aceptar |
-| PATCH | /api/solicitudes/:id/terminar | Terminar |
+| PATCH | /api/solicitudes/:id/completar | Completar servicio |
+| DELETE | /api/solicitudes/:id | Eliminar |
 
 ## Rutas Frontend
 
@@ -154,6 +155,7 @@ fixentra-app/
 | /tecnico/dashboard | Nuevas solicitudes |
 | /tecnico/trabajos | Mis trabajos |
 | /tecnico/solicitud/:id | Detalle solicitud |
+| /tecnico/solicitud/:id/terminar | Completar servicio |
 
 ## Decisiones de Arquitectura
 

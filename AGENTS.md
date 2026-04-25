@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Full-stack marketplace app for home services (like Uber for technicians).
+Full-stack marketplace app for home services.
 
 - **Backend**: Node.js + NestJS + Prisma + PostgreSQL
 - **Frontend**: React + Vite + Tailwind CSS
