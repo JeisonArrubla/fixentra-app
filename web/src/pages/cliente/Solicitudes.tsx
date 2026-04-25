@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { clientesApi, solicitudesApi } from '../../services/api';
 import { BackButton } from '../../components/common/BackButton';
 import { Plus, MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
+import { useSolicitud } from '../../contexts/SolicitudContext';
 import toast from 'react-hot-toast';
 
 interface Solicitud {
@@ -23,6 +25,8 @@ interface Direccion {
 }
 
 export function ClienteSolicitudes() {
+  const navigate = useNavigate();
+  const { setDraft, draft } = useSolicitud();
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -30,17 +34,19 @@ export function ClienteSolicitudes() {
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
   const [solicitudAEliminar, setSolicitudAEliminar] = useState<Solicitud | null>(null);
   const [eliminando, setEliminando] = useState(false);
-  const [formData, setFormData] = useState({
-    direccionId: '',
-    descripcion: '',
-    imagenes: [] as string[],
-  });
-  const [guardando, setGuardando] = useState(false);
-  const [imagenes, setImagenes] = useState<string[]>([]);
+  const [formData, setFormData] = useState(draft);
+  const [imagenes, setImagenes] = useState<string[]>(draft.imagenes);
 
   useEffect(() => {
     cargarDatos();
   }, []);
+
+  useEffect(() => {
+    if (mostrarFormulario) {
+      setFormData(draft);
+      setImagenes(draft.imagenes);
+    }
+  }, [mostrarFormulario, draft]);
 
   const cargarDatos = async () => {
     try {
@@ -63,23 +69,13 @@ export function ClienteSolicitudes() {
       toast.error('Selecciona una dirección');
       return;
     }
-    setGuardando(true);
-    try {
-      await solicitudesApi.crear({
-        direccionId: formData.direccionId,
-        descripcion: formData.descripcion,
-        imagenes: imagenes,
-      });
-      toast.success('Solicitud creada');
-      setMostrarFormulario(false);
-      setFormData({ direccionId: '', descripcion: '', imagenes: [] });
-      setImagenes([]);
-      cargarDatos();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al crear solicitud');
-    } finally {
-      setGuardando(false);
+    if (!formData.descripcion.trim()) {
+      toast.error('Ingresa una descripción');
+      return;
     }
+
+    setDraft({ ...formData, imagenes });
+    navigate('/cliente/solicitudes/nueva/confirmar');
   };
 
   const getEstadoColor = (estado: string) => {
@@ -198,17 +194,20 @@ export function ClienteSolicitudes() {
             <div className="flex justify-end space-x-3">
               <button
                 type="button"
-                onClick={() => setMostrarFormulario(false)}
+                onClick={() => {
+                  setMostrarFormulario(false);
+                  setFormData({ direccionId: '', descripcion: '', imagenes: [] });
+                  setImagenes([]);
+                }}
                 className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                disabled={guardando}
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
+                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
               >
-                {guardando ? 'Enviando...' : 'Crear Solicitud'}
+                Continuar
               </button>
             </div>
           </form>
@@ -276,8 +275,8 @@ export function ClienteSolicitudes() {
         isOpen={mostrarModalEliminar}
         onClose={() => setMostrarModalEliminar(false)}
         onConfirm={eliminarSolicitud}
-        title="Eliminar solicitud"
-        message={`¿Eliminar la solicitud  ?`}
+        title="Cancelar solicitud de servicio"
+        message={`¿Eliminar la solicitud?`}
         confirmText="Eliminar"
         loading={eliminando}
       />

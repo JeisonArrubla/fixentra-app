@@ -1,10 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SolicitudProvider } from './contexts/SolicitudContext';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ClienteDashboard } from './pages/cliente/Dashboard';
 import { ClienteDirecciones } from './pages/cliente/Direcciones';
 import { ClienteSolicitudes } from './pages/cliente/Solicitudes';
+import { ConfirmarSolicitud } from './pages/cliente/ConfirmarSolicitud';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
 import { SolicitudDetalle } from './pages/tecnico/SolicitudDetalle';
@@ -36,6 +38,7 @@ function AppRoutes() {
           <Route path="cliente/dashboard" element={<ClienteDashboard />} />
           <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
           <Route path="cliente/solicitudes" element={<ClienteSolicitudes />} />
+          <Route path="cliente/solicitudes/nueva/confirmar" element={<ConfirmarSolicitud />} />
           
           <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
           <Route path="tecnico/solicitud/:id" element={<SolicitudDetalle />} />
@@ -52,9 +55,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <ImageViewerProvider>
-        <AppRoutes />
-      </ImageViewerProvider>
+      <SolicitudProvider>
+        <ImageViewerProvider>
+          <AppRoutes />
+        </ImageViewerProvider>
+      </SolicitudProvider>
     </AuthProvider>
   );
 }
