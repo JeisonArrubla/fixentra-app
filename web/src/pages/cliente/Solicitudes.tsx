@@ -102,10 +102,10 @@ export function ClienteSolicitudes() {
         <h1 className="text-2xl font-bold text-gray-900">Mis Solicitudes</h1>
         <button
           onClick={() => navigate('/cliente/solicitudes/nueva')}
-          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Nueva Solicitud
+          Nueva solicitud
         </button>
       </div>
 
