@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { clientesApi, solicitudesApi } from '../../services/api';
+import { BackButton } from '../../components/common/BackButton';
 import { Plus, MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
@@ -138,6 +139,7 @@ export function ClienteSolicitudes() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      <BackButton to="/cliente/dashboard" text="Volver al dashboard" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Mis Solicitudes</h1>
         <button
