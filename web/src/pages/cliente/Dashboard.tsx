@@ -1,0 +1,85 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { Plus, MapPin, ArrowRight } from 'lucide-react';
+
+export function ClienteDashboard() {
+  const { user } = useAuth();
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    if (user !== null) {
+      setCargando(false);
+    }
+  }, [user]);
+
+  if (cargando) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  if (!user?.esCliente) {
+    return (
+      <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+        <p className="text-gray-600">
+          Acceso no autorizado. Esta sección es para clientes.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto py-8 px-4">
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+        Bienvenido, {user?.nombre}
+      </h1>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <Link
+          to="/cliente/direcciones"
+          className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Mis Direcciones</h3>
+              <p className="text-gray-600">Gestiona tus direcciones de servicio</p>
+            </div>
+            <MapPin className="h-8 w-8 text-primary-600" />
+          </div>
+        </Link>
+
+        <Link
+          to="/cliente/solicitudes"
+          className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Mis Solicitudes</h3>
+              <p className="text-gray-600">Historial de servicios solicitados</p>
+            </div>
+            <ArrowRight className="h-8 w-8 text-primary-600" />
+          </div>
+        </Link>
+      </div>
+
+      <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          ¿Necesitas un técnico?
+        </h3>
+        <p className="text-gray-600 mb-4">
+          Crea una nueva solicitud de servicio y técnicos cercanos te contactarán.
+        </p>
+        <Link
+          to="/cliente/solicitudes"
+          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Nueva Solicitud
+        </Link>
+      </div>
+    </div>
+  );
+}
