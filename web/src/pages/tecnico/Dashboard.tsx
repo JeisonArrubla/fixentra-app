@@ -76,7 +76,7 @@ export function TecnicoDashboard() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">
-        Bienvenido, {user?.nombre}
+        Te damos la bienvenida, {user?.nombre}
       </h1>
 
       <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">

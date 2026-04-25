@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     setUser(data.user);
-    toast.success('Bienvenido ' + data.user.nombre);
+    toast.success('Te damos la bienvenida ' + data.user.nombre);
     return data.user;
   };
 

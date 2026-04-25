@@ -76,7 +76,7 @@ export function Navbar() {
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    Técnico
+                    Home
                   </Link>
                   <Link
                     to="/tecnico/trabajos"
@@ -86,7 +86,7 @@ export function Navbar() {
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    Mis Trabajos
+                    Mis servicios
                   </Link>
                 </>
               )}
@@ -153,14 +153,14 @@ export function Navbar() {
                   className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100"
                   onClick={() => setMenuOpen(false)}
                 >
-                  Técnico
+                  Home
                 </Link>
                 <Link
                   to="/tecnico/trabajos"
                   className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100"
                   onClick={() => setMenuOpen(false)}
                 >
-                  Mis trabajos
+                  Mis servicios
                 </Link>
               </>
             )}

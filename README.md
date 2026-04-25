@@ -153,7 +153,7 @@ fixentra-app/
 | /cliente/direcciones | Gestión direcciones |
 | /cliente/solicitudes | Mis solicitudes |
 | /tecnico/dashboard | Nuevas solicitudes |
-| /tecnico/trabajos | Mis trabajos |
+| /tecnico/trabajos | Mis servicios |
 | /tecnico/solicitud/:id | Detalle solicitud |
 | /tecnico/solicitud/:id/terminar | Completar servicio |
 
