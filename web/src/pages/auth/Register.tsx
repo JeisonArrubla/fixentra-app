@@ -91,7 +91,7 @@ export function Register() {
       <div className="max-w-lg w-full space-y-8">
         <div>
           <div className="flex justify-center">
-            <svg className="h-16 w-16 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
@@ -100,7 +100,7 @@ export function Register() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+            <Link to="/login" className="font-medium text-gray-500 hover:text-gray-700">
               Inicia Sesión
             </Link>
           </p>
@@ -129,7 +129,7 @@ export function Register() {
                   required
                   value={formData.nombre}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                   placeholder="Juan"
                 />
               </div>
@@ -147,7 +147,7 @@ export function Register() {
                   required
                   value={formData.apellido}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                   placeholder="Pérez"
                 />
               </div>
@@ -168,7 +168,7 @@ export function Register() {
                   name="tipoDocumento"
                   value={formData.tipoDocumento}
                   onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                 >
                   {TIPOS_DOCUMENTO.map((tipo) => (
                     <option key={tipo.value} value={tipo.value}>
@@ -191,7 +191,7 @@ export function Register() {
                   required
                   value={formData.numDocumento}
                   onChange={handleChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                   placeholder="1234567890"
                 />
               </div>
@@ -213,7 +213,7 @@ export function Register() {
                 required
                 value={formData.correo}
                 onChange={handleChange}
-                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                 placeholder="tu@email.com"
               />
             </div>
@@ -234,7 +234,7 @@ export function Register() {
                 required
                 value={formData.celular}
                 onChange={handleChange}
-                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                 placeholder="3001234567"
               />
             </div>
@@ -255,7 +255,7 @@ export function Register() {
                 required
                 value={formData.contrasena}
                 onChange={handleChange}
-                className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                 placeholder="••••••••"
               />
               <button
@@ -284,7 +284,7 @@ export function Register() {
                 required
                 value={formData.confirmarContrasena}
                 onChange={handleChange}
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                 placeholder="••••••••"
               />
             </div>
@@ -302,7 +302,7 @@ export function Register() {
                   name="crearPerfilCliente"
                   checked={roles.crearPerfilCliente}
                   onChange={handleRoleChange}
-                  className="h-5 w-5 text-primary-600 border-gray-300 rounded mt-1"
+                  className="h-5 w-5 text-gray-500 border-gray-300 rounded mt-1"
                 />
                 <div className="ml-3">
                   <span className="block text-sm font-medium text-gray-900">
@@ -321,7 +321,7 @@ export function Register() {
                   name="crearPerfilTecnico"
                   checked={roles.crearPerfilTecnico}
                   onChange={handleRoleChange}
-                  className="h-5 w-5 text-primary-600 border-gray-300 rounded mt-1"
+                  className="h-5 w-5 text-gray-500 border-gray-300 rounded mt-1"
                 />
                 <div className="ml-3">
                   <span className="block text-sm font-medium text-gray-900">
@@ -342,7 +342,7 @@ export function Register() {
                       name="disponibilidadTecnico"
                       checked={roles.disponibilidadTecnico}
                       onChange={handleRoleChange}
-                      className="h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      className="h-4 w-4 text-gray-500 border-gray-300 rounded"
                     />
                     <label htmlFor="disponibilidadTecnico" className="ml-2 text-sm text-gray-700">
                       Estoy disponible ahora

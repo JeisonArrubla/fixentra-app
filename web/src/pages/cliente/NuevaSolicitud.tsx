@@ -50,7 +50,7 @@ export function NuevaSolicitud() {
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary-600" />
+        <Loader className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export function NuevaSolicitud() {
                 id="direccion"
                 value={formData.direccionId}
                 onChange={(e) => setFormData({ ...formData, direccionId: e.target.value })}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
               >
                 <option value="">Selecciona una dirección</option>
                 {direcciones.map((dir) => (
@@ -109,7 +109,7 @@ export function NuevaSolicitud() {
               rows={4}
               value={formData.descripcion}
               onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
               placeholder="Describe el servicio que necesitas..."
             />
           </div>

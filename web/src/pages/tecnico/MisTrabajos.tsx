@@ -77,7 +77,7 @@ export function TecnicoMisTrabajos() {
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary-600" />
+        <Loader className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );
   }
@@ -102,7 +102,7 @@ export function TecnicoMisTrabajos() {
             <Link
               key={sol.id}
               to={`/tecnico/solicitud/${sol.id}`}
-              className="block bg-white p-4 rounded-lg shadow-sm border hover:border-primary-300 hover:shadow-md transition-all"
+              className="block bg-white p-4 rounded-lg shadow-sm border hover:border-gray-300 hover:shadow-md transition-all"
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">

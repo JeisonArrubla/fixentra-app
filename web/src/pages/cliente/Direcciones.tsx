@@ -97,7 +97,7 @@ export function ClienteDirecciones() {
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader className="h-8 w-8 animate-spin text-primary-600" />
+        <Loader className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );
   }
@@ -140,7 +140,7 @@ export function ClienteDirecciones() {
                 id="esPrincipal"
                 checked={formData.esPrincipal}
                 onChange={(e) => setFormData({ ...formData, esPrincipal: e.target.checked })}
-                className="h-4 w-4 text-primary-600 border-gray-300 rounded"
+                className="h-4 w-4 text-gray-500 border-gray-300 rounded"
               />
               <label htmlFor="esPrincipal" className="ml-2 text-sm text-gray-700">
                 Establecer como dirección principal
@@ -181,7 +181,7 @@ export function ClienteDirecciones() {
                   </p>
                 </div>
                 {dir.esPrincipal && (
-                  <span className="inline-flex items-center px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded">
+                  <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">
                     <Star className="h-3 w-3 mr-1" />
                     Principal
                   </span>
@@ -191,7 +191,7 @@ export function ClienteDirecciones() {
                 {!dir.esPrincipal && (
                   <button
                     onClick={() => setPrincipal(dir.id)}
-                    className="text-sm text-primary-600 hover:text-primary-800"
+                    className="text-sm text-gray-500 hover:text-gray-700"
                   >
                     Hacer principal
                   </button>

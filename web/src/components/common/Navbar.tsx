@@ -37,7 +37,7 @@ export function Navbar() {
                     to="/cliente/dashboard"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       isActive('/cliente/dashboard')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -47,7 +47,7 @@ export function Navbar() {
                     to="/cliente/direcciones"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       isActive('/cliente/direcciones')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -57,7 +57,7 @@ export function Navbar() {
                     to="/cliente/solicitudes"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       isActive('/cliente/solicitudes')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -72,7 +72,7 @@ export function Navbar() {
                     to="/tecnico/dashboard"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       isActive('/tecnico/dashboard')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -82,7 +82,7 @@ export function Navbar() {
                     to="/tecnico/trabajos"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       isActive('/tecnico/trabajos')
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >

@@ -38,7 +38,7 @@ export function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="flex justify-center">
-            <svg className="h-16 w-16 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c1.86-1.86 4.146-1.86 6.006 0 1.86 1.86 1.86 4.146 0 6.006m-6.006 6.006l-1.997-1.997m6.997-6.997l-1.997 1.997M12 12h.01" />
             </svg>
           </div>
@@ -47,7 +47,7 @@ export function Login() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
+            <Link to="/register" className="font-medium text-gray-500 hover:text-gray-700">
               Regístrate
             </Link>
           </p>
@@ -76,7 +76,7 @@ export function Login() {
                   required
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                   placeholder="tu@email.com"
                 />
               </div>
@@ -97,7 +97,7 @@ export function Login() {
                   required
                   value={contrasena}
                   onChange={(e) => setContrasena(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="appearance-none block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-gray-400 focus:border-gray-400 sm:text-sm"
                   placeholder="••••••••"
                 />
                 <button

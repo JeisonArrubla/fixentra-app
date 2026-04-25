@@ -73,8 +73,8 @@ export function ImageUpload({ images, onChange, maxImages = 2, disabled = false 
       <div
         className={`
           border-2 border-dashed rounded-lg p-4 text-center
-          ${dragOver ? 'border-primary-500 bg-primary-50' : 'border-gray-300'}
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary-400'}
+          ${dragOver ? 'border-gray-400 bg-gray-50' : 'border-gray-300'}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-gray-400'}
         `}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -83,7 +83,7 @@ export function ImageUpload({ images, onChange, maxImages = 2, disabled = false 
       >
         {uploading ? (
           <div className="flex items-center justify-center">
-            <Loader className="h-6 w-6 animate-spin text-primary-600" />
+            <Loader className="h-6 w-6 animate-spin text-gray-500" />
             <span className="ml-2 text-gray-600">Subiendo...</span>
           </div>
         ) : (
