@@ -100,7 +100,7 @@ fixentra-app/
 │       ├── pages/
 │       │   ├── auth/      # Login, Register
 │       │   ├── cliente/  # Dashboard, Direcciones, Solicitudes
-│       │   └── tecnico/  # Dashboard, Mis Trabajos
+│       │   └── tecnico/  # Dashboard, Mis trabajos
 │       ├── contexts/      # AuthContext
 │       └── services/      # API calls
 └── AGENTS.md              # Instrucciones del agente

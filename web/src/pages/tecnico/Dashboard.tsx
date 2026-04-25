@@ -82,8 +82,8 @@ export function TecnicoDashboard() {
       <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Tu Estado</h3>
-            <p className="text-gray-600">Estás disponible para recibir solicitudes</p>
+            <h3 className="text-lg font-semibold text-gray-900">Tu estado</h3>
+            <p className="text-gray-600">Estás disponible para recibir solicitudes de servicios</p>
           </div>
           <button
             onClick={toggleDisponibilidad}
@@ -115,7 +115,7 @@ export function TecnicoDashboard() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Mis Trabajos</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Mis trabajos</h3>
               <p className="text-gray-600">Historial de servicios realizados</p>
             </div>
             <ArrowRight className="h-8 w-8 text-icon" />
@@ -125,7 +125,7 @@ export function TecnicoDashboard() {
 
       <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Solicitudes Nuevas
+          Nuevos servicios
         </h3>
         
         {cargandoSolicitudes ? (
