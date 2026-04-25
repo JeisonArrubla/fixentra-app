@@ -29,25 +29,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      authApi.profile()
-        .then((res) => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    let isMounted = true;
+
+    const initAuth = async () => {
+      const token = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (token || refreshToken) {
+        try {
+          const res = await authApi.profile();
+          if (isMounted) {
+            setUser(res.data);
+          }
+        } catch {
+          if (isMounted) {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+          }
+        }
+      }
+
+      if (isMounted) {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (correo: string, contrasena: string) => {
-    console.log('[AuthContext] Intentando login para:', correo);
     const { data } = await authApi.login(correo, contrasena);
-    console.log('[AuthContext] Login response:', data);
-    console.log('[AuthContext] User esCliente:', data.user.esCliente, 'esTecnico:', data.user.esTecnico);
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     setUser(data.user);
@@ -71,7 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success('Registro exitoso. Por favor inicia sesión.');
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      try {
+        await authApi.logout(refreshToken);
+      } catch {
+      }
+    }
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setUser(null);

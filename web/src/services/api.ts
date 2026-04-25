@@ -24,6 +24,10 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+const isAuthRequest = (url: string): boolean => {
+  return url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh');
+};
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -36,6 +40,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    if (!originalRequest || isAuthRequest(originalRequest.url || '')) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (originalRequest._retry) {
