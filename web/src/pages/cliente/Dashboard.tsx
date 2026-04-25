@@ -74,10 +74,10 @@ export function ClienteDashboard() {
         </p>
         <Link
           to="/cliente/solicitudes/nueva"
-          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Nueva Solicitud
+          Nueva solicitud
         </Link>
       </div>
     </div>
