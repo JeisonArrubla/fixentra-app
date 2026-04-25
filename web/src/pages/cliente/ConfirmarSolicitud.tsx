@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSolicitud } from '../../contexts/SolicitudContext';
 import { solicitudesApi, clientesApi } from '../../services/api';
 import { BackButton } from '../../components/common/BackButton';
-import { SubmitButton } from '../../components/common/SubmitButton';
-import { MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -17,6 +16,8 @@ export function ConfirmarSolicitud() {
   const { draft, clearDraft } = useSolicitud();
   const [direccion, setDireccion] = useState<DireccionInfo | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [contadorActivo, setContadorActivo] = useState(false);
+  const [segundosRestantes, setSegundosRestantes] = useState(5);
 
   useEffect(() => {
     if (draft.direccionId) {
@@ -27,6 +28,22 @@ export function ConfirmarSolicitud() {
     }
   }, [draft.direccionId]);
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (contadorActivo && segundosRestantes > 0) {
+      timer = setTimeout(() => {
+        setSegundosRestantes(segundosRestantes - 1);
+      }, 1000);
+    } else if (contadorActivo && segundosRestantes === 0) {
+      enviarSolicitud();
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [contadorActivo, segundosRestantes]);
+
   if (!draft.direccionId || !draft.descripcion) {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 text-center">
@@ -36,7 +53,18 @@ export function ConfirmarSolicitud() {
     );
   }
 
+  const iniciarConteo = () => {
+    setContadorActivo(true);
+    setSegundosRestantes(5);
+  };
+
+  const cancelarEnvio = () => {
+    setContadorActivo(false);
+    setSegundosRestantes(5);
+  };
+
   const enviarSolicitud = async () => {
+    setContadorActivo(false);
     setEnviando(true);
     try {
       await solicitudesApi.crear({
@@ -49,7 +77,6 @@ export function ConfirmarSolicitud() {
       navigate('/cliente/solicitudes');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al enviar solicitud');
-    } finally {
       setEnviando(false);
     }
   };
@@ -108,14 +135,34 @@ export function ConfirmarSolicitud() {
           </div>
         </div>
 
-        <div className="pt-4 border-t flex justify-end space-x-3">
-          <BackButton to="/cliente/solicitudes" text="Regresar" />
-          <SubmitButton
-            text="Enviar Solicitud"
-            onClick={enviarSolicitud}
-            loading={enviando}
-            icon={<Clock className="h-5 w-5" />}
-          />
+        <div className="pt-4 border-t flex justify-end">
+          {contadorActivo ? (
+            <button
+              onClick={cancelarEnvio}
+              className="inline-flex items-center justify-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition-colors"
+            >
+              <XCircle className="h-5 w-5 mr-2" />
+              Cancelar ({segundosRestantes}s)
+            </button>
+          ) : (
+            <button
+              onClick={iniciarConteo}
+              disabled={enviando}
+              className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {enviando ? (
+                <>
+                  <Clock className="h-5 w-5 animate-spin mr-2" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Clock className="h-5 w-5 mr-2" />
+                  Enviar Solicitud
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
