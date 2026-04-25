@@ -89,4 +89,12 @@ export class AuthController {
       esTecnico: user.esTecnico,
     };
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cerrar sesión' })
+  async logout(@Body() dto: RefreshTokenDto) {
+    await this.authService.logout(dto.refreshToken);
+    return { message: 'Sesión cerrada' };
+  }
 }

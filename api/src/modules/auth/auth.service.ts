@@ -71,7 +71,6 @@ export class AuthService {
     let esCliente = false;
     let esTecnico = false;
 
-    // Crear perfil de cliente si se indica
     if (dto.crearPerfilCliente) {
       await this.prisma.cliente.create({
         data: { id: usuario.id },
@@ -80,7 +79,6 @@ export class AuthService {
       logger.log(`Perfil de cliente creado para usuario: ${usuario.id}`);
     }
 
-    // Crear perfil de técnico si se indica
     if (dto.crearPerfilTecnico) {
       await this.prisma.tecnico.create({
         data: {
@@ -119,9 +117,6 @@ export class AuthService {
       return null;
     }
 
-    logger.log(`Usuario encontrado: ${usuario.id}, hash: ${usuario.contrasena.substring(0, 20)}...`);
-    logger.log(`Contraseña ingresada: ${contrasena}`);
-
     const esValida = await bcrypt.compare(contrasena, usuario.contrasena);
     if (!esValida) {
       logger.warn(`Contraseña inválida para usuario: ${correo}`);
@@ -142,7 +137,7 @@ export class AuthService {
 
   async login(user: UsuarioPayload): Promise<AuthTokens> {
     const payload: TokenPayload = { sub: user.id, correo: user.correo };
-    return this.generateTokens(payload);
+    return this.generateTokens(payload, user.id);
   }
 
   async refreshToken(refreshToken: string): Promise<AuthTokens> {
@@ -150,25 +145,62 @@ export class AuthService {
       const payload = this.jwtService.verify<TokenPayload>(refreshToken, {
         secret: this.configService.get<string>('jwt.refreshSecret'),
       });
-      return this.generateTokens(payload);
-    } catch {
+
+      const storedToken = await this.prisma.refreshToken.findUnique({
+        where: { token: refreshToken },
+      });
+
+      if (!storedToken) {
+        throw new UnauthorizedException('Refresh token inválido');
+      }
+
+      if (storedToken.expiresAt < new Date()) {
+        await this.prisma.refreshToken.delete({ where: { id: storedToken.id } });
+        throw new UnauthorizedException('Refresh token expirado');
+      }
+
+      await this.prisma.refreshToken.delete({ where: { id: storedToken.id } });
+
+      return this.generateTokens(payload, payload.sub);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
       throw new UnauthorizedException('Refresh token inválido o expirado');
     }
   }
 
-private async generateTokens(payload: TokenPayload): Promise<AuthTokens> {
+  private async generateTokens(payload: TokenPayload, usuarioId: string): Promise<AuthTokens> {
+    const jwtSecret = this.configService.get('jwt.secret') || process.env.JWT_SECRET || 'default-secret';
+    const jwtRefreshSecret = this.configService.get('jwt.refreshSecret') || process.env.JWT_REFRESH_SECRET || 'default-refresh-secret';
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-        secret: this.configService.get('jwt.secret') || process.env.JWT_SECRET || 'default-secret',
-        expiresIn: '15m',
+        secret: jwtSecret,
+        expiresIn: '24h',
       }),
       this.jwtService.signAsync(payload, {
-        secret: this.configService.get('jwt.refreshSecret') || process.env.JWT_REFRESH_SECRET || 'default-refresh-secret',
+        secret: jwtRefreshSecret,
         expiresIn: '7d',
       }),
     ]);
 
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.prisma.refreshToken.create({
+      data: {
+        token: refreshToken,
+        usuarioId,
+        expiresAt,
+      },
+    });
+
     return { accessToken, refreshToken };
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: { token: refreshToken },
+    });
   }
 
   async getProfile(usuarioId: string): Promise<UsuarioPayload> {
