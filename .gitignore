@@ -3,3 +3,4 @@
 *.local
 .env.local
 .env.*.local
+package-lock.json
