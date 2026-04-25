@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { MapPin, ArrowRight } from 'lucide-react';
+import { Description } from '../../components/common/Description';
 
 export function ClienteDashboard() {
   const { user } = useAuth();
@@ -41,9 +42,9 @@ export function ClienteDashboard() {
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           ¿Necesitas un técnico?
         </h3>
-        <p className="text-gray-600 mb-4">
+        <Description>
           Crea una nueva solicitud de servicio y técnicos cercanos te contactarán.
-        </p>
+        </Description>
         <Link
           to="/cliente/solicitudes/nueva"
           className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
@@ -60,7 +61,7 @@ export function ClienteDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Mis direcciones</h3>
-              <p className="text-gray-600">Gestiona dónde recibirás los servicios</p>
+              <Description>Gestiona dónde recibirás los servicios</Description>
             </div>
             <MapPin className="h-8 w-8 text-icon" />
           </div>
@@ -73,7 +74,7 @@ export function ClienteDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Mis solicitudes</h3>
-              <p className="text-gray-600">Historial de servicios solicitados</p>
+              <Description>Historial de servicios solicitados</Description>
             </div>
             <ArrowRight className="h-8 w-8 text-icon" />
           </div>

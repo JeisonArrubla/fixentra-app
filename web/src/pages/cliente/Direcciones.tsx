@@ -5,6 +5,7 @@ import { MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
 import { CancelButton, NavigationButton, SubmitButton } from '../../components/common';
+import { Description } from '../../components/common/Description';
 import toast from 'react-hot-toast';
 
 interface Direccion {
@@ -230,10 +231,10 @@ export function ClienteDirecciones() {
           </>
         }
       >
-        <p className="text-gray-600">
+        <Description>
           ¿Estás seguro de que quieres eliminar la dirección{' '}
           <strong>"{direccionAEliminar?.direccion}"</strong>?
-        </p>
+        </Description>
       </Modal>
     </div>
   );

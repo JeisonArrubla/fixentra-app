@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { tecnicosApi, solicitudesApi } from '../../services/api';
 import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Description } from '../../components/common/Description';
 
 interface Solicitud {
   id: string;
@@ -83,7 +84,7 @@ export function TecnicoDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Tu estado</h3>
-            <p className="text-gray-600">Estás disponible para recibir solicitudes de servicios</p>
+            <Description>Estás disponible para recibir solicitudes de servicios</Description>
           </div>
           <button
             onClick={toggleDisponibilidad}
@@ -116,7 +117,7 @@ export function TecnicoDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Mis trabajos</h3>
-              <p className="text-gray-600">Historial de servicios realizados</p>
+              <Description>Historial de servicios realizados</Description>
             </div>
             <ArrowRight className="h-8 w-8 text-icon" />
           </div>
