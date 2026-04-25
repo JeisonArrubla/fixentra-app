@@ -111,7 +111,7 @@ export function SolicitudDetalle() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <NavigationButton to="/tecnico/dashboard" text="Volver" />
+      <NavigationButton to="/tecnico/trabajos" text="Volver" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
