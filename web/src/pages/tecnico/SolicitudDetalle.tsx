@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
 import { ImageGridWithViewer, NavigationButton } from '../../components/common';
-import { MapPin, User, CheckCircle, Loader, Clock } from 'lucide-react';
+import { MapPin, User, CheckCircle, Loader, Clock, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface SolicitudDetalle {
   id: string;
   descripcion: string;
-  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA';
+  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA' | 'COMPLETADO';
   direccion: {
     direccion: string;
     latitud: number;
@@ -25,6 +25,9 @@ interface SolicitudDetalle {
   };
   imagenes?: { id: string; url: string }[];
   createdAt: string;
+  calificacion?: number | null;
+  comentarioCalificacion?: string | null;
+  fechaCalificacion?: string | null;
 }
 
 export function SolicitudDetalle() {
@@ -155,6 +158,40 @@ export function SolicitudDetalle() {
                 images={solicitud.imagenes}
                 thumbnailClassName="h-24 w-24 object-cover rounded-lg"
               />
+            </div>
+          )}
+
+          {(solicitud.calificacion || solicitud.estado === 'TERMINADA' || solicitud.estado === 'COMPLETADO') && (
+            <div className="bg-yellow-50 p-4 rounded-md">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Calificación recibida</h2>
+              {solicitud.calificacion ? (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={24}
+                        className={star <= solicitud.calificacion! ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                      />
+                    ))}
+                    <span className="ml-2 text-gray-700 font-medium">{solicitud.calificacion}/5</span>
+                  </div>
+                  {solicitud.comentarioCalificacion && (
+                    <p className="text-gray-700 text-sm italic">
+                      "{solicitud.comentarioCalificacion}"
+                    </p>
+                  )}
+                  {solicitud.fechaCalificacion && (
+                    <p className="text-xs text-gray-500">
+                      Calificado el {new Date(solicitud.fechaCalificacion).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-600 text-sm">
+                  Pendiente de calificación por el cliente
+                </p>
+              )}
             </div>
           )}
 
