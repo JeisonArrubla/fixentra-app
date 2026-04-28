@@ -88,7 +88,8 @@ web/src/
 │   ├── NavigationButton.tsx
 │   ├── SubmitButton.tsx
 │   ├── CancelButton.tsx
-│   └── ActionButton.tsx
+│   ├── ActionButton.tsx
+│   └── Description.tsx
 ├── pages/
 │   ├── auth/Login.tsx
 │   ├── auth/Register.tsx
@@ -122,15 +123,12 @@ web/src/
 - Reusable button components (NavigationButton, SubmitButton, CancelButton, ActionButton)
 - Solicitud flow with context persistence (NuevaSolicitud → ConfirmarSolicitud)
 - Confirmation countdown feature for service requests
+- Description component to hide descriptive text on mobile
 
 ## UI/UX Design System
 
-### Typography
-- All `<h1>` titles use `font-light` for a minimalist, clean look
-- Never use `font-bold` on page titles
-
 ### Mobile-First Design
-- **Hide descriptive paragraphs on mobile**: Use `hidden md:block` to hide `<p>` tags with secondary descriptions on mobile devices
+- **Hide descriptive paragraphs on mobile**: Use `Description` component to hide `<p>` tags with secondary descriptions on mobile devices
 - Keep mobile views clean and focused on primary actions
 - Show descriptive text only on tablet/desktop (`md:` breakpoint)
 
@@ -155,7 +153,7 @@ web/src/
 4. Prisma database needs reset (`prisma db push --force-reset`) after adding new models
 5. Vite proxy needs to be configured for `/uploads` route to serve images in development
 6. Always check `user && user.tipo` before accessing user properties in routes
-7. Descriptive `<p>` tags should be hidden on mobile to reduce visual noise
+7. Use `Description` component to hide descriptive text on mobile
 
 ## Behavior Guidelines
 
@@ -164,7 +162,7 @@ web/src/
 - After completing a task, stop and wait for user to indicate what to do next
 - Use existing code patterns and conventions when implementing new features
 - Prefer reusable, scalable components over one-off implementations
-- Follow the design system for typography (font-light on h1) and mobile-first approach
+- Follow the design system and mobile-first approach
 
 ## Routes Structure
 
