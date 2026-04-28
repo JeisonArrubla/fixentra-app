@@ -35,9 +35,9 @@ export class TecnicosController {
 
   @Get('perfil')
   @Roles('tecnico')
-  @ApiOperation({ summary: 'Obtener perfil de técnico' })
-  async getPerfil(@CurrentUser() user: UserPayload) {
-    return this.tecnicosService.getPerfil(user.id);
+  @ApiOperation({ summary: 'Ver perfil de técnico con estadísticas' })
+  async getPerfilCompleto(@CurrentUser() user: UserPayload) {
+    return this.tecnicosService.getPerfilCompleto(user.id);
   }
 
   @Patch('ubicacion')

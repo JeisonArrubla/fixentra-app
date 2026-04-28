@@ -11,7 +11,7 @@ import { ConfirmarSolicitud } from './pages/cliente/ConfirmarSolicitud';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
 import { SolicitudDetalle } from './pages/tecnico/SolicitudDetalle';
-import { SolicitudDetalle as ClienteSolicitudDetalle } from './pages/cliente/SolicitudDetalle';
+import { TecnicoPerfil } from './pages/tecnico/Perfil';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
 import { Navbar } from './components/common/Navbar';
 import { PrivateRoute } from './components/common/PrivateRoute';
@@ -38,7 +38,7 @@ function AppRoutes() {
           <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
           <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
           
-          <Route path="cliente/solicitud/:id" element={<ClienteSolicitudDetalle />} />
+          <Route path="cliente/solicitud/:id" element={<SolicitudDetalle />} />
 
           <Route path="cliente/dashboard" element={<ClienteDashboard />} />
           <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
@@ -50,6 +50,7 @@ function AppRoutes() {
           <Route path="tecnico/solicitud/:id" element={<SolicitudDetalle />} />
           <Route path="tecnico/solicitud/:id/terminar" element={<TerminarServicio />} />
           <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
+          <Route path="tecnico/perfil" element={<TecnicoPerfil />} />
         </Route>
       </Route>
 

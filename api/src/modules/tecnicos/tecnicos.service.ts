@@ -53,6 +53,50 @@ export class TecnicosService {
     return tecnico;
   }
 
+  async getPerfilCompleto(usuarioId: string): Promise<any> {
+    const tecnico = await this.prisma.tecnico.findUnique({
+      where: { id: usuarioId },
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            apellido: true,
+            correo: true,
+            celular: true,
+            tipoDocumento: true,
+            numDocumento: true,
+          },
+        },
+      },
+    });
+
+    if (!tecnico) {
+      throw new NotFoundException('Perfil de técnico no encontrado');
+    }
+
+    const estadisticas = await this.prisma.solicitudServicio.aggregate({
+      where: {
+        tecnicoId: usuarioId,
+        estado: 'COMPLETADO',
+        calificacion: { not: null },
+      },
+      _avg: { calificacion: true },
+      _count: { calificacion: true },
+    });
+
+    const totalServiciosCompletados = await this.prisma.solicitudServicio.count({
+      where: { tecnicoId: usuarioId, estado: 'COMPLETADO' },
+    });
+
+    return {
+      ...tecnico,
+      usuario: tecnico.usuario,
+      promedioCalificacion: estadisticas._avg.calificacion || 0,
+      totalCalificaciones: estadisticas._count.calificacion || 0,
+      totalServiciosCompletados,
+    };
+  }
+
   async actualizarUbicacion(
     usuarioId: string,
     dto: UpdateUbicacionDto,
