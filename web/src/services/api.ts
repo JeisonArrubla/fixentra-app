@@ -198,6 +198,9 @@ export const solicitudesApi = {
   completar: (id: string, data: { detalles: string; imagenes: string[] }) =>
     api.patch(`/solicitudes/${id}/completar`, data),
 
+  calificar: (id: string, data: { calificacion: number; comentario?: string }) =>
+    api.patch(`/solicitudes/${id}/calificar`, data),
+
   terminar: (id: string) => api.patch(`/solicitudes/${id}/terminar`),
 
   eliminar: (id: string) => api.delete(`/solicitudes/${id}`),

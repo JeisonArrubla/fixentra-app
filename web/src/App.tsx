@@ -11,6 +11,7 @@ import { ConfirmarSolicitud } from './pages/cliente/ConfirmarSolicitud';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
 import { SolicitudDetalle } from './pages/tecnico/SolicitudDetalle';
+import { SolicitudDetalle as ClienteSolicitudDetalle } from './pages/cliente/SolicitudDetalle';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
 import { Navbar } from './components/common/Navbar';
 import { PrivateRoute } from './components/common/PrivateRoute';
@@ -34,9 +35,11 @@ function AppRoutes() {
       
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<Navbar />}>
-          <Route path="" element={user && user.tipo === 'tecnico' ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
-          <Route path="dashboard" element={<Navigate to={user && user.tipo === 'tecnico' ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
+          <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
+          <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
           
+          <Route path="cliente/solicitud/:id" element={<ClienteSolicitudDetalle />} />
+
           <Route path="cliente/dashboard" element={<ClienteDashboard />} />
           <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
           <Route path="cliente/solicitudes" element={<ClienteSolicitudes />} />

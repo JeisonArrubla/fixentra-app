@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { CreateSolicitudDto, UpdateEstadoSolicitudDto, CompletarSolicitudDto } from './dto/solicitudes.dto';
+import { CreateSolicitudDto, UpdateEstadoSolicitudDto, CompletarSolicitudDto, CalificarSolicitudDto } from './dto/solicitudes.dto';
 
 interface UserPayload {
   id: string;
@@ -107,6 +107,17 @@ export class SolicitudesController {
     @Body() dto: CompletarSolicitudDto,
   ) {
     return this.solicitudesService.completarSolicitud(id, user.id, dto);
+  }
+
+  @Patch(':id/calificar')
+  @Roles('cliente')
+  @ApiOperation({ summary: 'Calificar servicio (1-5 estrellas)' })
+  async calificarSolicitud(
+    @Param('id') id: string,
+    @CurrentUser() user: UserPayload,
+    @Body() dto: CalificarSolicitudDto,
+  ) {
+    return this.solicitudesService.calificarSolicitud(id, user.id, dto);
   }
 
   @Delete(':id')

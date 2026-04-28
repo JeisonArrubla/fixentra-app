@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, MaxLength, IsInt, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EstadoSolicitud } from '@prisma/client';
 
@@ -43,4 +43,17 @@ export class UpdateEstadoSolicitudDto {
   @ApiProperty({ enum: EstadoSolicitud })
   @IsEnum(EstadoSolicitud)
   estado: EstadoSolicitud;
+}
+
+export class CalificarSolicitudDto {
+  @ApiProperty({ description: 'Calificación de 1 a 5 estrellas', minimum: 1, maximum: 5 })
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  calificacion: number;
+
+  @ApiPropertyOptional({ description: 'Comentario opcional sobre el servicio' })
+  @IsString()
+  @IsOptional()
+  comentario?: string;
 }

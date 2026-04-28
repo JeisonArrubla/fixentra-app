@@ -9,6 +9,7 @@ import {
   CreateSolicitudDto,
   UpdateEstadoSolicitudDto,
   CompletarSolicitudDto,
+  CalificarSolicitudDto,
 } from './dto/solicitudes.dto';
 
 @Injectable()
@@ -310,6 +311,53 @@ export class SolicitudesService {
     }
 
     return solicitud;
+  }
+
+  async calificarSolicitud(
+    solicitudId: string,
+    clienteId: string,
+    dto: CalificarSolicitudDto,
+  ): Promise<any> {
+    const solicitud = await this.prisma.solicitudServicio.findUnique({
+      where: { id: solicitudId },
+    });
+
+    if (!solicitud) {
+      throw new NotFoundException('Solicitud no encontrada');
+    }
+
+    if (solicitud.clienteId !== clienteId) {
+      throw new ForbiddenException(
+        'No tienes autorización para calificar esta solicitud',
+      );
+    }
+
+    if (solicitud.estado !== 'COMPLETADO' && solicitud.estado !== 'TERMINADA') {
+      throw new BadRequestException(
+        'Solo puedes calificar solicitudes completadas',
+      );
+    }
+
+    if (solicitud.calificacion !== null) {
+      throw new BadRequestException(
+        'Esta solicitud ya fue calificada',
+      );
+    }
+
+    return this.prisma.solicitudServicio.update({
+      where: { id: solicitudId },
+      data: {
+        calificacion: dto.calificacion,
+        comentarioCalificacion: dto.comentario,
+        fechaCalificacion: new Date(),
+      },
+      include: {
+        direccion: true,
+        cliente: { select: { nombre: true, apellido: true, correo: true } },
+        tecnico: { select: { nombre: true, apellido: true, correo: true } },
+        imagenes: true,
+      },
+    });
   }
 
   private haversine(

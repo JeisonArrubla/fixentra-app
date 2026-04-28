@@ -115,6 +115,9 @@ model SolicitudServicio {
   tecnico             Usuario?        @relation("SolicitudTecnico", fields: [tecnicoId], references: [id])
   pago                Pago?
   imagenes            Imagen[]
+  calificacion         Int?
+  comentarioCalificacion String?       @map("comentario_calificacion")
+  fechaCalificacion    DateTime?       @map("fecha_calificacion")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
 
