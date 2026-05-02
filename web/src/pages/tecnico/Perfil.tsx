@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { tecnicosApi } from '../../services/api';
 import { TecnicoStats } from '../../components/tecnico/TecnicoStats';
 import { MapPin, User, Loader, ToggleLeft, ToggleRight } from 'lucide-react';
@@ -27,7 +26,6 @@ interface TecnicoPerfil {
 }
 
 export function TecnicoPerfil() {
-  const navigate = useNavigate();
   const [perfil, setPerfil] = useState<TecnicoPerfil | null>(null);
   const [cargando, setCargando] = useState(true);
   const [actualizando, setActualizando] = useState(false);
@@ -79,27 +77,13 @@ export function TecnicoPerfil() {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
         <p className="text-gray-600">Perfil no encontrado</p>
-        <button
-          onClick={() => navigate('/tecnico/dashboard')}
-          className="mt-4 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-        >
-          Volver
-        </button>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Mi Perfil</h1>
-        <button
-          onClick={() => navigate('/tecnico/dashboard')}
-          className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-        >
-          Volver
-        </button>
-      </div>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">Mi Perfil</h1>
 
       <div className="bg-white rounded-lg shadow-sm border p-6 space-y-6">
         {/* Información Personal */}
@@ -142,9 +126,6 @@ export function TecnicoPerfil() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Estado de disponibilidad</p>
-                <p className="text-gray-900">
-                  {perfil.disponibilidad ? 'Disponible' : 'No disponible'}
-                </p>
               </div>
               <button
                 onClick={toggleDisponibilidad}
@@ -169,10 +150,6 @@ export function TecnicoPerfil() {
                   </>
                 )}
               </button>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Radio de cobertura</p>
-              <p className="text-gray-900">{perfil.radioCoberturaKm} km</p>
             </div>
             {perfil.latitud && perfil.longitud && (
               <div>

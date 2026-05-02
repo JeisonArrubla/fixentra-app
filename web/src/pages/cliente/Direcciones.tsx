@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
-import { CancelButton, NavigationButton, SubmitButton } from '../../components/common';
+import { CancelButton, SubmitButton } from '../../components/common';
 import { Description } from '../../components/common/Description';
 import toast from 'react-hot-toast';
 
@@ -105,7 +105,6 @@ export function ClienteDirecciones() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <NavigationButton to="/cliente/dashboard" text="Volver" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-light text-gray-900">Mis direcciones</h1>
         <button

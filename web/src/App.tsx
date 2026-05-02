@@ -15,6 +15,7 @@ import { SolicitudDetalle as ClienteSolicitudDetalle } from './pages/cliente/Sol
 import { TecnicoPerfil } from './pages/tecnico/Perfil';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
 import { Navbar } from './components/common/Navbar';
+import { BottomNav } from './components/common/BottomNav';
 import { PrivateRoute } from './components/common/PrivateRoute';
 import { ImageViewerProvider } from './components/common/ImageViewer';
 
@@ -36,8 +37,9 @@ function AppRoutes() {
       
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<Navbar />}>
-          <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
-          <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
+          <Route element={<BottomNav />}>
+            <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
+            <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
           
           <Route path="cliente/solicitud/:id" element={<ClienteSolicitudDetalle />} />
 
@@ -52,6 +54,7 @@ function AppRoutes() {
           <Route path="tecnico/solicitud/:id/terminar" element={<TerminarServicio />} />
           <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
           <Route path="tecnico/perfil" element={<TecnicoPerfil />} />
+          </Route>
         </Route>
       </Route>
 
