@@ -56,10 +56,10 @@ export function BottomNav() {
 
   return (
     <>
-      <div className="pb-16 md:pb-0">
+      <div className="pb-16 lg:pb-0">
         <Outlet />
       </div>
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
         <div className="flex justify-around items-center h-16">
           {items.map((item) => (
             <Link
