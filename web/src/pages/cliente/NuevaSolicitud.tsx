@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
+import { PageHeader } from '../../components/common/PageHeader';
 import { MapPin, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { SubmitButton } from '../../components/common/SubmitButton';
@@ -68,13 +69,10 @@ export function NuevaSolicitud() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
+      <PageHeader title="Crear nueva solicitud" />
       <NavigationButton to="/cliente/solicitudes" text="Cancelar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-light text-gray-900 mb-6">
-          Crear nueva solicitud
-        </h1>
-
         <div className="space-y-6">
           <div>
             <label htmlFor="direccion" className="block text-sm font-medium text-gray-700 mb-2">

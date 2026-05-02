@@ -3,6 +3,7 @@ import { tecnicosApi } from '../../services/api';
 import { TecnicoStats } from '../../components/tecnico/TecnicoStats';
 import { MapPin, User, Loader, ToggleLeft, ToggleRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PageHeader } from '../../components/common/PageHeader';
 
 interface TecnicoPerfil {
   id: string;
@@ -83,7 +84,7 @@ export function TecnicoPerfil() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Mi Perfil</h1>
+      <PageHeader title="Mi Perfil" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6 space-y-6">
         {/* Información Personal */}

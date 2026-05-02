@@ -4,6 +4,7 @@ import { solicitudesApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
 import { StarRating } from '../../components/common/StarRating';
 import { ImageWithViewer } from '../../components/common/ImageWithViewer';
+import { PageHeader } from '../../components/common/PageHeader';
 import { MapPin, User, Calendar, Star, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -110,10 +111,10 @@ export function SolicitudDetalle() {
       <NavigationButton to="/cliente/solicitudes" text="Volver a mis solicitudes" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6 mt-4">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Detalles del servicio</h1>
-          {getEstadoBadge(solicitud.estado)}
-        </div>
+        <PageHeader
+          title="Detalles del servicio"
+          badge={getEstadoBadge(solicitud.estado)}
+        />
 
         <div className="space-y-4">
           <div>

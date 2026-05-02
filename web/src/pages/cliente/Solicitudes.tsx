@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
 import { MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
+import { PageHeader } from '../../components/common/PageHeader';
 import toast from 'react-hot-toast';
 
 interface Solicitud {
@@ -100,15 +101,17 @@ export function ClienteSolicitudes() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-light text-gray-900">Mis Solicitudes</h1>
-        <button
-          onClick={() => navigate('/cliente/solicitudes/nueva')}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-        >
-          Nueva solicitud
-        </button>
-      </div>
+      <PageHeader
+        title="Mis solicitudes"
+        actions={
+          <button
+            onClick={() => navigate('/cliente/solicitudes/nueva')}
+            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          >
+            Nueva solicitud
+          </button>
+        }
+      />
 
       {solicitudes.length === 0 ? (
         <div className="text-center py-12 text-gray-600">

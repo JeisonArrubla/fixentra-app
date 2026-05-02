@@ -67,7 +67,7 @@ export function BottomNav() {
               to={item.to}
               className={`flex flex-col items-center justify-center flex-1 h-full ${
                 isActive(item.to)
-                  ? 'text-green-600'
+                   ? 'text-black'
                   : 'text-gray-400'
               }`}
             >

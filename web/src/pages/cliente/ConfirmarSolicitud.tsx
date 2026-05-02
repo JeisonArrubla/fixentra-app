@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSolicitud } from '../../contexts/SolicitudContext';
 import { solicitudesApi, clientesApi } from '../../services/api';
-import { NavigationButton, SubmitButton, CancelButton } from '../../components/common';
+import { NavigationButton, SubmitButton, CancelButton, PageHeader } from '../../components/common';
 import { MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -83,12 +83,10 @@ export function ConfirmarSolicitud() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
+      <PageHeader title="Confirma los datos de tu solicitud" />
       <NavigationButton to="/cliente/solicitudes/nueva" text="Regresar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-light text-gray-900 mb-6">
-          Confirma los datos de tu solicitud
-        </h1>
 
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <h2 className="text-sm font-medium text-gray-500 mb-3">

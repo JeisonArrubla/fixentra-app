@@ -5,6 +5,7 @@ import { tecnicosApi, solicitudesApi } from '../../services/api';
 import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Description } from '../../components/common/Description';
+import { PageHeader } from '../../components/common/PageHeader';
 
 interface Solicitud {
   id: string;
@@ -76,9 +77,7 @@ export function TecnicoDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-light text-gray-900 mb-8">
-        Te damos la bienvenida, {user?.nombre}
-      </h1>
+      <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
 
       <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
         <div className="flex items-center justify-between">

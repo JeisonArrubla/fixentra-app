@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
+import { PageHeader } from '../../components/common/PageHeader';
 import { CancelButton, SubmitButton } from '../../components/common';
 import { Description } from '../../components/common/Description';
 import toast from 'react-hot-toast';
@@ -105,15 +106,17 @@ export function ClienteDirecciones() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-light text-gray-900">Mis direcciones</h1>
-        <button
-          onClick={() => setMostrarFormulario(!mostrarFormulario)}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-        >
-          Nueva dirección
-        </button>
-      </div>
+      <PageHeader
+        title="Mis direcciones"
+        actions={
+          <button
+            onClick={() => setMostrarFormulario(!mostrarFormulario)}
+            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          >
+            Nueva dirección
+          </button>
+        }
+      />
 
       {mostrarFormulario && (
         <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">

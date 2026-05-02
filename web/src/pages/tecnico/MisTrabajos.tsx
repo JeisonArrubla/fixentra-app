@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
 import { MapPin, Clock, Loader } from 'lucide-react';
+import { PageHeader } from '../../components/common/PageHeader';
 
 interface Solicitud {
   id: string;
@@ -68,9 +69,7 @@ export function TecnicoMisTrabajos() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-light text-gray-900 mb-8">
-        Mis servicios
-      </h1>
+      <PageHeader title="Mis servicios" />
 
       {solicitudes.length === 0 ? (
         <div className="text-center py-12 text-gray-600">

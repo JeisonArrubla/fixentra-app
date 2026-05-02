@@ -6,3 +6,4 @@ export { SubmitButton } from './SubmitButton';
 export { CancelButton } from './CancelButton';
 export { ConfirmModal } from './ConfirmModal';
 export { Modal } from './Modal';
+export { PageHeader } from './PageHeader';

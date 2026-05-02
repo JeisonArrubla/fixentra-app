@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { NavigationButton } from '../../components/common/NavigationButton';
+import { NavigationButton, PageHeader } from '../../components/common';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { MapPin, CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -93,12 +93,10 @@ export function TerminarServicio() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
+      <PageHeader title="Completar servicio" />
       <NavigationButton to={`/tecnico/solicitud/${id}`} text="Volver al detalle" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h1 className="text-2xl font-light text-gray-900 mb-6">
-          Completar Servicio
-        </h1>
 
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <h2 className="text-sm font-medium text-gray-500 mb-1">

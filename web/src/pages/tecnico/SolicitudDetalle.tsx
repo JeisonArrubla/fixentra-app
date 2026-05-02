@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { solicitudesApi } from '../../services/api';
-import { ImageGridWithViewer, NavigationButton } from '../../components/common';
+import { ImageGridWithViewer, NavigationButton, PageHeader } from '../../components/common';
 import { MapPin, User, CheckCircle, Loader, Clock, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -117,12 +117,10 @@ export function SolicitudDetalle() {
       <NavigationButton to="/tecnico/trabajos" text="Volver" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <div className="flex justify-between items-start mb-4">
-          <h1 className="text-2xl font-light text-gray-900">Detalles del servicio</h1>
-          <span className={`px-3 py-1 rounded-full text-sm ${getEstadoColor(solicitud.estado)}`}>
-            {getEstadoLabel(solicitud.estado)}
-          </span>
-        </div>
+        <PageHeader
+          title="Detalles del servicio"
+          badge={<span className={`px-3 py-1 rounded-full text-sm ${getEstadoColor(solicitud.estado)}`}>{getEstadoLabel(solicitud.estado)}</span>}
+        />
 
         <div className="space-y-6">
           <div>

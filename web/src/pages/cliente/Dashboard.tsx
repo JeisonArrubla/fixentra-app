@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { MapPin, ArrowRight } from 'lucide-react';
 import { Description } from '../../components/common/Description';
+import { PageHeader } from '../../components/common/PageHeader';
 
 export function ClienteDashboard() {
   const { user } = useAuth();
@@ -34,9 +35,7 @@ export function ClienteDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-light text-gray-900 mb-8">
-        Te damos la bienvenida, {user?.nombre}
-      </h1>
+      <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
 
       <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
