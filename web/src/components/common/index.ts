@@ -8,3 +8,4 @@ export { ConfirmModal } from './ConfirmModal';
 export { Modal } from './Modal';
 export { PageHeader } from './PageHeader';
 export { FieldRow } from './FieldRow';
+export { NavbarLink } from './NavbarLink';

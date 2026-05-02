@@ -1,18 +1,16 @@
-import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogOut, Wrench } from 'lucide-react';
+import { NavbarLink } from './NavbarLink';
 
 export function Navbar() {
   const { user, logout } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-
-  const isActive = (path: string) => location.pathname === path;
 
   return (
     <>
@@ -44,71 +42,17 @@ export function Navbar() {
             <div className="flex items-center space-x-4">
               {user.esCliente && (
                 <>
-                  <Link
-                    to="/cliente/dashboard"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/cliente/dashboard')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/cliente/direcciones"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/cliente/direcciones')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Mis direcciones
-                  </Link>
-                  <Link
-                    to="/cliente/servicios"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/cliente/servicios')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Mis servicios
-                  </Link>
+                  <NavbarLink to="/cliente/dashboard">Home</NavbarLink>
+                  <NavbarLink to="/cliente/direcciones">Mis direcciones</NavbarLink>
+                  <NavbarLink to="/cliente/servicios">Mis servicios</NavbarLink>
                 </>
               )}
 
               {user.esTecnico && (
                 <>
-                  <Link
-                    to="/tecnico/dashboard"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/tecnico/dashboard')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/tecnico/trabajos"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/tecnico/trabajos')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Mis servicios
-                  </Link>
-                  <Link
-                    to="/tecnico/perfil"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/tecnico/perfil')
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Mi perfil
-                  </Link>
+                  <NavbarLink to="/tecnico/dashboard">Home</NavbarLink>
+                  <NavbarLink to="/tecnico/trabajos">Mis servicios</NavbarLink>
+                  <NavbarLink to="/tecnico/perfil">Mi perfil</NavbarLink>
                 </>
               )}
             </div>

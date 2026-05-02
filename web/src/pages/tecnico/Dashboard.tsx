@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { tecnicosApi, serviciosApi } from '../../services/api';
-import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { Description } from '../../components/common/Description';
-import { PageHeader, Modal, NavigationButton } from '../../components/common';
+import { serviciosApi } from '../../services/api';
+import { MapPin, Loader } from 'lucide-react';
+import { PageHeader, Modal } from '../../components/common';
 
 interface Servicio {
   id: string;
@@ -23,7 +21,6 @@ export function TecnicoDashboard() {
   const [cargando, setCargando] = useState(true);
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargandoServicios, setCargandoServicios] = useState(true);
-  const [disponibilidad, setDisponibilidad] = useState(true);
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   useEffect(() => {
@@ -46,16 +43,6 @@ export function TecnicoDashboard() {
       console.error(err);
     } finally {
       setCargandoServicios(false);
-    }
-  };
-
-  const toggleDisponibilidad = async () => {
-    try {
-      await tecnicosApi.toggleDisponibilidad(!disponibilidad);
-      setDisponibilidad(!disponibilidad);
-      toast.success(!disponibilidad ? 'Te has puesto disponible' : 'Te has puesto en offline');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al actualizar disponibilidad');
     }
   };
 
@@ -91,50 +78,6 @@ export function TecnicoDashboard() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
       <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
-
-      <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Tu estado</h3>
-            <Description>Estás disponible para recibir solicitudes de servicios</Description>
-          </div>
-          <button
-            onClick={toggleDisponibilidad}
-            className={`px-4 py-2 rounded-md ${
-              disponibilidad
-                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-            }`}
-          >
-            <span className="flex items-center">
-              {disponibilidad ? (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" /> Disponible
-                </>
-              ) : (
-                <>
-                  <Loader className="h-4 w-4 mr-2" /> No Disponible
-                </>
-              )}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <Link
-          to="/tecnico/trabajos"
-          className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Mis trabajos</h3>
-              <Description>Historial de servicios realizados</Description>
-            </div>
-            <ArrowRight className="h-8 w-8 text-icon" />
-          </div>
-        </Link>
-      </div>
 
       <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -180,14 +123,7 @@ export function TecnicoDashboard() {
         isOpen={mostrarModalCancelado}
         onClose={() => window.location.reload()}
         title="Servicio cancelado"
-        dismissible={false}
-        footer={
-          <NavigationButton
-            onClick={() => window.location.reload()}
-            text="Regresar"
-            className="mb-0"
-          />
-        }
+        dismissible={true}
       >
         <p className="text-gray-600">El cliente ha cancelado el servicio</p>
       </Modal>

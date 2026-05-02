@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, NavigationButton, PageHeader, FieldRow, Modal } from '../../components/common';
+import { ImageGridWithViewer, PageHeader, FieldRow, Modal } from '../../components/common';
 import { CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -107,14 +107,7 @@ export function ServicioDetalle() {
       isOpen={mostrarModalCancelado}
       onClose={() => navigate('/tecnico/dashboard')}
       title="Servicio cancelado"
-      dismissible={false}
-      footer={
-        <NavigationButton
-          onClick={() => navigate('/tecnico/dashboard')}
-          text="Regresar"
-          className="mb-0"
-        />
-      }
+      dismissible={true}
     >
       <p className="text-gray-600">El cliente ha cancelado el servicio</p>
     </Modal>
@@ -123,10 +116,6 @@ export function ServicioDetalle() {
   if (!servicio) {
     return (
       <>
-        <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-          <p className="text-gray-600">Servicio no encontrado</p>
-          <NavigationButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
-        </div>
         {modalCancelado}
       </>
     );
