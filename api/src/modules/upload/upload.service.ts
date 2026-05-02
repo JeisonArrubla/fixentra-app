@@ -11,16 +11,16 @@ export class UploadService {
 
   async uploadImage(
     file: Express.Multer.File,
-    entityType: 'solicitud',
+    entityType: 'servicio',
     entityId?: string,
   ): Promise<{ url: string }> {
     const url = await this.storageProvider.upload(file);
     
-    if (entityId && entityType === 'solicitud') {
+    if (entityId && entityType === 'servicio') {
       await this.prisma.imagen.create({
         data: {
           url,
-          solicitudId: entityId,
+          servicioId: entityId,
         },
       });
     }
@@ -30,7 +30,7 @@ export class UploadService {
 
   async uploadImages(
     files: Express.Multer.File[],
-    entityType: 'solicitud',
+    entityType: 'servicio',
     entityId?: string,
   ): Promise<{ urls: string[] }> {
     const urls: string[] = [];
@@ -39,11 +39,11 @@ export class UploadService {
       const url = await this.storageProvider.upload(file);
       urls.push(url);
       
-      if (entityId && entityType === 'solicitud') {
+      if (entityId && entityType === 'servicio') {
         await this.prisma.imagen.create({
           data: {
             url,
-            solicitudId: entityId,
+            servicioId: entityId,
           },
         });
       }

@@ -137,22 +137,28 @@ export class ClientesService {
       throw new NotFoundException('Dirección no encontrada');
     }
 
-    const solicitudesActivas = await this.prisma.solicitudServicio.count({
+    const serviciosActivos = await this.prisma.servicio.count({
       where: {
         direccionId,
-        estado: { in: ['NUEVA', 'ASIGNADA'] },
+        estado: { in: ['NUEVO', 'ASIGNADO'] },
       },
     });
 
-    if (solicitudesActivas > 0) {
+    if (serviciosActivos > 0) {
       throw new BadRequestException(
-        'No puedes eliminar esta dirección porque tiene solicitudes activas',
+        'No puedes eliminar esta dirección porque tiene servicios activos',
       );
     }
 
-    await this.prisma.direccion.delete({
-      where: { id: direccionId },
-    });
+    try {
+      await this.prisma.direccion.delete({
+        where: { id: direccionId },
+      });
+    } catch {
+      throw new BadRequestException(
+        'No se pudo eliminar la dirección. Verifica que no tenga servicios asociados.',
+      );
+    }
   }
 
   async setDireccionPrincipal(

@@ -27,7 +27,7 @@ export class UploadController {
     @Body('entityType') entityType: string,
     @Body('entityId') entityId?: string,
   ) {
-    return this.uploadService.uploadImage(file, entityType as 'solicitud', entityId);
+    return this.uploadService.uploadImage(file, entityType as 'servicio', entityId);
   }
 
   @Post('images')
@@ -38,6 +38,6 @@ export class UploadController {
     @Body('entityType') entityType: string,
     @Body('entityId') entityId?: string,
   ) {
-    return this.uploadService.uploadImages(files, entityType as 'solicitud', entityId);
+    return this.uploadService.uploadImages(files, entityType as 'servicio', entityId);
   }
 }

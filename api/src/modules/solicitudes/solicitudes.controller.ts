@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { CreateSolicitudDto, UpdateEstadoSolicitudDto, CompletarSolicitudDto, CalificarSolicitudDto } from './dto/solicitudes.dto';
+import { CreateServicioDto, UpdateEstadoServicioDto, CompletarServicioDto, CalificarServicioDto } from './dto/solicitudes.dto';
 
 interface UserPayload {
   id: string;
@@ -23,8 +23,8 @@ interface UserPayload {
   esTecnico: boolean;
 }
 
-@ApiTags('solicitudes')
-@Controller('solicitudes')
+@ApiTags('servicios')
+@Controller('servicios')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class SolicitudesController {
@@ -32,17 +32,17 @@ export class SolicitudesController {
 
   @Post()
   @Roles('cliente')
-  @ApiOperation({ summary: 'Crear solicitud de servicio' })
+  @ApiOperation({ summary: 'Crear servicio' })
   async crearSolicitud(
     @CurrentUser() user: UserPayload,
-    @Body() dto: CreateSolicitudDto,
+    @Body() dto: CreateServicioDto,
   ) {
     return this.solicitudesService.crearSolicitud(user.id, dto);
   }
 
   @Get('disponibles')
   @Roles('tecnico')
-  @ApiOperation({ summary: 'Ver solicitudes disponibles (polling fallback)' })
+  @ApiOperation({ summary: 'Ver servicios disponibles (polling fallback)' })
   async getDisponibles(
     @Query('latitud') latitud: number,
     @Query('longitud') longitud: number,
@@ -57,13 +57,13 @@ export class SolicitudesController {
 
   @Get('todas')
   @Roles('tecnico')
-  @ApiOperation({ summary: 'Ver todas las solicitudes nuevas' })
+  @ApiOperation({ summary: 'Ver todos los servicios nuevos' })
   async getTodasNuevas() {
     return this.solicitudesService.getTodasNuevas();
   }
 
-  @Get('mis-solicitudes')
-  @ApiOperation({ summary: 'Ver mis solicitudes (como cliente o técnico)' })
+  @Get('mis-servicios')
+  @ApiOperation({ summary: 'Ver mis servicios (como cliente o técnico)' })
   async getMisSolicitudes(
     @CurrentUser() user: UserPayload,
     @Query('tipo') tipo: 'cliente' | 'tecnico',
@@ -73,14 +73,14 @@ export class SolicitudesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Ver solicitud por ID' })
+  @ApiOperation({ summary: 'Ver servicio por ID' })
   async getSolicitud(@Param('id') id: string) {
     return this.solicitudesService.getSolicitudById(id);
   }
 
   @Post(':id/aceptar')
   @Roles('tecnico')
-  @ApiOperation({ summary: 'Aceptar solicitud' })
+  @ApiOperation({ summary: 'Aceptar servicio' })
   async aceptarSolicitud(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,
@@ -90,7 +90,7 @@ export class SolicitudesController {
 
   @Patch(':id/terminar')
   @Roles('tecnico')
-  @ApiOperation({ summary: 'Marcar solicitud como terminada' })
+  @ApiOperation({ summary: 'Marcar servicio como terminado' })
   async terminateSolicitud(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,
@@ -104,7 +104,7 @@ export class SolicitudesController {
   async completarSolicitud(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,
-    @Body() dto: CompletarSolicitudDto,
+    @Body() dto: CompletarServicioDto,
   ) {
     return this.solicitudesService.completarSolicitud(id, user.id, dto);
   }
@@ -115,14 +115,14 @@ export class SolicitudesController {
   async calificarSolicitud(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,
-    @Body() dto: CalificarSolicitudDto,
+    @Body() dto: CalificarServicioDto,
   ) {
     return this.solicitudesService.calificarSolicitud(id, user.id, dto);
   }
 
   @Delete(':id')
   @Roles('cliente')
-  @ApiOperation({ summary: 'Eliminar solicitud (solo nuevas)' })
+  @ApiOperation({ summary: 'Eliminar servicio (solo nuevos)' })
   async eliminarSolicitud(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,

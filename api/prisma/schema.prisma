@@ -15,11 +15,11 @@ enum TipoDocumento {
   NIT
 }
 
-enum EstadoSolicitud {
-  NUEVA
-  ASIGNADA
-  TERMINADA
-  COMPLETADO
+enum EstadoServicio {
+  NUEVO
+  ASIGNADO
+  TERMINADO
+  CERRADO
 }
 
 enum EstadoPago {
@@ -42,8 +42,8 @@ model Usuario {
 
   clientePerfil       Cliente?
   tecnicoPerfil       Tecnico?
-  solicitudesCliente  SolicitudServicio[] @relation("SolicitudCliente")
-  solicitudesTecnico  SolicitudServicio[] @relation("SolicitudTecnico")
+  serviciosCliente    Servicio[] @relation("ServicioCliente")
+  serviciosTecnico    Servicio[] @relation("ServicioTecnico")
   refreshTokens       RefreshToken[]
 
   @@map("usuarios")
@@ -82,7 +82,7 @@ model Direccion {
   longitud     Float
   esPrincipal  Boolean @default(false) @map("es_principal")
 
-  solicitudes SolicitudServicio[]
+  servicios Servicio[]
 
   @@map("direcciones")
   @@index([clienteId])
@@ -102,17 +102,17 @@ model Tecnico {
   @@index([disponibilidad])
 }
 
-model SolicitudServicio {
+model Servicio {
   id                  String          @id @default(uuid())
   clienteId           String          @map("cliente_id")
-  cliente             Usuario         @relation("SolicitudCliente", fields: [clienteId], references: [id])
+  cliente             Usuario         @relation("ServicioCliente", fields: [clienteId], references: [id])
   direccionId         String          @map("direccion_id")
   direccion           Direccion       @relation(fields: [direccionId], references: [id])
   descripcion         String
-  estado              EstadoSolicitud @default(NUEVA)
+  estado              EstadoServicio  @default(NUEVO)
   detallesCompletado  String?         @map("detalles_completado")
   tecnicoId           String?         @map("tecnico_id")
-  tecnico             Usuario?        @relation("SolicitudTecnico", fields: [tecnicoId], references: [id])
+  tecnico             Usuario?        @relation("ServicioTecnico", fields: [tecnicoId], references: [id])
   pago                Pago?
   imagenes            Imagen[]
   calificacion         Int?
@@ -121,7 +121,7 @@ model SolicitudServicio {
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
 
-  @@map("solicitudes_servicios")
+  @@map("servicios")
   @@index([estado])
   @@index([clienteId])
   @@index([tecnicoId])
@@ -130,18 +130,18 @@ model SolicitudServicio {
 model Imagen {
   id          String                 @id @default(uuid())
   url         String
-  solicitudId String?                @map("solicitud_id")
-  solicitud   SolicitudServicio?     @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  servicioId  String?                @map("servicio_id")
+  servicio    Servicio?              @relation(fields: [servicioId], references: [id], onDelete: Cascade)
   createdAt   DateTime               @default(now()) @map("created_at")
 
   @@map("imagenes")
-  @@index([solicitudId])
+  @@index([servicioId])
 }
 
 model Pago {
   id          String             @id @default(uuid())
-  solicitudId String             @unique @map("solicitud_id")
-  solicitud   SolicitudServicio  @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  servicioId  String             @unique @map("servicio_id")
+  servicio    Servicio           @relation(fields: [servicioId], references: [id], onDelete: Cascade)
   monto       Float
   estado      EstadoPago         @default(PENDIENTE)
   metodoPago  String?            @map("metodo_pago")
@@ -149,6 +149,6 @@ model Pago {
   updatedAt   DateTime           @updatedAt @map("updated_at")
 
   @@map("pagos")
-  @@index([solicitudId])
+  @@index([servicioId])
   @@index([estado])
 }

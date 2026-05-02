@@ -74,18 +74,18 @@ export class TecnicosService {
       throw new NotFoundException('Perfil de técnico no encontrado');
     }
 
-    const estadisticas = await this.prisma.solicitudServicio.aggregate({
+    const estadisticas = await this.prisma.servicio.aggregate({
       where: {
         tecnicoId: usuarioId,
-        estado: 'COMPLETADO',
+        estado: 'CERRADO',
         calificacion: { not: null },
       },
       _avg: { calificacion: true },
       _count: { calificacion: true },
     });
 
-    const totalServiciosCompletados = await this.prisma.solicitudServicio.count({
-      where: { tecnicoId: usuarioId, estado: 'COMPLETADO' },
+    const totalServiciosCompletados = await this.prisma.servicio.count({
+      where: { tecnicoId: usuarioId, estado: 'CERRADO' },
     });
 
     return {
