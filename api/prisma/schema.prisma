@@ -81,11 +81,13 @@ model Direccion {
   latitud      Float
   longitud     Float
   esPrincipal  Boolean @default(false) @map("es_principal")
+  eliminadoEn  DateTime? @map("eliminado_en")
 
   servicios Servicio[]
 
   @@map("direcciones")
   @@index([clienteId])
+  @@index([eliminadoEn])
 }
 
 model Tecnico {
