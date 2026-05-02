@@ -1,30 +1,30 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface SolicitudDraft {
+interface ServicioDraft {
   direccionId: string;
   descripcion: string;
   imagenes: string[];
 }
 
-interface SolicitudContextType {
-  draft: SolicitudDraft;
-  setDraft: (draft: SolicitudDraft) => void;
+interface ServicioContextType {
+  draft: ServicioDraft;
+  setDraft: (draft: ServicioDraft) => void;
   clearDraft: () => void;
   hasDraft: boolean;
 }
 
-const STORAGE_KEY = 'fixentra_solicitud_draft';
+const STORAGE_KEY = 'fixentra_servicio_draft';
 
-const initialDraft: SolicitudDraft = {
+const initialDraft: ServicioDraft = {
   direccionId: '',
   descripcion: '',
   imagenes: [],
 };
 
-const SolicitudContext = createContext<SolicitudContextType | undefined>(undefined);
+const ServicioContext = createContext<ServicioContextType | undefined>(undefined);
 
-export function SolicitudProvider({ children }: { children: ReactNode }) {
-  const [draft, setDraftState] = useState<SolicitudDraft>(() => {
+export function ServicioProvider({ children }: { children: ReactNode }) {
+  const [draft, setDraftState] = useState<ServicioDraft>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -44,7 +44,7 @@ export function SolicitudProvider({ children }: { children: ReactNode }) {
     }
   }, [draft]);
 
-  const setDraft = (newDraft: SolicitudDraft) => {
+  const setDraft = (newDraft: ServicioDraft) => {
     setDraftState(newDraft);
   };
 
@@ -58,16 +58,16 @@ export function SolicitudProvider({ children }: { children: ReactNode }) {
   const hasDraft = draft.direccionId !== '' || draft.descripcion !== '' || draft.imagenes.length > 0;
 
   return (
-    <SolicitudContext.Provider value={{ draft, setDraft, clearDraft, hasDraft }}>
+    <ServicioContext.Provider value={{ draft, setDraft, clearDraft, hasDraft }}>
       {children}
-    </SolicitudContext.Provider>
+    </ServicioContext.Provider>
   );
 }
 
-export function useSolicitud() {
-  const context = useContext(SolicitudContext);
+export function useServicio() {
+  const context = useContext(ServicioContext);
   if (!context) {
-    throw new Error('useSolicitud must be used within SolicitudProvider');
+    throw new Error('useServicio must be used within ServicioProvider');
   }
   return context;
 }

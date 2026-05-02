@@ -179,31 +179,31 @@ export const tecnicosApi = {
     api.patch('/tecnicos/disponibilidad', { disponibilidad }),
 };
 
-export const solicitudesApi = {
+export const serviciosApi = {
   crear: (data: { direccionId: string; descripcion: string; imagenes?: string[] }) =>
-    api.post('/solicitudes', data),
+    api.post('/servicios', data),
 
   getDisponibles: (latitud: number, longitud: number, radioKm?: number) =>
-    api.get('/solicitudes/disponibles', { params: { latitud, longitud, radioKm } }),
+    api.get('/servicios/disponibles', { params: { latitud, longitud, radioKm } }),
 
-  getTodasNuevas: () => api.get('/solicitudes/todas'),
+  getTodasNuevas: () => api.get('/servicios/todas'),
 
-  getMisSolicitudes: (tipo: 'cliente' | 'tecnico') =>
-    api.get('/solicitudes/mis-solicitudes', { params: { tipo } }),
+  getMisServicios: (tipo: 'cliente' | 'tecnico') =>
+    api.get('/servicios/mis-servicios', { params: { tipo } }),
 
-  getById: (id: string) => api.get(`/solicitudes/${id}`),
+  getById: (id: string) => api.get(`/servicios/${id}`),
 
-  aceptar: (id: string) => api.post(`/solicitudes/${id}/aceptar`),
+  aceptar: (id: string) => api.post(`/servicios/${id}/aceptar`),
 
   completar: (id: string, data: { detalles: string; imagenes: string[] }) =>
-    api.patch(`/solicitudes/${id}/completar`, data),
+    api.patch(`/servicios/${id}/completar`, data),
 
   calificar: (id: string, data: { calificacion: number; comentario?: string }) =>
-    api.patch(`/solicitudes/${id}/calificar`, data),
+    api.patch(`/servicios/${id}/calificar`, data),
 
-  terminar: (id: string) => api.patch(`/solicitudes/${id}/terminar`),
+  terminar: (id: string) => api.patch(`/servicios/${id}/terminar`),
 
-  eliminar: (id: string) => api.delete(`/solicitudes/${id}`),
+  eliminar: (id: string) => api.delete(`/servicios/${id}`),
 };
 
 export default api;

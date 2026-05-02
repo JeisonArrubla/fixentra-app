@@ -20,9 +20,9 @@ const clienteItems: NavItem[] = [
     label: 'Direcciones',
   },
   {
-    to: '/cliente/solicitudes',
+    to: '/cliente/servicios',
     icon: <ClipboardList size={24} />,
-    label: 'Solicitudes',
+    label: 'Servicios',
   },
 ];
 

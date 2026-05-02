@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { solicitudesApi } from '../../services/api';
+import { serviciosApi } from '../../services/api';
 import { MapPin, Clock, Loader } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 
-interface Solicitud {
+interface Servicio {
   id: string;
   descripcion: string;
-  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA';
+  estado: 'NUEVO' | 'ASIGNADO' | 'TERMINADO' | 'CERRADO';
   direccion: { direccion: string; latitud: number; longitud: number };
   cliente: { nombre: string; apellido: string; correo: string };
   imagenes?: { id: string; url: string }[];
@@ -15,7 +15,7 @@ interface Solicitud {
 }
 
 export function TecnicoMisTrabajos() {
-  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ export function TecnicoMisTrabajos() {
 
   const cargarDatos = async () => {
     try {
-      const { data } = await solicitudesApi.getMisSolicitudes('tecnico');
-      setSolicitudes(data);
+      const { data } = await serviciosApi.getMisServicios('tecnico');
+      setServicios(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -35,12 +35,14 @@ export function TecnicoMisTrabajos() {
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
-      case 'NUEVA':
+      case 'NUEVO':
         return 'bg-blue-100 text-blue-800';
-      case 'ASIGNADA':
+      case 'ASIGNADO':
         return 'bg-yellow-100 text-yellow-800';
-      case 'TERMINADA':
+      case 'TERMINADO':
         return 'bg-green-100 text-green-800';
+      case 'CERRADO':
+        return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -48,12 +50,14 @@ export function TecnicoMisTrabajos() {
 
   const getEstadoLabel = (estado: string) => {
     switch (estado) {
-      case 'NUEVA':
-        return 'Nueva';
-      case 'ASIGNADA':
+      case 'NUEVO':
+        return 'Nuevo';
+      case 'ASIGNADO':
         return 'En proceso';
-      case 'TERMINADA':
-        return 'Terminada';
+      case 'TERMINADO':
+        return 'Terminado';
+      case 'CERRADO':
+        return 'Cerrado';
       default:
         return estado;
     }
@@ -71,20 +75,20 @@ export function TecnicoMisTrabajos() {
     <div className="max-w-4xl mx-auto py-8 px-4">
       <PageHeader title="Mis servicios" />
 
-      {solicitudes.length === 0 ? (
+      {servicios.length === 0 ? (
         <div className="text-center py-12 text-gray-600">
           <Clock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
           <p>No tienes trabajos asignados</p>
           <p className="text-sm">
-            Acepta solicitudes desde el dashboard de técnico
+            Acepta servicios desde el dashboard de técnico
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {solicitudes.map((sol) => (
+          {servicios.map((serv) => (
             <Link
-              key={sol.id}
-              to={`/tecnico/solicitud/${sol.id}`}
+              key={serv.id}
+              to={`/tecnico/servicio/${serv.id}`}
               className="block bg-white p-4 rounded-lg shadow-sm border hover:border-gray-300 hover:shadow-md transition-all"
             >
               <div className="flex justify-between items-start">
@@ -92,25 +96,25 @@ export function TecnicoMisTrabajos() {
                   <div className="flex items-center space-x-2 mb-2">
                     <span
                       className={`inline-flex items-center px-2 py-1 text-xs rounded ${getEstadoColor(
-                        sol.estado
+                        serv.estado
                       )}`}
                     >
-                      {getEstadoLabel(sol.estado)}
+                      {getEstadoLabel(serv.estado)}
                     </span>
                   </div>
-                  <p className="text-gray-900 font-medium">{sol.descripcion}</p>
+                  <p className="text-gray-900 font-medium">{serv.descripcion}</p>
                   
                   <div className="flex items-center text-sm text-gray-500 mt-2">
                     <MapPin className="h-4 w-4 mr-1" />
-                    {sol.direccion.direccion}
+                    {serv.direccion.direccion}
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
-                    Cliente: {sol.cliente.nombre} {sol.cliente.apellido}
+                    Cliente: {serv.cliente.nombre} {serv.cliente.apellido}
                   </p>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="text-xs text-gray-500">
-                    {new Date(sol.createdAt).toLocaleDateString()}
+                    {new Date(serv.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { solicitudesApi } from '../../services/api';
-import { NavigationButton, PageHeader } from '../../components/common';
+import { serviciosApi } from '../../services/api';
+import { NavigationButton, PageHeader, FieldRow } from '../../components/common';
 import { ImageUpload } from '../../components/common/ImageUpload';
-import { MapPin, CheckCircle, Loader } from 'lucide-react';
+import { CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-interface SolicitudDetalle {
+interface ServicioDetalle {
   id: string;
   descripcion: string;
-  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA' | 'COMPLETADO';
+  estado: 'NUEVO' | 'ASIGNADO' | 'TERMINADO' | 'CERRADO';
   direccion: {
     direccion: string;
     latitud: number;
@@ -24,20 +24,20 @@ interface SolicitudDetalle {
 export function TerminarServicio() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [solicitud, setSolicitud] = useState<SolicitudDetalle | null>(null);
+  const [servicio, setServicio] = useState<ServicioDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [detalles, setDetalles] = useState('');
   const [imagenes, setImagenes] = useState<string[]>([]);
 
   useEffect(() => {
-    cargarSolicitud();
+    cargarServicio();
   }, [id]);
 
-  const cargarSolicitud = async () => {
+  const cargarServicio = async () => {
     try {
-      const { data } = await solicitudesApi.getById(id!);
-      setSolicitud(data);
+      const { data } = await serviciosApi.getById(id!);
+      setServicio(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -61,7 +61,7 @@ export function TerminarServicio() {
 
     setGuardando(true);
     try {
-      await solicitudesApi.completar(id!, {
+      await serviciosApi.completar(id!, {
         detalles,
         imagenes,
       });
@@ -82,10 +82,10 @@ export function TerminarServicio() {
     );
   }
 
-  if (!solicitud) {
+  if (!servicio) {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-        <p className="text-gray-600">Solicitud no encontrada</p>
+        <p className="text-gray-600">Servicio no encontrado</p>
         <NavigationButton to="/tecnico/dashboard" text="Volver" className="mt-4" />
       </div>
     );
@@ -94,19 +94,15 @@ export function TerminarServicio() {
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <PageHeader title="Completar servicio" />
-      <NavigationButton to={`/tecnico/solicitud/${id}`} text="Volver al detalle" />
+      <NavigationButton to={`/tecnico/servicio/${id}`} text="Volver al detalle" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
 
         <div className="bg-gray-50 p-4 rounded-md mb-6">
-          <h2 className="text-sm font-medium text-gray-500 mb-1">
-            Servicio solicitado
-          </h2>
-          <p className="text-gray-900">{solicitud.descripcion}</p>
-          <div className="flex items-center text-sm text-gray-500 mt-2">
-            <MapPin className="h-4 w-4 mr-1" />
-            {solicitud.direccion.direccion}
-          </div>
+          <FieldRow label="Servicio solicitado">
+            <p className="text-gray-900">{servicio.descripcion}</p>
+            <p className="text-sm text-gray-500">{servicio.direccion.direccion}</p>
+          </FieldRow>
         </div>
 
         <div className="space-y-6">
@@ -146,7 +142,7 @@ export function TerminarServicio() {
 
         <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
           <Link
-            to={`/tecnico/solicitud/${id}`}
+            to={`/tecnico/servicio/${id}`}
             className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             Volver

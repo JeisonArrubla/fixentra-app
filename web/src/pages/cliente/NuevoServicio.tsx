@@ -6,7 +6,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { MapPin, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { SubmitButton } from '../../components/common/SubmitButton';
-import { useSolicitud } from '../../contexts/SolicitudContext';
+import { useServicio } from '../../contexts/ServicioContext';
 import toast from 'react-hot-toast';
 
 interface Direccion {
@@ -14,9 +14,9 @@ interface Direccion {
   direccion: string;
 }
 
-export function NuevaSolicitud() {
+export function NuevoServicio() {
   const navigate = useNavigate();
-  const { draft, setDraft } = useSolicitud();
+  const { draft, setDraft } = useServicio();
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [cargando, setCargando] = useState(true);
   const [formData, setFormData] = useState(draft);
@@ -45,7 +45,7 @@ export function NuevaSolicitud() {
     }
 
     setDraft({ ...formData, imagenes });
-    navigate('/cliente/solicitudes/nueva/confirmar');
+    navigate('/cliente/servicios/nuevo/confirmar');
   };
 
   if (cargando) {
@@ -69,8 +69,8 @@ export function NuevaSolicitud() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <PageHeader title="Crear nueva solicitud" />
-      <NavigationButton to="/cliente/solicitudes" text="Cancelar" />
+      <PageHeader title="Crear nuevo servicio" />
+      <NavigationButton to="/cliente/servicios" text="Cancelar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="space-y-6">

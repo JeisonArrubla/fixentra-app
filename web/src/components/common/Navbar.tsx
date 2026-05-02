@@ -65,14 +65,14 @@ export function Navbar() {
                     Mis direcciones
                   </Link>
                   <Link
-                    to="/cliente/solicitudes"
+                    to="/cliente/servicios"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      isActive('/cliente/solicitudes')
+                      isActive('/cliente/servicios')
                         ? 'bg-gray-100 text-gray-800'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    Mis solicitudes
+                    Mis servicios
                   </Link>
                 </>
               )}

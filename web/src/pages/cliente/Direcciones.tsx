@@ -82,7 +82,14 @@ export function ClienteDirecciones() {
       setDireccionAEliminar(null);
       cargarDirecciones();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al eliminar');
+      const mensaje = err.response?.data?.message;
+      if (typeof mensaje === 'string') {
+        toast.error(mensaje);
+      } else if (Array.isArray(mensaje)) {
+        toast.error(mensaje.join(', '));
+      } else {
+        toast.error('No se pudo eliminar la dirección. Intenta de nuevo más tarde.');
+      }
     }
   };
 

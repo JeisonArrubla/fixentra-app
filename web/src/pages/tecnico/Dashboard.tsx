@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { tecnicosApi, solicitudesApi } from '../../services/api';
+import { tecnicosApi, serviciosApi } from '../../services/api';
 import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Description } from '../../components/common/Description';
 import { PageHeader } from '../../components/common/PageHeader';
 
-interface Solicitud {
+interface Servicio {
   id: string;
   descripcion: string;
   estado: string;
@@ -20,8 +20,8 @@ interface Solicitud {
 export function TecnicoDashboard() {
   const { user } = useAuth();
   const [cargando, setCargando] = useState(true);
-  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
-  const [cargandoSolicitudes, setCargandoSolicitudes] = useState(true);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [cargandoServicios, setCargandoServicios] = useState(true);
   const [disponibilidad, setDisponibilidad] = useState(true);
 
   useEffect(() => {
@@ -32,18 +32,18 @@ export function TecnicoDashboard() {
 
   useEffect(() => {
     if (user?.esTecnico) {
-      cargarSolicitudes();
+      cargarServicios();
     }
   }, [user]);
 
-  const cargarSolicitudes = async () => {
+  const cargarServicios = async () => {
     try {
-      const { data } = await solicitudesApi.getTodasNuevas();
-      setSolicitudes(data);
+      const { data } = await serviciosApi.getTodasNuevas();
+      setServicios(data);
     } catch (err) {
       console.error(err);
     } finally {
-      setCargandoSolicitudes(false);
+      setCargandoServicios(false);
     }
   };
 
@@ -128,32 +128,32 @@ export function TecnicoDashboard() {
           Nuevos servicios
         </h3>
         
-        {cargandoSolicitudes ? (
+        {cargandoServicios ? (
           <div className="flex items-center justify-center py-8">
             <Loader className="h-6 w-6 animate-spin text-icon" />
           </div>
-        ) : solicitudes.length === 0 ? (
-          <p className="text-gray-600 py-4">No hay solicitudes nuevas</p>
+        ) : servicios.length === 0 ? (
+          <p className="text-gray-600 py-4">No hay servicios nuevos</p>
         ) : (
           <div className="space-y-3">
-            {solicitudes.map((sol) => (
+            {servicios.map((serv) => (
               <Link
-                key={sol.id}
-                to={`/tecnico/solicitud/${sol.id}`}
+                key={serv.id}
+                to={`/tecnico/servicio/${serv.id}`}
                 className="block bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <p className="font-semibold text-green-900">{sol.descripcion}</p>
+                    <p className="font-semibold text-green-900">{serv.descripcion}</p>
                     <div className="flex items-center text-sm text-green-700 mt-1">
                       <MapPin className="h-3 w-3 mr-1" />
-                      {sol.direccion.direccion}
+                      {serv.direccion.direccion}
                     </div>
                     <p className="text-sm text-green-600 mt-1">
-                      Cliente: {sol.cliente.nombre} {sol.cliente.apellido}
+                      Cliente: {serv.cliente.nombre} {serv.cliente.apellido}
                     </p>
                     <p className="text-xs text-green-500 mt-1">
-                      {new Date(sol.createdAt).toLocaleString()}
+                      {new Date(serv.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>

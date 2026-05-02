@@ -3,7 +3,7 @@ import { tecnicosApi } from '../../services/api';
 import { TecnicoStats } from '../../components/tecnico/TecnicoStats';
 import { MapPin, User, Loader, ToggleLeft, ToggleRight } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { PageHeader } from '../../components/common/PageHeader';
+import { PageHeader, FieldRow } from '../../components/common';
 
 interface TecnicoPerfil {
   id: string;
@@ -94,26 +94,10 @@ export function TecnicoPerfil() {
             Información Personal
           </h2>
           <div className="space-y-3">
-            <div>
-              <p className="text-sm text-gray-500">Nombre completo</p>
-              <p className="text-gray-900">
-                {perfil.usuario.nombre} {perfil.usuario.apellido}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Correo electrónico</p>
-              <p className="text-gray-900">{perfil.usuario.correo}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Celular</p>
-              <p className="text-gray-900">{perfil.usuario.celular}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Documento</p>
-              <p className="text-gray-900">
-                {perfil.usuario.tipoDocumento}: {perfil.usuario.numDocumento}
-              </p>
-            </div>
+            <FieldRow label="Nombre completo" value={`${perfil.usuario.nombre} ${perfil.usuario.apellido}`} />
+            <FieldRow label="Correo electrónico" value={perfil.usuario.correo} />
+            <FieldRow label="Celular" value={perfil.usuario.celular} />
+            <FieldRow label="Documento" value={`${perfil.usuario.tipoDocumento}: ${perfil.usuario.numDocumento}`} />
           </div>
         </section>
 
@@ -124,41 +108,39 @@ export function TecnicoPerfil() {
             Información de Técnico
           </h2>
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Estado de disponibilidad</p>
-              </div>
-              <button
-                onClick={toggleDisponibilidad}
-                disabled={actualizando}
-                className={`px-4 py-2 rounded-md flex items-center ${
-                  perfil.disponibilidad
-                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                } disabled:opacity-50`}
-              >
-                {actualizando ? (
-                  <Loader className="h-4 w-4 animate-spin mr-2" />
-                ) : perfil.disponibilidad ? (
-                  <>
-                    <ToggleRight className="h-4 w-4 mr-2" />
-                    Disponible
-                  </>
-                ) : (
-                  <>
-                    <ToggleLeft className="h-4 w-4 mr-2" />
-                    No Disponible
-                  </>
-                )}
-              </button>
-            </div>
+            <FieldRow
+              label="Estado de disponibilidad"
+              action={
+                <button
+                  onClick={toggleDisponibilidad}
+                  disabled={actualizando}
+                  className={`px-4 py-2 rounded-md flex items-center ${
+                    perfil.disponibilidad
+                      ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  } disabled:opacity-50`}
+                >
+                  {actualizando ? (
+                    <Loader className="h-4 w-4 animate-spin mr-2" />
+                  ) : perfil.disponibilidad ? (
+                    <>
+                      <ToggleRight className="h-4 w-4 mr-2" />
+                      Disponible
+                    </>
+                  ) : (
+                    <>
+                      <ToggleLeft className="h-4 w-4 mr-2" />
+                      No Disponible
+                    </>
+                  )}
+                </button>
+              }
+            />
             {perfil.latitud && perfil.longitud && (
-              <div>
-                <p className="text-sm text-gray-500">Ubicación actual</p>
-                <p className="text-gray-900 text-sm">
-                  {perfil.latitud.toFixed(4)}, {perfil.longitud.toFixed(4)}
-                </p>
-              </div>
+              <FieldRow
+                label="Ubicación actual"
+                value={`${perfil.latitud.toFixed(4)}, ${perfil.longitud.toFixed(4)}`}
+              />
             )}
           </div>
         </section>

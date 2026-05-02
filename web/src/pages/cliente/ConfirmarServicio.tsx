@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSolicitud } from '../../contexts/SolicitudContext';
-import { solicitudesApi, clientesApi } from '../../services/api';
-import { NavigationButton, SubmitButton, CancelButton, PageHeader } from '../../components/common';
-import { MapPin } from 'lucide-react';
+import { useServicio } from '../../contexts/ServicioContext';
+import { serviciosApi, clientesApi } from '../../services/api';
+import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -11,9 +10,9 @@ interface DireccionInfo {
   direccion: string;
 }
 
-export function ConfirmarSolicitud() {
+export function ConfirmarServicio() {
   const navigate = useNavigate();
-  const { draft, clearDraft } = useSolicitud();
+  const { draft, clearDraft } = useServicio();
   const [direccion, setDireccion] = useState<DireccionInfo | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [contadorActivo, setContadorActivo] = useState(false);
@@ -36,7 +35,7 @@ export function ConfirmarSolicitud() {
         setSegundosRestantes(segundosRestantes - 1);
       }, 1000);
     } else if (contadorActivo && segundosRestantes === 0) {
-      enviarSolicitud();
+      enviarServicio();
     }
 
     return () => {
@@ -47,8 +46,8 @@ export function ConfirmarSolicitud() {
   if (!draft.direccionId || !draft.descripcion) {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 text-center">
-        <p className="text-gray-600 mb-4">No hay datos de solicitud para confirmar.</p>
-        <NavigationButton to="/cliente/solicitudes" text="Volver a solicitudes" />
+        <p className="text-gray-600 mb-4">No hay datos de servicio para confirmar.</p>
+        <NavigationButton to="/cliente/servicios" text="Volver a servicios" />
       </div>
     );
   }
@@ -63,28 +62,28 @@ export function ConfirmarSolicitud() {
     setSegundosRestantes(5);
   };
 
-  const enviarSolicitud = async () => {
+  const enviarServicio = async () => {
     setContadorActivo(false);
     setEnviando(true);
     try {
-      await solicitudesApi.crear({
+      await serviciosApi.crear({
         direccionId: draft.direccionId,
         descripcion: draft.descripcion,
         imagenes: draft.imagenes,
       });
       clearDraft();
-      toast.success('Solicitud enviada correctamente');
-      navigate('/cliente/solicitudes');
+      toast.success('Servicio enviado correctamente');
+      navigate('/cliente/servicios');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al enviar solicitud');
+      toast.error(err.response?.data?.message || 'Error al enviar servicio');
       setEnviando(false);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <PageHeader title="Confirma los datos de tu solicitud" />
-      <NavigationButton to="/cliente/solicitudes/nueva" text="Regresar" />
+      <PageHeader title="Confirma los datos de tu servicio" />
+      <NavigationButton to="/cliente/servicios/nuevo" text="Regresar" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6">
 
@@ -94,31 +93,20 @@ export function ConfirmarSolicitud() {
           </h2>
 
           <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Dirección</h3>
-              <div className="flex items-start mt-1">
-                <MapPin className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
-                <p className="text-gray-900">
-                  {direccion?.direccion || 'Cargando...'}
-                </p>
-              </div>
-            </div>
+            <FieldRow
+              label="Dirección"
+              value={direccion?.direccion || 'Cargando...'}
+            />
 
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">
-                Descripción del servicio
-              </h3>
-              <p className="text-gray-900 mt-1 whitespace-pre-wrap">
-                {draft.descripcion}
-              </p>
-            </div>
+            <FieldRow
+              label="Descripción del servicio"
+              value={draft.descripcion}
+              valueClassName="whitespace-pre-wrap"
+            />
 
             {draft.imagenes.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">
-                  Imágenes Adjuntas
-                </h3>
-                <div className="grid grid-cols-2 gap-2 mt-2">
+              <FieldRow label="Imágenes Adjuntas">
+                <div className="grid grid-cols-2 gap-2">
                   {draft.imagenes.map((img, idx) => (
                     <img
                       key={idx}
@@ -128,7 +116,7 @@ export function ConfirmarSolicitud() {
                     />
                   ))}
                 </div>
-              </div>
+              </FieldRow>
             )}
           </div>
         </div>
@@ -141,7 +129,7 @@ export function ConfirmarSolicitud() {
             />
           ) : (
             <SubmitButton
-              text="Enviar Solicitud"
+              text="Enviar Servicio"
               onClick={iniciarConteo}
               loading={enviando}
             />

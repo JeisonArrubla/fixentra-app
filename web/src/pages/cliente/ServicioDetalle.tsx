@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { solicitudesApi } from '../../services/api';
+import { serviciosApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
 import { StarRating } from '../../components/common/StarRating';
 import { ImageWithViewer } from '../../components/common/ImageWithViewer';
-import { PageHeader } from '../../components/common/PageHeader';
-import { MapPin, User, Calendar, Star, Loader } from 'lucide-react';
+import { PageHeader, FieldRow } from '../../components/common';
+import { Star, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-interface SolicitudDetalle {
+interface ServicioDetalle {
   id: string;
   descripcion: string;
-  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA' | 'COMPLETADO';
+  estado: 'NUEVO' | 'ASIGNADO' | 'TERMINADO' | 'CERRADO';
   direccion: {
     direccion: string;
     latitud: number;
@@ -27,22 +27,22 @@ interface SolicitudDetalle {
   createdAt: string;
 }
 
-export function SolicitudDetalle() {
+export function ServicioDetalle() {
   const { id } = useParams<{ id: string }>();
-  const [solicitud, setSolicitud] = useState<SolicitudDetalle | null>(null);
+  const [servicio, setServicio] = useState<ServicioDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
   const [calificando, setCalificando] = useState(false);
   const [rating, setRating] = useState(0);
   const [comentario, setComentario] = useState('');
 
   useEffect(() => {
-    cargarSolicitud();
+    cargarServicio();
   }, [id]);
 
-  const cargarSolicitud = async () => {
+  const cargarServicio = async () => {
     try {
-      const { data } = await solicitudesApi.getById(id!);
-      setSolicitud(data);
+      const { data } = await serviciosApi.getById(id!);
+      setServicio(data);
       if (data.calificacion) {
         setRating(data.calificacion);
       }
@@ -61,12 +61,12 @@ export function SolicitudDetalle() {
 
     setCalificando(true);
     try {
-      await solicitudesApi.calificar(id!, {
+      await serviciosApi.calificar(id!, {
         calificacion: rating,
         comentario: comentario.trim() || undefined,
       });
       toast.success('¡Gracias por calificar!');
-      cargarSolicitud();
+      cargarServicio();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al calificar');
     } finally {
@@ -76,10 +76,10 @@ export function SolicitudDetalle() {
 
   const getEstadoBadge = (estado: string) => {
     const estados: Record<string, { text: string; class: string }> = {
-      'NUEVA': { text: 'Nueva', class: 'bg-blue-100 text-blue-800' },
-      'ASIGNADA': { text: 'Asignada', class: 'bg-yellow-100 text-yellow-800' },
-      'TERMINADA': { text: 'Terminada', class: 'bg-green-100 text-green-800' },
-      'COMPLETADO': { text: 'Completado', class: 'bg-green-100 text-green-900' },
+      'NUEVO': { text: 'Nuevo', class: 'bg-blue-100 text-blue-800' },
+      'ASIGNADO': { text: 'Asignado', class: 'bg-yellow-100 text-yellow-800' },
+      'TERMINADO': { text: 'Terminado', class: 'bg-green-100 text-green-800' },
+      'CERRADO': { text: 'Cerrado', class: 'bg-green-100 text-green-900' },
     };
     const info = estados[estado] || { text: estado, class: 'bg-gray-100 text-gray-800' };
     return (
@@ -97,88 +97,77 @@ export function SolicitudDetalle() {
     );
   }
 
-  if (!solicitud) {
+  if (!servicio) {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center">
-        <p className="text-gray-600">Solicitud no encontrada</p>
-        <NavigationButton to="/cliente/solicitudes" text="Volver" className="mt-4" />
+        <p className="text-gray-600">Servicio no encontrado</p>
+        <NavigationButton to="/cliente/servicios" text="Volver" className="mt-4" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <NavigationButton to="/cliente/solicitudes" text="Volver a mis solicitudes" />
+      <NavigationButton to="/cliente/servicios" text="Volver a mis servicios" />
 
       <div className="bg-white rounded-lg shadow-sm border p-6 mt-4">
         <PageHeader
           title="Detalles del servicio"
-          badge={getEstadoBadge(solicitud.estado)}
+          badge={getEstadoBadge(servicio.estado)}
         />
 
         <div className="space-y-4">
-          <div>
-            <h2 className="text-sm font-medium text-gray-500 mb-1">Servicio solicitado</h2>
-            <p className="text-gray-900">{solicitud.descripcion}</p>
-            <div className="flex items-center text-sm text-gray-500 mt-2">
-              <Calendar className="h-4 w-4 mr-1" />
-              {new Date(solicitud.createdAt).toLocaleString()}
-            </div>
-          </div>
+          <FieldRow label="Servicio solicitado">
+            <p className="text-gray-900">{servicio.descripcion}</p>
+            <p className="text-sm text-gray-500">{new Date(servicio.createdAt).toLocaleString()}</p>
+          </FieldRow>
 
-          <div>
-            <h2 className="text-sm font-medium text-gray-500 mb-1">Ubicación</h2>
-            <div className="flex items-center text-gray-700">
-              <MapPin className="h-4 w-4 mr-1 text-gray-400" />
-              {solicitud.direccion.direccion}
-            </div>
-          </div>
+          <FieldRow
+            label="Ubicación"
+            value={servicio.direccion.direccion}
+          />
 
-          {solicitud.tecnico && (
-            <div>
-              <h2 className="text-sm font-medium text-gray-500 mb-1">Técnico asignado</h2>
-              <div className="flex items-center text-gray-700">
-                <User className="h-4 w-4 mr-1 text-gray-400" />
-                {solicitud.tecnico.nombre} {solicitud.tecnico.apellido}
-              </div>
-            </div>
+          {servicio.tecnico && (
+            <FieldRow
+              label="Técnico asignado"
+              value={`${servicio.tecnico.nombre} ${servicio.tecnico.apellido}`}
+            />
           )}
 
-          {solicitud.detallesCompletado && (
+          {servicio.detallesCompletado && (
             <div className="bg-gray-50 p-4 rounded-md">
               <h2 className="text-sm font-medium text-gray-700 mb-2">Detalles del servicio realizado</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{solicitud.detallesCompletado}</p>
+              <p className="text-gray-700 whitespace-pre-wrap">{servicio.detallesCompletado}</p>
             </div>
           )}
 
-          {solicitud.imagenes && solicitud.imagenes.length > 0 && (
-            <div>
-              <h2 className="text-sm font-medium text-gray-700 mb-2">Fotos del resultado</h2>
+          {servicio.imagenes && servicio.imagenes.length > 0 && (
+            <FieldRow label="Fotos del resultado">
               <div className="grid grid-cols-2 gap-2">
-                {solicitud.imagenes.map((img) => (
+                {servicio.imagenes.map((img) => (
                   <ImageWithViewer key={img.id} src={img.url} alt="Foto del servicio" />
                 ))}
               </div>
-            </div>
+            </FieldRow>
           )}
 
-          {(solicitud.estado === 'COMPLETADO' || solicitud.estado === 'TERMINADA') && (
+          {(servicio.estado === 'CERRADO' || servicio.estado === 'TERMINADO') && (
             <div className="border-t pt-6 mt-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Calificación del servicio</h2>
 
-              {solicitud.calificacion ? (
+              {servicio.calificacion ? (
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <StarRating value={solicitud.calificacion} readonly size={28} />
-                    <span className="text-gray-700 font-medium">{solicitud.calificacion}/5</span>
+                    <StarRating value={servicio.calificacion} readonly size={28} />
+                    <span className="text-gray-700 font-medium">{servicio.calificacion}/5</span>
                   </div>
-                  {solicitud.comentarioCalificacion && (
+                  {servicio.comentarioCalificacion && (
                     <p className="text-gray-600 text-sm italic">
-                      "{solicitud.comentarioCalificacion}"
+                      "{servicio.comentarioCalificacion}"
                     </p>
                   )}
                   <p className="text-xs text-gray-500">
-                    Calificado el {new Date(solicitud.fechaCalificacion!).toLocaleString()}
+                    Calificado el {new Date(servicio.fechaCalificacion!).toLocaleString()}
                   </p>
                 </div>
               ) : (

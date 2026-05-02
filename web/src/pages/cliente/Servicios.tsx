@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { solicitudesApi } from '../../services/api';
+import { serviciosApi } from '../../services/api';
 import { MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { PageHeader } from '../../components/common/PageHeader';
 import toast from 'react-hot-toast';
 
-interface Solicitud {
+interface Servicio {
   id: string;
   descripcion: string;
-  estado: 'NUEVA' | 'ASIGNADA' | 'TERMINADA' | 'COMPLETADO';
+  estado: 'NUEVO' | 'ASIGNADO' | 'TERMINADO' | 'CERRADO';
   direccion: { direccion: string; latitud: number; longitud: number };
   tecnico?: { nombre: string; apellido: string };
   cliente?: { nombre: string; apellido: string };
@@ -18,12 +18,12 @@ interface Solicitud {
   calificacion?: number | null;
 }
 
-export function ClienteSolicitudes() {
+export function ClienteServicios() {
   const navigate = useNavigate();
-  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
-  const [solicitudAEliminar, setSolicitudAEliminar] = useState<Solicitud | null>(null);
+  const [servicioAEliminar, setServicioAEliminar] = useState<Servicio | null>(null);
   const [eliminando, setEliminando] = useState(false);
 
   useEffect(() => {
@@ -32,8 +32,8 @@ export function ClienteSolicitudes() {
 
   const cargarDatos = async () => {
     try {
-      const solsRes = await solicitudesApi.getMisSolicitudes('cliente');
-      setSolicitudes(solsRes.data);
+      const res = await serviciosApi.getMisServicios('cliente');
+      setServicios(res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -43,12 +43,12 @@ export function ClienteSolicitudes() {
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
-      case 'NUEVA':
+      case 'NUEVO':
         return 'bg-blue-100 text-blue-800';
-      case 'ASIGNADA':
+      case 'ASIGNADO':
         return 'bg-yellow-100 text-yellow-800';
-      case 'TERMINADA':
-      case 'COMPLETADO':
+      case 'TERMINADO':
+      case 'CERRADO':
         return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -57,35 +57,42 @@ export function ClienteSolicitudes() {
 
   const getEstadoLabel = (estado: string) => {
     switch (estado) {
-      case 'NUEVA':
-        return 'Nueva';
-      case 'ASIGNADA':
-        return 'Asignada';
-      case 'TERMINADA':
-        return 'Terminada';
-      case 'COMPLETADO':
-        return 'Completado';
+      case 'NUEVO':
+        return 'Nuevo';
+      case 'ASIGNADO':
+        return 'Asignado';
+      case 'TERMINADO':
+        return 'Terminado';
+      case 'CERRADO':
+        return 'Cerrado';
       default:
         return estado;
     }
   };
 
-  const abrirModalEliminar = (sol: Solicitud) => {
-    setSolicitudAEliminar(sol);
+  const abrirModalEliminar = (serv: Servicio) => {
+    setServicioAEliminar(serv);
     setMostrarModalEliminar(true);
   };
 
-  const eliminarSolicitud = async () => {
-    if (!solicitudAEliminar) return;
+  const eliminarServicio = async () => {
+    if (!servicioAEliminar) return;
     setEliminando(true);
     try {
-      await solicitudesApi.eliminar(solicitudAEliminar.id);
-      toast.success('Solicitud eliminada');
+      await serviciosApi.eliminar(servicioAEliminar.id);
+      toast.success('Servicio eliminado');
       setMostrarModalEliminar(false);
-      setSolicitudAEliminar(null);
+      setServicioAEliminar(null);
       cargarDatos();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al eliminar solicitud');
+      const mensaje = err.response?.data?.message;
+      if (typeof mensaje === 'string') {
+        toast.error(mensaje);
+      } else if (Array.isArray(mensaje)) {
+        toast.error(mensaje.join(', '));
+      } else {
+        toast.error('No se pudo eliminar el servicio. Intenta de nuevo más tarde.');
+      }
     } finally {
       setEliminando(false);
     }
@@ -102,74 +109,74 @@ export function ClienteSolicitudes() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <PageHeader
-        title="Mis solicitudes"
+        title="Mis servicios"
         actions={
           <button
-            onClick={() => navigate('/cliente/solicitudes/nueva')}
+            onClick={() => navigate('/cliente/servicios/nuevo')}
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
           >
-            Nueva solicitud
+            Nuevo servicio
           </button>
         }
       />
 
-      {solicitudes.length === 0 ? (
+      {servicios.length === 0 ? (
         <div className="text-center py-12 text-gray-600">
           <Clock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p>No tienes solicitudes</p>
+          <p>No tienes servicios</p>
           <p className="text-sm">Crea tu primera solicitud de servicio</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {solicitudes.map((sol) => (
-            <Link key={sol.id} to={`/cliente/solicitud/${sol.id}`} className="block">
+          {servicios.map((serv) => (
+            <Link key={serv.id} to={`/cliente/servicio/${serv.id}`} className="block">
               <div className="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <span
                         className={`inline-flex items-center px-2 py-1 text-xs rounded ${getEstadoColor(
-                          sol.estado
+                          serv.estado
                         )}`}
                       >
-                        {getEstadoLabel(sol.estado)}
+                        {getEstadoLabel(serv.estado)}
                       </span>
-                      {sol.calificacion && (
+                      {serv.calificacion && (
                         <span className="flex items-center text-xs text-yellow-600">
-                          {'★'.repeat(sol.calificacion)}
+                          {'★'.repeat(serv.calificacion)}
                         </span>
                       )}
-                      {(sol.estado === 'COMPLETADO' || sol.estado === 'TERMINADA') && !sol.calificacion && (
+                      {(serv.estado === 'CERRADO' || serv.estado === 'TERMINADO') && !serv.calificacion && (
                         <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded">
                           Calificar
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-900 font-medium">{sol.descripcion}</p>
-                    {sol.imagenes && sol.imagenes.length > 0 && (
+                    <p className="text-gray-900 font-medium">{serv.descripcion}</p>
+                    {serv.imagenes && serv.imagenes.length > 0 && (
                       <p className="text-xs text-gray-500 mt-1">
-                        {sol.imagenes.length} foto(s) adjunta(s)
+                        {serv.imagenes.length} foto(s) adjunta(s)
                       </p>
                     )}
                     <div className="flex items-center text-sm text-gray-500 mt-2">
                       <MapPin className="h-4 w-4 mr-1" />
-                      {sol.direccion.direccion}
+                      {serv.direccion.direccion}
                     </div>
-                    {sol.tecnico && (
+                    {serv.tecnico && (
                       <p className="text-sm text-gray-600 mt-1">
-                        Técnico: {sol.tecnico.nombre} {sol.tecnico.apellido}
+                        Técnico: {serv.tecnico.nombre} {serv.tecnico.apellido}
                       </p>
                     )}
                   </div>
                   <div className="flex flex-col items-end space-y-2">
                     <span className="text-xs text-gray-500">
-                      {new Date(sol.createdAt).toLocaleDateString()}
+                      {new Date(serv.createdAt).toLocaleDateString()}
                     </span>
-                    {sol.estado === 'NUEVA' && (
+                    {serv.estado === 'NUEVO' && (
                       <button
                         onClick={(e) => {
                           e.preventDefault();
-                          abrirModalEliminar(sol);
+                          abrirModalEliminar(serv);
                         }}
                         className="p-2 text-red-600 hover:bg-red-50 rounded"
                         title="Eliminar"
@@ -188,9 +195,9 @@ export function ClienteSolicitudes() {
       <ConfirmModal
         isOpen={mostrarModalEliminar}
         onClose={() => setMostrarModalEliminar(false)}
-        onConfirm={eliminarSolicitud}
-        title="Cancelar solicitud de servicio"
-        message={`¿Eliminar la solicitud?`}
+        onConfirm={eliminarServicio}
+        title="Cancelar servicio"
+        message={`¿Eliminar el servicio?`}
         confirmText="Eliminar"
         loading={eliminando}
       />
