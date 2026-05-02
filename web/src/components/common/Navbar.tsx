@@ -88,6 +88,16 @@ export function Navbar() {
                   >
                     Mis servicios
                   </Link>
+                  <Link
+                    to="/tecnico/perfil"
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${
+                      isActive('/tecnico/perfil')
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    Mi perfil
+                  </Link>
                 </>
               )}
 
@@ -161,6 +171,13 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                 >
                   Mis servicios
+                </Link>
+                <Link
+                  to="/tecnico/perfil"
+                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Mi perfil
                 </Link>
               </>
             )}
