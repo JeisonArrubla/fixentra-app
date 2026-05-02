@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { tecnicosApi, serviciosApi } from '../../services/api';
 import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Description } from '../../components/common/Description';
-import { PageHeader } from '../../components/common/PageHeader';
+import { PageHeader, Modal, NavigationButton } from '../../components/common';
 
 interface Servicio {
   id: string;
@@ -19,10 +19,12 @@ interface Servicio {
 
 export function TecnicoDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [cargando, setCargando] = useState(true);
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargandoServicios, setCargandoServicios] = useState(true);
   const [disponibilidad, setDisponibilidad] = useState(true);
+  const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   useEffect(() => {
     if (user !== null) {
@@ -54,6 +56,17 @@ export function TecnicoDashboard() {
       toast.success(!disponibilidad ? 'Te has puesto disponible' : 'Te has puesto en offline');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al actualizar disponibilidad');
+    }
+  };
+
+  const handleVerServicio = async (id: string) => {
+    try {
+      await serviciosApi.getById(id);
+      navigate(`/tecnico/servicio/${id}`);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setMostrarModalCancelado(true);
+      }
     }
   };
 
@@ -137,10 +150,10 @@ export function TecnicoDashboard() {
         ) : (
           <div className="space-y-3">
             {servicios.map((serv) => (
-              <Link
+              <button
                 key={serv.id}
-                to={`/tecnico/servicio/${serv.id}`}
-                className="block bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
+                onClick={() => handleVerServicio(serv.id)}
+                className="block w-full text-left bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -157,11 +170,27 @@ export function TecnicoDashboard() {
                     </p>
                   </div>
                 </div>
-              </Link>
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={mostrarModalCancelado}
+        onClose={() => window.location.reload()}
+        title="Servicio cancelado"
+        dismissible={false}
+        footer={
+          <NavigationButton
+            onClick={() => window.location.reload()}
+            text="Regresar"
+            className="mb-0"
+          />
+        }
+      >
+        <p className="text-gray-600">El cliente ha cancelado el servicio</p>
+      </Modal>
     </div>
   );
 }
