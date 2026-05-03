@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
 import { MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
@@ -19,7 +19,6 @@ interface Servicio {
 }
 
 export function ClienteServicios() {
-  const navigate = useNavigate();
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
