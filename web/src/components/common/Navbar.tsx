@@ -1,7 +1,8 @@
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LogOut, Wrench } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { NavbarLink } from './NavbarLink';
+import { Logo } from './Logo';
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -16,20 +17,16 @@ export function Navbar() {
     <>
       {/* Mobile/Tablet: solo logo centrado */}
       <div className="lg:hidden bg-white border-b shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex justify-center h-16 items-center">
-          <Wrench className="h-6 w-6 text-icon" />
-          <span className="ml-2 text-lg font-bold text-gray-900">Fixentra</span>
+        <div className="max-w-7xl mx-auto px-4 flex justify-left h-16 items-center">
+          <Logo />
         </div>
       </div>
 
       {/* Desktop: logo arriba, links abajo */}
       <nav className="bg-white shadow-sm border-b hidden lg:flex flex-col">
         {/* Logo centrado */}
-        <div className="flex justify-center py-2">
-          <div className="flex items-center">
-            <Wrench className="h-8 w-8 text-icon" />
-            <span className="ml-2 text-xl font-bold text-gray-900">Fixentra</span>
-          </div>
+        <div className="flex justify-left py-2">
+          <Logo />
         </div>
 
         {/* Links centrados + logout a la derecha */}

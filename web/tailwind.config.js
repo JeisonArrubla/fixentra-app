@@ -4,6 +4,9 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'h-6', 'h-8', 'h-10', 'h-12', 'h-16',
+  ],
   theme: {
     extend: {
       fontFamily: {

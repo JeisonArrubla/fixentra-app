@@ -80,16 +80,13 @@ export function TecnicoDashboard() {
       <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
 
       <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Nuevos servicios
-        </h3>
         
         {cargandoServicios ? (
           <div className="flex items-center justify-center py-8">
             <Loader className="h-6 w-6 animate-spin text-icon" />
           </div>
         ) : servicios.length === 0 ? (
-          <p className="text-gray-600 py-4">No hay servicios nuevos</p>
+          <PageHeader title={`No hay servicios nuevos`} />
         ) : (
           <div className="space-y-3">
             {servicios.map((serv) => (
