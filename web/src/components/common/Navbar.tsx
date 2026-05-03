@@ -56,9 +56,6 @@ export function Navbar() {
 
             {/* Logout a la derecha */}
             <div className="flex-1 flex justify-end items-center space-x-2">
-              <span className="text-sm text-gray-600">
-                {user.nombre} {user.apellido}
-              </span>
               <button
                 onClick={handleLogout}
                 className="p-2 rounded-full hover:bg-gray-100"
