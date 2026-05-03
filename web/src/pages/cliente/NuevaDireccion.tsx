@@ -5,7 +5,7 @@ import { LocationPicker } from '../../components/common/LocationPicker';
 import { NavigationButton, SubmitButton, CancelButton, ButtonContainer, PageHeader } from '../../components/common';
 import toast from 'react-hot-toast';
 
-export function ClienteDireccionesNueva() {
+export function ClienteNuevaDireccion() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     direccion: '',

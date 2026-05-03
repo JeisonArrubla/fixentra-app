@@ -5,7 +5,7 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ClienteDashboard } from './pages/cliente/Dashboard';
 import { ClienteDirecciones } from './pages/cliente/Direcciones';
-import { ClienteDireccionesNueva } from './pages/cliente/DireccionesNueva';
+import { ClienteNuevaDireccion } from './pages/cliente/NuevaDireccion';
 import { ClienteServicios } from './pages/cliente/Servicios';
 import { NuevoServicio } from './pages/cliente/NuevoServicio';
 import { ConfirmarServicio } from './pages/cliente/ConfirmarServicio';
@@ -46,7 +46,7 @@ function AppRoutes() {
 
             <Route path="cliente/dashboard" element={<ClienteDashboard />} />
             <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
-            <Route path="cliente/direcciones/nueva" element={<ClienteDireccionesNueva />} />
+            <Route path="cliente/direcciones/nueva" element={<ClienteNuevaDireccion />} />
             <Route path="cliente/servicios" element={<ClienteServicios />} />
             <Route path="cliente/servicios/nuevo" element={<NuevoServicio />} />
             <Route path="cliente/servicios/nuevo/confirmar" element={<ConfirmarServicio />} />
