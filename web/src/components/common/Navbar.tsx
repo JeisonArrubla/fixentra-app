@@ -39,7 +39,7 @@ export function Navbar() {
             <div className="flex items-center space-x-4">
               {user.esCliente && (
                 <>
-                  <NavbarLink to="/cliente/dashboard">Home</NavbarLink>
+                  <NavbarLink to="/cliente/dashboard">Inicio</NavbarLink>
                   <NavbarLink to="/cliente/direcciones">Mis direcciones</NavbarLink>
                   <NavbarLink to="/cliente/servicios">Mis servicios</NavbarLink>
                 </>
@@ -47,7 +47,7 @@ export function Navbar() {
 
               {user.esTecnico && (
                 <>
-                  <NavbarLink to="/tecnico/dashboard">Home</NavbarLink>
+                  <NavbarLink to="/tecnico/dashboard">Inicio</NavbarLink>
                   <NavbarLink to="/tecnico/trabajos">Mis servicios</NavbarLink>
                   <NavbarLink to="/tecnico/perfil">Mi perfil</NavbarLink>
                 </>
