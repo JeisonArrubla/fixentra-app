@@ -8,3 +8,7 @@
     font-family: 'Figtree', system-ui, sans-serif;
   }
 }
+
+.button-container > * {
+  flex: 1;
+}
