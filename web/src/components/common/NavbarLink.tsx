@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 // según la ruta activa (detecta automáticamente cuando la URL coincide).
 //
 // USO:
-// <NavbarLink to="/cliente/dashboard">Home</NavbarLink>
+// <NavbarLink to="/cliente/dashboard">Inicio</NavbarLink>
 //
 // Para cambiar estilos de TODOS los enlaces del navbar, modifica las constantes abajo.
 // ============================================
