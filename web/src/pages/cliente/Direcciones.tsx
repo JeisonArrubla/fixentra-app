@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
-import { useAuth } from '../../contexts/AuthContext';
-import { MapPin, Trash2, Star, Loader } from 'lucide-react';
-import { LocationPicker } from '../../components/common/LocationPicker';
+import { MapPin, Trash2, Star, Loader, Plus } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { PageHeader } from '../../components/common/PageHeader';
-import { CancelButton, SubmitButton, ButtonContainer } from '../../components/common';
 import { Description } from '../../components/common/Description';
 import toast from 'react-hot-toast';
 
@@ -18,19 +16,10 @@ interface Direccion {
 }
 
 export function ClienteDirecciones() {
-  const { } = useAuth();
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
   const [direccionAEliminar, setDireccionAEliminar] = useState<Direccion | null>(null);
-  const [formData, setFormData] = useState({
-    direccion: '',
-    latitud: 6.2476,
-    longitud: -75.5658,
-    esPrincipal: false,
-  });
-  const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     cargarDirecciones();
@@ -44,27 +33,6 @@ export function ClienteDirecciones() {
       toast.error(err.response?.data?.message || 'Error al cargar direcciones');
     } finally {
       setCargando(false);
-    }
-  };
-
-  const guardarDireccion = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setGuardando(true);
-    try {
-      await clientesApi.crearDireccion(formData);
-      toast.success('Dirección creada');
-      setMostrarFormulario(false);
-      setFormData({
-        direccion: '',
-        latitud: 6.2476,
-        longitud: -75.5658,
-        esPrincipal: false,
-      });
-      cargarDirecciones();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al crear dirección');
-    } finally {
-      setGuardando(false);
     }
   };
 
@@ -116,63 +84,15 @@ export function ClienteDirecciones() {
       <PageHeader
         title="Mis direcciones"
         actions={
-          <button
-            onClick={() => setMostrarFormulario(!mostrarFormulario)}
+          <Link
+            to="/cliente/direcciones/nueva"
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
           >
+            <Plus className="h-4 w-4 mr-2" />
             Nueva dirección
-          </button>
+          </Link>
         }
       />
-
-      {mostrarFormulario && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-          <h3 className="text-lg font-semibold mb-4">Nueva dirección</h3>
-          <form onSubmit={guardarDireccion} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Dirección</label>
-              <input
-                type="text"
-                required
-                value={formData.direccion}
-                onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="CR 43A 10 22 MEDELLIN"
-              />
-            </div>
-            <LocationPicker
-              latitud={formData.latitud}
-              longitud={formData.longitud}
-              onLocationChange={(lat, lng) => setFormData({ ...formData, latitud: lat, longitud: lng })}
-            />
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="esPrincipal"
-                checked={formData.esPrincipal}
-                onChange={(e) => setFormData({ ...formData, esPrincipal: e.target.checked })}
-                className="h-4 w-4 text-gray-500 border-gray-300 rounded"
-              />
-              <label htmlFor="esPrincipal" className="ml-2 text-sm text-gray-700">
-                Establecer como dirección principal
-              </label>
-            </div>
-            <div className="flex justify-end space-x-3">
-              <ButtonContainer>
-                <CancelButton
-                  text="Cancelar"
-                  onClick={() => setMostrarFormulario(false)}
-                />
-                <SubmitButton
-                  text={guardando ? 'Guardando...' : 'Guardar'}
-                  type="submit"
-                  loading={guardando}
-                />
-              </ButtonContainer>
-            </div>
-          </form>
-        </div>
-      )}
 
       {direcciones.length === 0 ? (
         <div className="text-center py-12 text-gray-600">
