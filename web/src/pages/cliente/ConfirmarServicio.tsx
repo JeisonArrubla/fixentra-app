@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServicio } from '../../contexts/ServicioContext';
 import { serviciosApi, clientesApi } from '../../services/api';
-import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow } from '../../components/common';
+import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow, FormContainer, ButtonContainer } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -82,16 +82,10 @@ export function ConfirmarServicio() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <PageHeader title="Confirma los datos de tu servicio" />
-      <NavigationButton to="/cliente/servicios/nuevo" text="Regresar" />
+      <PageHeader title="Confirma los datos de tu solicitud" />
 
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-
+      <FormContainer className="bg-white rounded-lg shadow-sm border p-6">
         <div className="bg-gray-50 p-4 rounded-md mb-6">
-          <h2 className="text-sm font-medium text-gray-500 mb-3">
-            Detalles del servicio solicitado
-          </h2>
-
           <div className="space-y-4">
             <FieldRow
               label="Dirección"
@@ -121,7 +115,8 @@ export function ConfirmarServicio() {
           </div>
         </div>
 
-        <div className="pt-4 border-t">
+        <ButtonContainer>
+          <NavigationButton to="/cliente/servicios/nuevo" text="Editar" />
           {contadorActivo ? (
             <CancelButton
               text={`Cancelar (${segundosRestantes}s)`}
@@ -129,13 +124,13 @@ export function ConfirmarServicio() {
             />
           ) : (
             <SubmitButton
-              text="Enviar Servicio"
+              text="Solicitar servicio"
               onClick={iniciarConteo}
               loading={enviando}
             />
           )}
-        </div>
-      </div>
+        </ButtonContainer>
+      </FormContainer>
     </div>
   );
 }

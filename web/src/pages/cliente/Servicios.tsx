@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
 import { MapPin, Clock, Loader, Trash2 } from 'lucide-react';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
-import { PageHeader } from '../../components/common/PageHeader';
 import toast from 'react-hot-toast';
+import { PageHeader, NavigationButton, FormContainer, ButtonContainer } from '../../components/common';
 
 interface Servicio {
   id: string;
@@ -108,90 +108,84 @@ export function ClienteServicios() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <PageHeader
-        title="Mis servicios"
-        actions={
-          <button
-            onClick={() => navigate('/cliente/servicios/nuevo')}
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-          >
-            Nuevo servicio
-          </button>
-        }
-      />
+      <PageHeader title="Mis servicios"/>
 
-      {servicios.length === 0 ? (
-        <div className="text-center py-12 text-gray-600">
-          <Clock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p>No tienes servicios</p>
-          <p className="text-sm">Crea tu primera solicitud de servicio</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {servicios.map((serv) => (
-            <Link key={serv.id} to={`/cliente/servicio/${serv.id}`} className="block">
-              <div className="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 text-xs rounded ${getEstadoColor(
-                          serv.estado
-                        )}`}
-                      >
-                        {getEstadoLabel(serv.estado)}
+      <FormContainer>
+        <ButtonContainer>
+          <NavigationButton to="/cliente/servicios/nuevo" text="Solicitar servicio" />
+        </ButtonContainer>
+        {servicios.length === 0 ? (
+          <div className="text-center py-12 text-gray-600">
+            <Clock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <p>No tienes servicios</p>
+            <p className="text-sm">Crea tu primera solicitud de servicio</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {servicios.map((serv) => (
+              <Link key={serv.id} to={`/cliente/servicio/${serv.id}`} className="block">
+                <div className="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span
+                          className={`inline-flex items-center px-2 py-1 text-xs rounded ${getEstadoColor(
+                            serv.estado
+                          )}`}
+                        >
+                          {getEstadoLabel(serv.estado)}
+                        </span>
+                        {serv.calificacion && (
+                          <span className="flex items-center text-xs text-yellow-600">
+                            {'★'.repeat(serv.calificacion)}
+                          </span>
+                        )}
+                        {(serv.estado === 'CERRADO' || serv.estado === 'TERMINADO') && !serv.calificacion && (
+                          <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded">
+                            Calificar
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-gray-900 font-medium">{serv.descripcion}</p>
+                      {serv.imagenes && serv.imagenes.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {serv.imagenes.length} foto(s) adjunta(s)
+                        </p>
+                      )}
+                      <div className="flex items-center text-sm text-gray-500 mt-2">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {serv.direccion.direccion}
+                      </div>
+                      {serv.tecnico && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          Técnico: {serv.tecnico.nombre} {serv.tecnico.apellido}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <span className="text-xs text-gray-500">
+                        {new Date(serv.createdAt).toLocaleDateString()}
                       </span>
-                      {serv.calificacion && (
-                        <span className="flex items-center text-xs text-yellow-600">
-                          {'★'.repeat(serv.calificacion)}
-                        </span>
-                      )}
-                      {(serv.estado === 'CERRADO' || serv.estado === 'TERMINADO') && !serv.calificacion && (
-                        <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded">
-                          Calificar
-                        </span>
+                      {serv.estado === 'NUEVO' && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            abrirModalEliminar(serv);
+                          }}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       )}
                     </div>
-                    <p className="text-gray-900 font-medium">{serv.descripcion}</p>
-                    {serv.imagenes && serv.imagenes.length > 0 && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {serv.imagenes.length} foto(s) adjunta(s)
-                      </p>
-                    )}
-                    <div className="flex items-center text-sm text-gray-500 mt-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {serv.direccion.direccion}
-                    </div>
-                    {serv.tecnico && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        Técnico: {serv.tecnico.nombre} {serv.tecnico.apellido}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-end space-y-2">
-                    <span className="text-xs text-gray-500">
-                      {new Date(serv.createdAt).toLocaleDateString()}
-                    </span>
-                    {serv.estado === 'NUEVO' && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          abrirModalEliminar(serv);
-                        }}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded"
-                        title="Eliminar"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    )}
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
+              </Link>
+            ))}
+          </div>
+        )}
+      </FormContainer>
       <ConfirmModal
         isOpen={mostrarModalEliminar}
         onClose={() => setMostrarModalEliminar(false)}
