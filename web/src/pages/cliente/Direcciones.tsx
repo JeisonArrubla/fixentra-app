@@ -5,7 +5,7 @@ import { MapPin, Trash2, Star, Loader } from 'lucide-react';
 import { LocationPicker } from '../../components/common/LocationPicker';
 import { Modal } from '../../components/common/Modal';
 import { PageHeader } from '../../components/common/PageHeader';
-import { CancelButton, SubmitButton } from '../../components/common';
+import { CancelButton, SubmitButton, ButtonContainer } from '../../components/common';
 import { Description } from '../../components/common/Description';
 import toast from 'react-hot-toast';
 
@@ -158,17 +158,17 @@ export function ClienteDirecciones() {
               </label>
             </div>
             <div className="flex justify-end space-x-3">
-              <CancelButton
-                text="Cancelar"
-                onClick={() => setMostrarFormulario(false)}
-                fullWidth={false}
-              />
-              <SubmitButton
-                text={guardando ? 'Guardando...' : 'Guardar'}
-                type="submit"
-                loading={guardando}
-                fullWidth={false}
-              />
+              <ButtonContainer>
+                <CancelButton
+                  text="Cancelar"
+                  onClick={() => setMostrarFormulario(false)}
+                />
+                <SubmitButton
+                  text={guardando ? 'Guardando...' : 'Guardar'}
+                  type="submit"
+                  loading={guardando}
+                />
+              </ButtonContainer>
             </div>
           </form>
         </div>

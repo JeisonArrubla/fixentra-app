@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
-import { NavigationButton } from '../../components/common/NavigationButton';
+import { NavigationButton, FormContainer, ButtonContainer } from '../../components/common';
 import { PageHeader } from '../../components/common/PageHeader';
 import { MapPin, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
@@ -68,15 +68,14 @@ export function NuevoServicio() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="mx-auto py-8 px-4">
       <PageHeader title="Crear nuevo servicio" />
-      <NavigationButton to="/cliente/servicios" text="Cancelar" />
 
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <FormContainer>
         <div className="space-y-6">
           <div>
             <label htmlFor="direccion" className="block text-sm font-medium text-gray-700 mb-2">
-              Dirección
+              Selecciona la dirección donde se realizará el servicio
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -100,7 +99,7 @@ export function NuevoServicio() {
 
           <div>
             <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-              Descripción del servicio
+              Ingresa una breve descripción del servicio que necesitas
             </label>
             <textarea
               id="descripcion"
@@ -108,14 +107,10 @@ export function NuevoServicio() {
               value={formData.descripcion}
               onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
-              placeholder="Describe el servicio que necesitas..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Imágenes (opcional)
-            </label>
             <ImageUpload
               images={imagenes}
               onChange={setImagenes}
@@ -123,14 +118,15 @@ export function NuevoServicio() {
             />
           </div>
 
-          <div className="pt-4 border-t flex justify-end">
+          <ButtonContainer>
+            <NavigationButton to="/cliente/servicios" text="Cancelar" />
             <SubmitButton
               text="Continuar"
               onClick={handleContinuar}
             />
-          </div>
+          </ButtonContainer>
         </div>
-      </div>
+      </FormContainer>
     </div>
   );
 }
