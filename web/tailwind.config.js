@@ -6,6 +6,15 @@ export default {
   ],
   safelist: [
     'h-6', 'h-8', 'h-10', 'h-12', 'h-16',
+    'px-3', 'py-1.5', 'px-4', 'py-2', 'px-6', 'py-3',
+    'bg-black', 'bg-green-600', 'bg-blue-600', 'bg-gray-600', 'bg-red-600',
+    'hover:bg-gray-800', 'hover:bg-green-700', 'hover:bg-blue-700', 'hover:bg-gray-700', 'hover:bg-red-700',
+    'text-white', 'text-gray-900',
+    'rounded-sm', 'rounded-md', 'rounded-lg', 'rounded-full',
+    'mb-4', 'mb-6', 'mb-8',
+    'font-normal', 'font-medium', 'font-semibold', 'font-bold',
+    'inline-flex', 'items-center', 'justify-center', 'transition-colors',
+    'disabled:opacity-50', 'disabled:cursor-not-allowed',
   ],
   theme: {
     extend: {
