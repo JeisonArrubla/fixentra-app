@@ -5,6 +5,7 @@ import { MapPin, Trash2, Star, Loader, Plus } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { PageHeader } from '../../components/common/PageHeader';
 import { Description } from '../../components/common/Description';
+import { FormContainer, ButtonContainer, NavigationButton } from '../../components/common'
 import toast from 'react-hot-toast';
 
 interface Direccion {
@@ -81,63 +82,48 @@ export function ClienteDirecciones() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <PageHeader
-        title="Mis direcciones"
-        actions={
-          <Link
-            to="/cliente/direcciones/nueva"
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Nueva dirección
-          </Link>
-        }
-      />
-
-      {direcciones.length === 0 ? (
-        <div className="text-center py-12 text-gray-600">
-          <MapPin className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p>No tienes direcciones guardadas</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {direcciones.map((dir) => (
-            <div key={dir.id} className="bg-white p-4 rounded-lg shadow-sm border flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <MapPin className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="font-medium text-gray-900">{dir.direccion}</p>
-                  <p className="text-sm text-gray-500">
-                    {dir.latitud}, {dir.longitud}
-                  </p>
+      <PageHeader title="Mis direcciones" />
+      <FormContainer>
+        <ButtonContainer>
+          <NavigationButton to="/cliente/direcciones/nueva" text="Nueva dirección" />
+        </ButtonContainer>
+        {direcciones.length === 0 ? (
+          <div className="text-center py-12 text-gray-600">
+            <p>No tienes direcciones guardadas</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {direcciones.map((dir) => (
+              <div key={dir.id} className="bg-white p-4 rounded-lg shadow-sm border flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div>
+                    <div className="flex items-center text-sm text-gray-500 mt-2">
+                      <MapPin className="h-5 w-5 text-gray-400" />
+                      <p className="text-sm text-gray-600 px-2">{dir.direccion}</p>
+                    </div>
+                    <p className="py-2">
+                      {dir.esPrincipal && (
+                        <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">
+                          Principal
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
-                {dir.esPrincipal && (
-                  <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">
-                    <Star className="h-3 w-3 mr-1" />
-                    Principal
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center space-x-2">
-                {!dir.esPrincipal && (
+                <div className="flex items-center space-x-2">
+
                   <button
-                    onClick={() => setPrincipal(dir.id)}
-                    className="text-sm text-gray-500 hover:text-gray-700"
+                    onClick={() => abrirModalEliminar(dir)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded"
                   >
-                    Hacer principal
+                    <Trash2 className="h-4 w-4" />
                   </button>
-                )}
-                <button
-                  onClick={() => abrirModalEliminar(dir)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </FormContainer>
 
       <Modal
         isOpen={mostrarModalEliminar}
