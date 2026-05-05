@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
-import { NavigationButton, FormContainer, ButtonContainer } from '../../components/common';
+import { NavigationButton, FormContainer, ButtonContainer, FieldRow } from '../../components/common';
 import { PageHeader } from '../../components/common/PageHeader';
 import { MapPin, Loader } from 'lucide-react';
 import { ImageUpload } from '../../components/common/ImageUpload';
@@ -68,55 +68,43 @@ export function NuevoServicio() {
   }
 
   return (
-    <div className="mx-auto py-8 px-4">
+    <div className="py-8">
       <PageHeader title="Crear nuevo servicio" />
 
-      <FormContainer>
-        <div className="space-y-6">
-          <div>
-            <label htmlFor="direccion" className="block text-sm font-medium text-gray-700 mb-2">
-              Selecciona la dirección donde se realizará el servicio
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin className="h-5 w-5 text-gray-400" />
-              </div>
-              <select
-                id="direccion"
-                value={formData.direccionId}
-                onChange={(e) => setFormData({ ...formData, direccionId: e.target.value })}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
-              >
-                <option value="">Selecciona una dirección</option>
-                {direcciones.map((dir) => (
-                  <option key={dir.id} value={dir.id}>
-                    {dir.direccion}
-                  </option>
-                ))}
-              </select>
+      <FormContainer className="space-y-4">
+          <FieldRow label="Selecciona la dirección donde se realizará el servicio" />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <MapPin className="h-5 w-5 text-gray-400" />
             </div>
+            <select
+              id="direccion"
+              value={formData.direccionId}
+              onChange={(e) => setFormData({ ...formData, direccionId: e.target.value })}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
+            >
+              <option value="">Selecciona una dirección</option>
+              {direcciones.map((dir) => (
+                <option key={dir.id} value={dir.id}>
+                  {dir.direccion}
+                </option>
+              ))}
+            </select>
           </div>
-
-          <div>
-            <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-              Ingresa una breve descripción del servicio que necesitas
-            </label>
-            <textarea
-              id="descripcion"
-              rows={4}
-              value={formData.descripcion}
-              onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
-            />
-          </div>
-
-          <div>
-            <ImageUpload
-              images={imagenes}
-              onChange={setImagenes}
-              maxImages={2}
-            />
-          </div>
+          <FieldRow label="Describe el servicio que necesitas" />
+          <textarea
+            id="descripcion"
+            rows={4}
+            value={formData.descripcion}
+            onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-gray-400 focus:border-gray-400"
+          />
+          <FieldRow label="Puedes agregar fotos que describan mejor la solicitud (opcional)" />
+          <ImageUpload
+            images={imagenes}
+            onChange={setImagenes}
+            maxImages={2}
+          />
 
           <ButtonContainer>
             <NavigationButton to="/cliente/servicios" text="Cancelar" />
@@ -125,7 +113,6 @@ export function NuevoServicio() {
               onClick={handleContinuar}
             />
           </ButtonContainer>
-        </div>
       </FormContainer>
     </div>
   );
