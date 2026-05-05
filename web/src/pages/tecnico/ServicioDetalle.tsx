@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer } from '../../components/common';
-import { CheckCircle, Loader } from 'lucide-react';
+import { ImageGridWithViewer, PageHeader, FieldRow, NavigationButton, FormContainer, ButtonContainer } from '../../components/common';
+import { Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface ServicioDetalle {
@@ -35,8 +35,6 @@ export function ServicioDetalle() {
   const navigate = useNavigate();
   const [servicio, setServicio] = useState<ServicioDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
-  const [aceptando, setAceptando] = useState(false);
-  const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -48,34 +46,11 @@ export function ServicioDetalle() {
     try {
       const { data } = await serviciosApi.getById(id!);
       setServicio(data);
-    } catch (err: any) {
-      if (err.response?.status === 404) {
-        setMostrarModalCancelado(true);
-      } else {
-        toast.error('Error al cargar el servicio');
-        navigate('/tecnico/dashboard');
-      }
+    } catch (err) {
+      toast.error('Error al cargar el servicio');
+      navigate('/tecnico/dashboard');
     } finally {
       setCargando(false);
-    }
-  };
-
-  const aceptarServicio = async () => {
-    if (!id) return;
-    setAceptando(true);
-    try {
-      await serviciosApi.aceptar(id);
-      toast.success('Servicio aceptado');
-      navigate('/tecnico/trabajos');
-    } catch (err: any) {
-      if (err.response?.status === 404) {
-        setServicio(null);
-        setMostrarModalCancelado(true);
-      } else {
-        toast.error(err.response?.data?.message || 'Error al aceptar el servicio');
-      }
-    } finally {
-      setAceptando(false);
     }
   };
 
@@ -87,74 +62,55 @@ export function ServicioDetalle() {
     );
   }
 
-  const modalCancelado = (
-    <Modal
-      isOpen={mostrarModalCancelado}
-      onClose={() => navigate('/tecnico/dashboard')}
-      title="Servicio cancelado"
-      dismissible={true}
-    >
-      <p className="text-gray-600">El cliente ha cancelado el servicio</p>
-    </Modal>
-  );
-
   if (!servicio) {
     return (
-      <>
-        {modalCancelado}
-      </>
+      <div className="py-8 px-4 text-center">
+        <p className="text-gray-600 mb-4">Servicio no encontrado</p>
+        <NavigationButton to="/tecnico/dashboard" text="Volver" />
+      </div>
     );
   }
 
   return (
-    <>
-      <div className="py-8">
-        <PageHeader title="Detalles del servicio" />
+    <div className="py-8">
+      <PageHeader title="Detalles del servicio" />
 
-        <FormContainer>
-          <div className="space-y-4">
-            <FieldRow label="Descripción" value={servicio.descripcion} />
+      <FormContainer className="space-y-4">
+          <FieldRow label="Estado" value={servicio.estado} />
 
-            <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
+          <FieldRow label="Cliente" value={`${servicio.cliente.nombre} ${servicio.cliente.apellido}`} />
 
-            <FieldRow label="Fecha solicitud" value={new Date(servicio.createdAt).toLocaleString()} />
+          <FieldRow label="Descripción" value={servicio.descripcion} />
 
-            {servicio.imagenes && servicio.imagenes.length > 0 && (
-              <FieldRow label="Fotos">
-                <ImageGridWithViewer
-                  images={servicio.imagenes}
-                  thumbnailClassName="h-24 w-24 object-cover rounded-lg"
-                />
-              </FieldRow>
-            )}
+          <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
 
-            {servicio.estado === 'NUEVO' && (
-              <ButtonContainer>
-                <SubmitButton
-                  text='Aceptar'
-                  onClick={aceptarServicio}
-                  disabled={aceptando}
-                >
-                </SubmitButton>
-              </ButtonContainer>
-            )}
+          <FieldRow label="Fecha solicitud" value={new Date(servicio.createdAt).toLocaleString()} />
 
-            {servicio.estado === 'ASIGNADO' && (
-              <div className="pt-4 border-t">
-                <Link
-                  to={`/tecnico/servicio/${id}/terminar`}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
-                >
-                  <CheckCircle className="h-5 w-5 mr-2" />
-                  Terminar servicio
-                </Link>
-              </div>
-            )}
-          </div>
+          {servicio.imagenes && servicio.imagenes.length > 0 && (
+            <FieldRow label="Fotos">
+              <ImageGridWithViewer
+                images={servicio.imagenes}
+                thumbnailClassName="h-24 w-24 object-cover rounded-lg"
+              />
+            </FieldRow>
+          )}
 
-        </FormContainer>
-      </div>
-      {modalCancelado}
-    </>
+          {servicio.estado === 'ASIGNADO' && (
+            <ButtonContainer>
+              <NavigationButton
+                to="/tecnico/trabajos"
+                text="Volver"
+              >
+              </NavigationButton>
+              <NavigationButton
+                to={`/tecnico/servicio/${id}/terminar`}
+                text="Terminar"
+                className='bg-green-900 border-green-900 hover:text-white hover:!bg-green-700 hover:border hover:!border-green-700'
+              >
+              </NavigationButton>
+            </ButtonContainer>
+          )}
+      </FormContainer>
+    </div>
   );
 }
