@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
 import { LocationPicker } from '../../components/common/LocationPicker';
-import { NavigationButton, SubmitButton, CancelButton, ButtonContainer, PageHeader } from '../../components/common';
+import { NavigationButton, SubmitButton, ButtonContainer, PageHeader, FormContainer } from '../../components/common';
 import toast from 'react-hot-toast';
 
 export function ClienteNuevaDireccion() {
@@ -30,11 +30,11 @@ export function ClienteNuevaDireccion() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="py-8 px-4">
       <PageHeader title="Nueva dirección" />
-      <NavigationButton to="/cliente/direcciones" text="Volver" />
 
-      <form onSubmit={guardarDireccion} className="bg-white p-6 rounded-lg shadow-sm border">
+      <FormContainer>
+        <form onSubmit={guardarDireccion}>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Dirección</label>
@@ -64,10 +64,10 @@ export function ClienteNuevaDireccion() {
               Establecer como dirección principal
             </label>
           </div>
-          <div className="pt-4 border-t">
             <ButtonContainer>
-              <CancelButton
+              <NavigationButton
                 onClick={() => navigate('/cliente/direcciones')}
+                text="Cancelar"
               />
               <SubmitButton
                 text={guardando ? 'Guardando...' : 'Guardar'}
@@ -75,9 +75,9 @@ export function ClienteNuevaDireccion() {
                 loading={guardando}
               />
             </ButtonContainer>
-          </div>
         </div>
-      </form>
+        </form>
+      </FormContainer>
     </div>
   );
 }
