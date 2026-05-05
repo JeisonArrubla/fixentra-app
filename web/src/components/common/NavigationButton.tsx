@@ -6,13 +6,13 @@ import { buttonSize, buttonBorderRadius, buttonMarginBottom, buttonFontWeight } 
 // ============================================
 
 // COLOR DE FONDO: bg-black, bg-green-600, bg-blue-600, etc.
-const bgColor = 'bg-white border border-black';
+const bgColor = 'bg-black border border-black';
 
 // COLOR DE FONDO EN HOVER: hover:bg-gray-800, hover:bg-green-700, etc.
-const hoverBg = 'hover:text-white hover:bg-black';
+const hoverBg = 'hover:text-black hover:bg-white hover:border hover:border-black';
 
 // COLOR DE TEXTO: text-white, text-gray-900, etc.
-const textColor = 'text-black';
+const textColor = 'text-white';
 
 // BORDES:
 // Para borde SOLO EN HOVER → modifica hoverBg:

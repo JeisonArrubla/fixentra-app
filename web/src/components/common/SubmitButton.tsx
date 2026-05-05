@@ -7,7 +7,7 @@ import { buttonSize, buttonBorderRadius, buttonMarginBottom, buttonFontWeight } 
 // ============================================
 
 // COLOR DE FONDO: bg-green-600, bg-black, bg-blue-600, etc.
-const bgColor = 'bg-black';
+const bgColor = 'bg-green-900';
 
 // COLOR DE FONDO EN HOVER: hover:bg-green-700, hover:bg-gray-800, etc.
 const hoverBg = 'hover:bg-green-700';

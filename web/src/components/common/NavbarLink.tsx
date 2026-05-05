@@ -18,11 +18,11 @@ const baseClasses = 'px-3 py-2 rounded-md text-sm font-medium transition-colors 
 
 // ESTILO DEL ENLACE ACTIVO (cuando la URL coincide con `to`)
 // bg-black text-white | bg-green-600 text-white | bg-transparent border-b-2 border-black
-const activeClasses = 'bg-transparent border border-gray-900 text-black';
+const activeClasses = 'bg-transparent text-gray-900';
 
 // ESTILO DEL ENLACE INACTIVO (por defecto)
 // text-gray-700 hover:text-white hover:bg-gray-800 | text-gray-700 hover:text-black hover:border hover:border-black
-const inactiveClasses = 'text-gray-700 hover:text-black hover:border hover:border-gray-300';
+const inactiveClasses = 'text-gray-600 hover:text-gray-900';
 
 // ============================================
 // Props:
