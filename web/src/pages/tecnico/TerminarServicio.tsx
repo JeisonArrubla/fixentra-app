@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { NavigationButton, PageHeader, FieldRow } from '../../components/common';
+import { NavigationButton, PageHeader, FieldRow, ButtonContainer, SubmitButton, FormContainer } from '../../components/common';
 import { ImageUpload } from '../../components/common/ImageUpload';
-import { CheckCircle, Loader } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface ServicioDetalle {
@@ -92,80 +92,50 @@ export function TerminarServicio() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="py-8">
       <PageHeader title="Completar servicio" />
-      <NavigationButton to={`/tecnico/servicio/${id}`} text="Volver al detalle" />
 
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <FormContainer className="space-y-4">
 
-        <div className="bg-gray-50 p-4 rounded-md mb-6">
-          <FieldRow label="Servicio solicitado">
-            <p className="text-gray-900">{servicio.descripcion}</p>
-            <p className="text-sm text-gray-500">{servicio.direccion.direccion}</p>
-          </FieldRow>
-        </div>
+        <FieldRow label="Descripción" value={servicio.descripcion} />
+        <FieldRow label="Dirección" value={servicio.direccion.direccion} />
+        <FieldRow label="Cliente" value={`${servicio.cliente?.nombre} ${servicio.cliente?.apellido}`} />
 
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Detalles del servicio prestado
-            </label>
-            <textarea
-              rows={4}
-              value={detalles}
-              onChange={(e) => setDetalles(e.target.value)}
-              maxLength={400}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Describe qué trabajos realizaste..."
-            />
-            <p className="text-xs text-gray-500 mt-1 text-right">
-              {detalles.length}/400 caracteres
+        <div>
+          <FieldRow label="Detalles del servicio prestado" />
+          <textarea
+            rows={4}
+            value={detalles}
+            onChange={(e) => setDetalles(e.target.value)}
+            maxLength={400}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="Ingresa en este espacio una breve descripción del trabajo realizado..."
+          />
+          <p className="text-xs text-gray-500 mt-1 text-right">
+            {detalles.length}/400 caracteres
+          </p>
+          <FieldRow label="Fotos del resultado (mínimo 1, máximo 2)"/>
+          <ImageUpload
+            images={imagenes}
+            onChange={setImagenes}
+            maxImages={2}
+          />
+          {imagenes.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">
+              {imagenes.length}/2 fotos cargadas
             </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fotos del resultado (mínimo 1, máximo 2)
-            </label>
-            <ImageUpload
-              images={imagenes}
-              onChange={setImagenes}
-              maxImages={2}
-            />
-            {imagenes.length > 0 && (
-              <p className="text-xs text-gray-500 mt-1">
-                {imagenes.length}/2 fotos cargadas
-              </p>
-            )}
-          </div>
+          )}
         </div>
-
-        <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
-          <Link
-            to={`/tecnico/servicio/${id}`}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Volver
-          </Link>
-          <button
+        <ButtonContainer>
+          <NavigationButton to={`/tecnico/servicio/${id}`} text="Volver" />
+          <SubmitButton
             onClick={completarServicio}
             disabled={guardando}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center"
           >
-            {guardando ? (
-              <>
-                <Loader className="h-4 w-4 animate-spin mr-2" />
-                Guardando...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Finalizar
-              </>
-            )}
-          </button>
-        </div>
-      </div>
+          </SubmitButton>
+        </ButtonContainer>
+      </FormContainer>
     </div>
   );
 }
