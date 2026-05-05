@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { clientesApi } from '../../services/api';
-import { MapPin, Trash2, Star, Loader, Plus } from 'lucide-react';
+import { MapPin, Trash2, Loader } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { PageHeader } from '../../components/common/PageHeader';
 import { Description } from '../../components/common/Description';
-import { FormContainer, ButtonContainer, NavigationButton } from '../../components/common'
+import { FormContainer, ButtonContainer, NavigationButton } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface Direccion {
@@ -59,16 +58,6 @@ export function ClienteDirecciones() {
       } else {
         toast.error('No se pudo eliminar la dirección. Intenta de nuevo más tarde.');
       }
-    }
-  };
-
-  const setPrincipal = async (id: string) => {
-    try {
-      await clientesApi.setPrincipal(id);
-      toast.success('Dirección principal actualizada');
-      cargarDirecciones();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al actualizar');
     }
   };
 
