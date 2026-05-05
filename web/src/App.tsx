@@ -12,6 +12,7 @@ import { ConfirmarServicio } from './pages/cliente/ConfirmarServicio';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
 import { ServicioDetalle as TecnicoServicioDetalle } from './pages/tecnico/ServicioDetalle';
+import { ServicioNuevo } from './pages/tecnico/ServicioNuevo';
 import { ServicioDetalle as ClienteServicioDetalle } from './pages/cliente/ServicioDetalle';
 import { TecnicoPerfil } from './pages/tecnico/Perfil';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
@@ -52,6 +53,7 @@ function AppRoutes() {
             <Route path="cliente/servicios/nuevo/confirmar" element={<ConfirmarServicio />} />
             
             <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
+            <Route path="tecnico/servicio/nuevo/:id" element={<ServicioNuevo />} />
             <Route path="tecnico/servicio/:id" element={<TecnicoServicioDetalle />} />
             <Route path="tecnico/servicio/:id/terminar" element={<TerminarServicio />} />
             <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
