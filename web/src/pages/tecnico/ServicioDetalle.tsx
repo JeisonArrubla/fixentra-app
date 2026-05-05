@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, PageHeader, FieldRow, Modal } from '../../components/common';
+import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer } from '../../components/common';
 import { CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -79,21 +79,6 @@ export function ServicioDetalle() {
     }
   };
 
-  const getEstadoLabel = (estado: string) => {
-    switch (estado) {
-      case 'NUEVO':
-        return 'Nuevo';
-      case 'ASIGNADO':
-        return 'Asignado';
-      case 'TERMINADO':
-        return 'Terminado';
-      case 'CERRADO':
-        return 'Cerrado';
-      default:
-        return estado;
-    }
-  };
-
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -123,21 +108,16 @@ export function ServicioDetalle() {
 
   return (
     <>
-      <div className="max-w-2xl mx-auto py-8 px-4">
+      <div className="py-8">
         <PageHeader title="Detalles del servicio" />
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+
+        <FormContainer>
           <div className="space-y-4">
             <FieldRow label="Descripción" value={servicio.descripcion} />
-            <FieldRow label="Estado" value={getEstadoLabel(servicio.estado)} />
 
-            <FieldRow
-              label="Ubicación"
-              value={servicio.direccion.direccion}
-            />
+            <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
 
-            <FieldRow label="Cliente" value={`${servicio.cliente.nombre} ${servicio.cliente.apellido}`} />
-
-            <FieldRow label="Creado" value={new Date(servicio.createdAt).toLocaleString()} />
+            <FieldRow label="Fecha solicitud" value={new Date(servicio.createdAt).toLocaleString()} />
 
             {servicio.imagenes && servicio.imagenes.length > 0 && (
               <FieldRow label="Fotos">
@@ -149,20 +129,14 @@ export function ServicioDetalle() {
             )}
 
             {servicio.estado === 'NUEVO' && (
-              <div className="pt-4 border-t">
-                <button
+              <ButtonContainer>
+                <SubmitButton
+                  text='Aceptar'
                   onClick={aceptarServicio}
                   disabled={aceptando}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
                 >
-                  {aceptando ? (
-                    <Loader className="h-5 w-5 animate-spin mr-2" />
-                  ) : (
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                  )}
-                  {aceptando ? 'Aceptando...' : 'Aceptar Servicio'}
-                </button>
-              </div>
+                </SubmitButton>
+              </ButtonContainer>
             )}
 
             {servicio.estado === 'ASIGNADO' && (
@@ -177,7 +151,8 @@ export function ServicioDetalle() {
               </div>
             )}
           </div>
-        </div>
+
+        </FormContainer>
       </div>
       {modalCancelado}
     </>
