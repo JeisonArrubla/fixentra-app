@@ -5,6 +5,7 @@ import { NavigationButton } from '../../components/common/NavigationButton';
 import { StarRating } from '../../components/common/StarRating';
 import { ImageWithViewer } from '../../components/common/ImageWithViewer';
 import { PageHeader, FieldRow } from '../../components/common';
+import { FormContainer, ButtonContainer } from '../../components/common';
 import { Star, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -74,21 +75,6 @@ export function ServicioDetalle() {
     }
   };
 
-  const getEstadoBadge = (estado: string) => {
-    const estados: Record<string, { text: string; class: string }> = {
-      'NUEVO': { text: 'Nuevo', class: 'bg-blue-100 text-blue-800' },
-      'ASIGNADO': { text: 'Asignado', class: 'bg-yellow-100 text-yellow-800' },
-      'TERMINADO': { text: 'Terminado', class: 'bg-green-100 text-green-800' },
-      'CERRADO': { text: 'Cerrado', class: 'bg-green-100 text-green-900' },
-    };
-    const info = estados[estado] || { text: estado, class: 'bg-gray-100 text-gray-800' };
-    return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${info.class}`}>
-        {info.text}
-      </span>
-    );
-  };
-
   if (cargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -108,22 +94,30 @@ export function ServicioDetalle() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <NavigationButton to="/cliente/servicios" text="Volver a mis servicios" />
+      <PageHeader
+        title="Detalles del servicio"
+      />
 
-      <div className="bg-white rounded-lg shadow-sm border p-6 mt-4">
-        <PageHeader
-          title="Detalles del servicio"
-          badge={getEstadoBadge(servicio.estado)}
-        />
-
+      <FormContainer>
         <div className="space-y-4">
-          <FieldRow label="Servicio solicitado">
-            <p className="text-gray-900">{servicio.descripcion}</p>
-            <p className="text-sm text-gray-500">{new Date(servicio.createdAt).toLocaleString()}</p>
-          </FieldRow>
 
           <FieldRow
-            label="Ubicación"
+            label="Estado"
+            value={servicio.estado}
+          />
+
+          <FieldRow
+            label="Descripción"
+            value={servicio.descripcion}
+          />
+
+          <FieldRow
+            label="Fecha de la solicitud"
+            value={new Date(servicio.createdAt).toLocaleString()}
+          />
+
+          <FieldRow
+            label="Dirección"
             value={servicio.direccion.direccion}
           />
 
@@ -135,10 +129,10 @@ export function ServicioDetalle() {
           )}
 
           {servicio.detallesCompletado && (
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h2 className="text-sm font-medium text-gray-700 mb-2">Detalles del servicio realizado</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{servicio.detallesCompletado}</p>
-            </div>
+            <FieldRow
+              label="Detalles del servicio realizado"
+              value={servicio.detallesCompletado}
+            />
           )}
 
           {servicio.imagenes && servicio.imagenes.length > 0 && (
@@ -152,14 +146,16 @@ export function ServicioDetalle() {
           )}
 
           {(servicio.estado === 'CERRADO' || servicio.estado === 'TERMINADO') && (
-            <div className="border-t pt-6 mt-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Calificación del servicio</h2>
+            <div className="pt-6 mt-6">
+              <FieldRow
+                label="Calificación del servicio"
+                value={servicio.detallesCompletado}
+              />
 
               {servicio.calificacion ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <StarRating value={servicio.calificacion} readonly size={28} />
-                    <span className="text-gray-700 font-medium">{servicio.calificacion}/5</span>
+                    <StarRating value={servicio.calificacion} readonly size={22} />
                   </div>
                   {servicio.comentarioCalificacion && (
                     <p className="text-gray-600 text-sm italic">
@@ -174,7 +170,7 @@ export function ServicioDetalle() {
                 <div className="space-y-4">
                   <p className="text-gray-600">¿Cómo calificarías el servicio recibido?</p>
                   <StarRating value={rating} onChange={setRating} size={36} />
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Comentario (opcional)
@@ -214,7 +210,10 @@ export function ServicioDetalle() {
             </div>
           )}
         </div>
-      </div>
+        <ButtonContainer>
+          <NavigationButton to="/cliente/servicios" text="Volver a mis servicios" />
+        </ButtonContainer>
+      </FormContainer>
     </div>
   );
 }
