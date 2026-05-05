@@ -54,8 +54,8 @@ function AppRoutes() {
             
             <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
             <Route path="tecnico/servicio/nuevo/:id" element={<ServicioNuevo />} />
-            <Route path="tecnico/servicio/:id" element={<TecnicoServicioDetalle />} />
             <Route path="tecnico/servicio/:id/terminar" element={<TerminarServicio />} />
+            <Route path="tecnico/servicio/:id" element={<TecnicoServicioDetalle />} />
             <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
             <Route path="tecnico/perfil" element={<TecnicoPerfil />} />
           </Route>
