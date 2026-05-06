@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer, NavigationButton } from '../../components/common';
-import { CheckCircle, Loader } from 'lucide-react';
+import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer, NavigationButton, Chat } from '../../components/common';
+import { CheckCircle, Loader, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ServicioDetalle {
   id: string;
@@ -33,10 +34,12 @@ interface ServicioDetalle {
 export function ServicioNuevo() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [servicio, setServicio] = useState<ServicioDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
   const [aceptando, setAceptando] = useState(false);
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
+  const [chatAbierto, setChatAbierto] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -119,6 +122,15 @@ export function ServicioNuevo() {
       <div className="py-8">
         <PageHeader title="Detalles del servicio" />
 
+        {(servicio.estado === 'ASIGNADO') && (
+          <button
+            onClick={() => setChatAbierto(true)}
+            className="fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </button>
+        )}
+
         <FormContainer className="space-y-4">
             <FieldRow label="Descripción" value={servicio.descripcion} />
 
@@ -163,6 +175,14 @@ export function ServicioNuevo() {
         </FormContainer>
       </div>
       {modalCancelado}
+      {servicio.estado === 'ASIGNADO' && (
+        <Chat
+          servicioId={id!}
+          usuarioId={user?.id || ''}
+          isOpen={chatAbierto}
+          onClose={() => setChatAbierto(false)}
+        />
+      )}
     </>
   );
 }
