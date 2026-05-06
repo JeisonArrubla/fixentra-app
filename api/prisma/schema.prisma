@@ -45,6 +45,7 @@ model Usuario {
   serviciosCliente    Servicio[] @relation("ServicioCliente")
   serviciosTecnico    Servicio[] @relation("ServicioTecnico")
   refreshTokens       RefreshToken[]
+  mensajesEnviados    Mensaje[]  @relation("MensajeEmisor")
 
   @@map("usuarios")
   @@index([correo])
@@ -117,6 +118,7 @@ model Servicio {
   tecnico             Usuario?        @relation("ServicioTecnico", fields: [tecnicoId], references: [id])
   pago                Pago?
   imagenes            Imagen[]
+  mensajes            Mensaje[]
   calificacion         Int?
   comentarioCalificacion String?       @map("comentario_calificacion")
   fechaCalificacion    DateTime?       @map("fecha_calificacion")
@@ -153,4 +155,20 @@ model Pago {
   @@map("pagos")
   @@index([servicioId])
   @@index([estado])
+}
+
+model Mensaje {
+  id          String   @id @default(uuid())
+  servicioId  String   @map("servicio_id")
+  servicio    Servicio @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+  emisorId    String   @map("emisor_id")
+  emisor      Usuario  @relation("MensajeEmisor", fields: [emisorId], references: [id])
+  contenido   String
+  leido       Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("mensajes")
+  @@index([servicioId])
+  @@index([emisorId])
+  @@index([createdAt])
 }
