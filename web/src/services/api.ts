@@ -207,4 +207,15 @@ export const serviciosApi = {
   eliminar: (id: string) => api.delete(`/servicios/${id}`),
 };
 
+export const chatApi = {
+  getMensajes: (servicioId: string) =>
+    api.get(`/chat/${servicioId}/mensajes`),
+
+  enviarMensaje: (servicioId: string, contenido: string) =>
+    api.post(`/chat/${servicioId}/mensajes`, { contenido }),
+
+  marcarLeidos: (servicioId: string) =>
+    api.post(`/chat/${servicioId}/mensajes/leidos`),
+};
+
 export default api;
