@@ -85,8 +85,14 @@ export function TecnicoDashboard() {
           <div className="flex items-center justify-center py-8">
             <Loader className="h-6 w-6 animate-spin text-icon" />
           </div>
+        ) : user?.disponibilidad === false ? (
+          <div className="text-center py-8">
+            <p className="text-gray-600 text-lg">Estás en estado</p>
+            <p className="text-gray-600 text-lg">"No Disponible"</p>
+            <p className="text-sm text-gray-500 mt-2">Activa tu disponibilidad desde tu perfil para ver nuevos servicios</p>
+          </div>
         ) : servicios.length === 0 ? (
-          <PageHeader title={`No hay servicios nuevos`} />
+          <PageHeader title="No hay servicios nuevos" />
         ) : (
 
           <div className="space-y-3">
@@ -97,13 +103,13 @@ export function TecnicoDashboard() {
                 onClick={() => handleVerServicio(serv.id)}
                 className="block w-full text-left bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
               >
-                  <div className="flex-1">
-                    <p className="font-semibold text-green-900">{serv.descripcion}</p>
-                    <div className="flex items-center text-sm text-green-700 mt-1">
-                      <MapPin className="h-4 w-4 mr-2" />
-                      {serv.direccion.direccion}
-                    </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-green-900">{serv.descripcion}</p>
+                  <div className="flex items-center text-sm text-green-700 mt-1">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    {serv.direccion.direccion}
                   </div>
+                </div>
               </button>
             ))}
           </div>
