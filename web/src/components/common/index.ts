@@ -6,6 +6,7 @@ export { SubmitButton } from './SubmitButton';
 export { CancelButton } from './CancelButton';
 export { ConfirmModal } from './ConfirmModal';
 export { Modal } from './Modal';
+export { Chat } from './Chat';
 export { PageHeader } from './PageHeader';
 export { FieldRow } from './FieldRow';
 export { NavbarLink } from './NavbarLink';
