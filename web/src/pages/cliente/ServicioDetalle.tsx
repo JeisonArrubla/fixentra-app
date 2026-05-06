@@ -4,10 +4,12 @@ import { serviciosApi } from '../../services/api';
 import { NavigationButton } from '../../components/common/NavigationButton';
 import { StarRating } from '../../components/common/StarRating';
 import { ImageWithViewer } from '../../components/common/ImageWithViewer';
+import { Chat } from '../../components/common/Chat';
 import { PageHeader, FieldRow } from '../../components/common';
 import { FormContainer, ButtonContainer } from '../../components/common';
-import { Star, Loader } from 'lucide-react';
+import { Star, Loader, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ServicioDetalle {
   id: string;
@@ -30,11 +32,13 @@ interface ServicioDetalle {
 
 export function ServicioDetalle() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [servicio, setServicio] = useState<ServicioDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
   const [calificando, setCalificando] = useState(false);
   const [rating, setRating] = useState(0);
   const [comentario, setComentario] = useState('');
+  const [chatAbierto, setChatAbierto] = useState(false);
 
   useEffect(() => {
     cargarServicio();
@@ -97,6 +101,15 @@ export function ServicioDetalle() {
       <PageHeader
         title="Detalles del servicio"
       />
+
+      {(servicio.estado === 'ASIGNADO' || servicio.estado === 'TERMINADO' || servicio.estado === 'CERRADO') && (
+        <button
+          onClick={() => setChatAbierto(true)}
+          className="fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </button>
+      )}
 
       <FormContainer>
         <div className="space-y-4">
@@ -214,6 +227,13 @@ export function ServicioDetalle() {
           <NavigationButton to="/cliente/servicios" text="Volver a mis servicios" />
         </ButtonContainer>
       </FormContainer>
+
+      <Chat
+        servicioId={id!}
+        usuarioId={user?.id || ''}
+        isOpen={chatAbierto}
+        onClose={() => setChatAbierto(false)}
+      />
     </div>
   );
 }
