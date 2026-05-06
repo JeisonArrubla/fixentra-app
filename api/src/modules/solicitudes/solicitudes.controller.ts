@@ -58,8 +58,8 @@ export class SolicitudesController {
   @Get('todas')
   @Roles('tecnico')
   @ApiOperation({ summary: 'Ver todos los servicios nuevos' })
-  async getTodasNuevas() {
-    return this.solicitudesService.getTodasNuevas();
+  async getTodasNuevas(@CurrentUser() user: UserPayload) {
+    return this.solicitudesService.getTodasNuevas(user.id);
   }
 
   @Get('mis-servicios')

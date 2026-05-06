@@ -277,7 +277,15 @@ export class SolicitudesService {
     });
   }
 
-  async getTodasNuevas(): Promise<any[]> {
+  async getTodasNuevas(tecnicoId: string): Promise<any[]> {
+    const tecnico = await this.prisma.tecnico.findUnique({
+      where: { id: tecnicoId },
+    });
+
+    if (!tecnico?.disponibilidad) {
+      return [];
+    }
+
     return this.prisma.servicio.findMany({
       where: { estado: 'NUEVO' },
       include: {
