@@ -125,7 +125,7 @@ export function ServicioNuevo() {
         {(servicio.estado === 'ASIGNADO') && (
           <button
             onClick={() => setChatAbierto(true)}
-            className="fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
+            className="fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-colors z-[100]"
           >
             <MessageCircle className="h-6 w-6" />
           </button>

@@ -107,7 +107,7 @@ export function Chat({ servicioId, usuarioId, isOpen, onClose }: ChatProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white rounded-t-lg sm:rounded-lg shadow-xl w-full sm:max-w-md mx-auto h-[80vh] sm:h-[600px] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
