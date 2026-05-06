@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer } from '../../components/common';
+import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer, NavigationButton } from '../../components/common';
 import { CheckCircle, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -119,8 +119,7 @@ export function ServicioNuevo() {
       <div className="py-8">
         <PageHeader title="Detalles del servicio" />
 
-        <FormContainer>
-          <div className="space-y-4">
+        <FormContainer className="space-y-4">
             <FieldRow label="Descripción" value={servicio.descripcion} />
 
             <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
@@ -138,6 +137,8 @@ export function ServicioNuevo() {
 
             {servicio.estado === 'NUEVO' && (
               <ButtonContainer>
+                <NavigationButton to='/tecnico/dashboard'>
+                </NavigationButton>
                 <SubmitButton
                   text='Aceptar'
                   onClick={aceptarServicio}
@@ -158,7 +159,6 @@ export function ServicioNuevo() {
                 </Link>
               </div>
             )}
-          </div>
 
         </FormContainer>
       </div>
