@@ -30,6 +30,7 @@ export interface UsuarioPayload {
   apellido: string;
   esCliente: boolean;
   esTecnico: boolean;
+  disponibilidad?: boolean;
 }
 
 @Injectable()
@@ -98,6 +99,7 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente,
       esTecnico,
+      disponibilidad: esTecnico ? (dto.disponibilidadTecnico ?? true) : undefined,
     };
   }
 
@@ -223,6 +225,7 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente: !!usuario.clientePerfil,
       esTecnico: !!usuario.tecnicoPerfil,
+      disponibilidad: usuario.tecnicoPerfil?.disponibilidad,
     };
   }
 }
