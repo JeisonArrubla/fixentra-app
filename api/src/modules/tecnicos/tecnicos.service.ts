@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { NivelTecnico } from '@prisma/client';
 import { PrismaService } from '../../shared/prisma.service';
+import { NivelesService } from '../niveles/niveles.service';
 import {
   CreateTecnicoDto,
   UpdateUbicacionDto,
@@ -8,7 +10,10 @@ import {
 
 @Injectable()
 export class TecnicosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private nivelesService: NivelesService,
+  ) {}
 
   async crearPerfil(usuarioId: string, dto: CreateTecnicoDto): Promise<any> {
     const existente = await this.prisma.tecnico.findUnique({
@@ -22,6 +27,7 @@ export class TecnicosService {
     const tecnico = await this.prisma.tecnico.create({
       data: {
         id: usuarioId,
+        nivel: NivelTecnico.PLATA,
         latitud: dto.latitud,
         longitud: dto.longitud,
         radioCoberturaKm: dto.radioCoberturaKm || 10,
