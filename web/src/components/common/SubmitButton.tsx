@@ -61,7 +61,6 @@ export function SubmitButton({
       {loading ? (
         <>
           <Loader className="h-5 w-5 animate-spin mr-2" />
-          Enviando...
         </>
       ) : (
         <>
