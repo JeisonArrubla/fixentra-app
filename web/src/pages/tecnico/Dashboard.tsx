@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { serviciosApi } from '../../services/api';
-import { MapPin, Loader } from 'lucide-react';
-import { PageHeader, Modal } from '../../components/common';
+import { MapPin, Loader, RefreshCw } from 'lucide-react';
+import { PageHeader, Modal, SubmitButton, ButtonContainer } from '../../components/common';
 
 interface Servicio {
   id: string;
@@ -22,6 +22,7 @@ export function TecnicoDashboard() {
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [cargandoServicios, setCargandoServicios] = useState(true);
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
+  const [refrescando, setRefrescando] = useState(false);
 
   useEffect(() => {
     if (user !== null) {
@@ -35,14 +36,24 @@ export function TecnicoDashboard() {
     }
   }, [user]);
 
-  const cargarServicios = async () => {
+  const cargarServicios = async (esRefresh = false) => {
+    if (esRefresh) {
+      setRefrescando(true);
+    } else {
+      setCargandoServicios(true);
+    }
+    
     try {
       const { data } = await serviciosApi.getTodasNuevas();
       setServicios(data);
     } catch (err) {
       console.error(err);
     } finally {
-      setCargandoServicios(false);
+      if (esRefresh) {
+        setRefrescando(false);
+      } else {
+        setCargandoServicios(false);
+      }
     }
   };
 
@@ -114,6 +125,15 @@ export function TecnicoDashboard() {
             ))}
           </div>
         )}
+
+        <ButtonContainer>
+          <SubmitButton
+            text="Refrescar"
+            onClick={() => cargarServicios(true)}
+            loading={refrescando}
+            icon={<RefreshCw className="h-4 w-4" />}
+          />
+        </ButtonContainer>
       </div>
 
       <Modal
