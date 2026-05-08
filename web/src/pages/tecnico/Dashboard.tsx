@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { serviciosApi } from '../../services/api';
 import { MapPin, Loader, RefreshCw } from 'lucide-react';
-import { PageHeader, Modal, SubmitButton, ButtonContainer } from '../../components/common';
+import { PageHeader, Modal, FormContainer, SubmitButton, ButtonContainer } from '../../components/common';
 
 interface Servicio {
   id: string;
@@ -90,41 +90,42 @@ export function TecnicoDashboard() {
     <div className="max-w-7xl mx-auto py-8 px-4">
       <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
 
-      <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
-
-        {cargandoServicios ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader className="h-6 w-6 animate-spin text-icon" />
-          </div>
-        ) : user?.disponibilidad === false ? (
-          <div className="text-center py-8">
-            <p className="text-gray-600 text-lg">Estás en estado</p>
-            <p className="text-gray-600 text-lg">"No Disponible"</p>
-            <p className="text-sm text-gray-500 mt-2">Activa tu disponibilidad desde tu perfil para ver nuevos servicios</p>
-          </div>
-        ) : servicios.length === 0 ? (
-          <PageHeader title="No hay servicios nuevos" />
-        ) : (
-
-          <div className="space-y-3">
-            <PageHeader title={`Nuevos servicios disponibles`} />
-            {servicios.map((serv) => (
-              <button
-                key={serv.id}
-                onClick={() => handleVerServicio(serv.id)}
-                className="block w-full text-left bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
-              >
-                <div className="flex-1">
-                  <p className="font-semibold text-green-900">{serv.descripcion}</p>
-                  <div className="flex items-center text-sm text-green-700 mt-1">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {serv.direccion.direccion}
+      <FormContainer>
+        <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
+        
+          {cargandoServicios ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader className="h-6 w-6 animate-spin text-icon" />
+            </div>
+          ) : user?.disponibilidad === false ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600 text-lg">Estás en estado</p>
+              <p className="text-gray-600 text-lg">"No Disponible"</p>
+              <p className="text-sm text-gray-500 mt-2">Activa tu disponibilidad desde tu perfil para ver nuevos servicios</p>
+            </div>
+          ) : servicios.length === 0 ? (
+            <PageHeader title="No hay servicios nuevos" />
+          ) : (
+            <div className="space-y-3">
+              <PageHeader title="Nuevos servicios disponibles" />
+              {servicios.map((serv) => (
+                <button
+                  key={serv.id}
+                  onClick={() => handleVerServicio(serv.id)}
+                  className="block w-full text-left bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
+                >
+                  <div className="flex-1">
+                    <p className="font-semibold text-green-900">{serv.descripcion}</p>
+                    <div className="flex items-center text-sm text-green-700 mt-1">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      {serv.direccion.direccion}
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <ButtonContainer>
           <SubmitButton
@@ -134,7 +135,7 @@ export function TecnicoDashboard() {
             icon={<RefreshCw className="h-4 w-4" />}
           />
         </ButtonContainer>
-      </div>
+      </FormContainer>
 
       <Modal
         isOpen={mostrarModalCancelado}
