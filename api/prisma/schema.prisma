@@ -28,6 +28,13 @@ enum EstadoPago {
   FALLIDO
 }
 
+enum NivelTecnico {
+  MADERA
+  BRONCE
+  PLATA
+  ORO
+}
+
 model Usuario {
   id            String         @id @default(uuid())
   nombre        String
@@ -92,14 +99,15 @@ model Direccion {
 }
 
 model Tecnico {
-  id                String    @id @map("id")
-  usuario           Usuario   @relation(fields: [id], references: [id], onDelete: Cascade)
-  disponibilidad    Boolean   @default(true)
+  id                String         @id @map("id")
+  usuario           Usuario        @relation(fields: [id], references: [id], onDelete: Cascade)
+  disponibilidad    Boolean        @default(true)
   latitud           Float?
   longitud          Float?
-  radioCoberturaKm  Float     @default(10.0) @map("radio_cobertura_km")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
+  radioCoberturaKm  Float          @default(10.0) @map("radio_cobertura_km")
+  nivel             NivelTecnico   @default(PLATA)
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
 
   @@map("tecnicos")
   @@index([disponibilidad])
