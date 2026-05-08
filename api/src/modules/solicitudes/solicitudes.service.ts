@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
@@ -15,6 +16,8 @@ import {
 
 @Injectable()
 export class SolicitudesService {
+  private readonly logger = new Logger(SolicitudesService.name);
+
   constructor(
     private prisma: PrismaService,
     private nivelesService: NivelesService,
@@ -393,7 +396,10 @@ export class SolicitudesService {
     });
 
     if (servicio.tecnicoId) {
+      this.logger.log(`Recalculando nivel para técnico ${servicio.tecnicoId} tras calificar servicio ${servicioId}`);
       await this.nivelesService.recalcularNivel(servicio.tecnicoId);
+    } else {
+      this.logger.warn(`Servicio ${servicioId} no tiene tecnicoId, no se recalcula nivel`);
     }
 
     return result;

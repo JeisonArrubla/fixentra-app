@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { NivelTecnico } from '@prisma/client';
 import { PrismaService } from '../../shared/prisma.service';
 import { NIVELES_CONFIG, determinarNivel } from '../../config/niveles.config';
 
 @Injectable()
 export class NivelesService {
+  private readonly logger = new Logger(NivelesService.name);
+
   constructor(private prisma: PrismaService) {}
 
   obtenerTiempoEspera(nivel: NivelTecnico): number {
@@ -12,6 +14,8 @@ export class NivelesService {
   }
 
   async recalcularNivel(tecnicoId: string): Promise<NivelTecnico> {
+    this.logger.log(`Recalculando nivel para técnico ${tecnicoId}`);
+
     const stats = await this.prisma.servicio.aggregate({
       where: {
         tecnicoId,
@@ -22,12 +26,17 @@ export class NivelesService {
     });
 
     const promedio = stats._avg.calificacion ?? 0;
-    const nivel = determinarNivel(promedio);
+    this.logger.log(`Promedio calificaciones: ${promedio}`);
 
-    await this.prisma.tecnico.update({
+    const nivel = determinarNivel(promedio);
+    this.logger.log(`Nivel determinado: ${nivel}`);
+
+    const result = await this.prisma.tecnico.update({
       where: { id: tecnicoId },
       data: { nivel },
     });
+
+    this.logger.log(`Técnico actualizado, nivel ahora: ${result.nivel}`);
 
     return nivel;
   }
