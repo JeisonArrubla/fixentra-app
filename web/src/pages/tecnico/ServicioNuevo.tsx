@@ -95,15 +95,7 @@ export function ServicioNuevo() {
       isOpen={mostrarModalCancelado}
       onClose={() => navigate('/tecnico/dashboard')}
       title="Servicio cancelado"
-      dismissible={false}
-      footer={
-        <ButtonContainer>
-          <SubmitButton
-            text="Regresar"
-            onClick={() => navigate('/tecnico/dashboard')}
-          />
-        </ButtonContainer>
-      }
+      dismissible={true}
     >
       <p className="text-gray-600">El cliente ha cancelado el servicio</p>
     </Modal>
@@ -132,45 +124,45 @@ export function ServicioNuevo() {
         )}
 
         <FormContainer className="space-y-4">
-            <FieldRow label="Descripción" value={servicio.descripcion} />
+          <FieldRow label="Descripción" value={servicio.descripcion} />
 
-            <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
+          <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
 
-            <FieldRow label="Fecha solicitud" value={new Date(servicio.createdAt).toLocaleString()} />
+          <FieldRow label="Fecha solicitud" value={new Date(servicio.createdAt).toLocaleString()} />
 
-            {servicio.imagenes && servicio.imagenes.length > 0 && (
-              <FieldRow label="Fotos">
-                <ImageGridWithViewer
-                  images={servicio.imagenes}
-                  thumbnailClassName="h-24 w-24 object-cover rounded-lg"
-                />
-              </FieldRow>
-            )}
+          {servicio.imagenes && servicio.imagenes.length > 0 && (
+            <FieldRow label="Fotos">
+              <ImageGridWithViewer
+                images={servicio.imagenes}
+                thumbnailClassName="h-24 w-24 object-cover rounded-lg"
+              />
+            </FieldRow>
+          )}
 
-            {servicio.estado === 'NUEVO' && (
-              <ButtonContainer>
-                <NavigationButton to='/tecnico/dashboard'>
-                </NavigationButton>
-                <SubmitButton
-                  text='Aceptar'
-                  onClick={aceptarServicio}
-                  disabled={aceptando}
-                >
-                </SubmitButton>
-              </ButtonContainer>
-            )}
+          {servicio.estado === 'NUEVO' && (
+            <ButtonContainer>
+              <NavigationButton to='/tecnico/dashboard'>
+              </NavigationButton>
+              <SubmitButton
+                text='Aceptar'
+                onClick={aceptarServicio}
+                disabled={aceptando}
+              >
+              </SubmitButton>
+            </ButtonContainer>
+          )}
 
-            {servicio.estado === 'ASIGNADO' && (
-              <div className="pt-4 border-t">
-                <Link
-                  to={`/tecnico/servicio/${id}/terminar`}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
-                >
-                  <CheckCircle className="h-5 w-5 mr-2" />
-                  Terminar servicio
-                </Link>
-              </div>
-            )}
+          {servicio.estado === 'ASIGNADO' && (
+            <div className="pt-4 border-t">
+              <Link
+                to={`/tecnico/servicio/${id}/terminar`}
+                className="w-full flex items-center justify-center px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
+              >
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Terminar servicio
+              </Link>
+            </div>
+          )}
 
         </FormContainer>
       </div>
