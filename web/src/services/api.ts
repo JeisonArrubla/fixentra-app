@@ -108,6 +108,7 @@ export interface Usuario {
   esCliente: boolean;
   esTecnico: boolean;
   disponibilidad?: boolean;
+  nivel?: string;
 }
 
 export interface AuthTokens {

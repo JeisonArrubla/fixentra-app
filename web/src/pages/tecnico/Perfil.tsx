@@ -7,6 +7,7 @@ import { PageHeader, FieldRow, FormContainer } from '../../components/common';
 
 interface TecnicoPerfil {
   id: string;
+  nivel: string;
   disponibilidad: boolean;
   latitud?: number;
   longitud?: number;
@@ -25,6 +26,13 @@ interface TecnicoPerfil {
   totalCalificaciones: number;
   totalServiciosCompletados: number;
 }
+
+const NIVEL_COLORS: Record<string, string> = {
+  ORO: 'bg-yellow-100 text-yellow-800 border-yellow-400',
+  PLATA: 'bg-gray-100 text-gray-800 border-gray-400',
+  BRONCE: 'bg-orange-100 text-orange-800 border-orange-400',
+  MADERA: 'bg-amber-100 text-amber-800 border-amber-600',
+};
 
 export function TecnicoPerfil() {
   const [perfil, setPerfil] = useState<TecnicoPerfil | null>(null);
@@ -117,6 +125,14 @@ export function TecnicoPerfil() {
                   </>
                 )}
               </button>
+            }
+          />
+          <FieldRow
+            label="Nivel"
+            action={
+              <span className={`px-3 py-1 rounded-full border text-sm font-semibold ${NIVEL_COLORS[perfil.nivel] || 'bg-gray-100 text-gray-800 border-gray-400'}`}>
+                {perfil.nivel}
+              </span>
             }
           />
           <FieldRow
