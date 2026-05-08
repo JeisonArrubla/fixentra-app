@@ -4,6 +4,7 @@ import { SolicitudesController } from './solicitudes.controller';
 import { SolicitudesService } from './solicitudes.service';
 import { SolicitudesGateway } from './solicitudes.gateway';
 import { PrismaService } from '../../shared/prisma.service';
+import { NivelesModule } from '../niveles/niveles.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { PrismaService } from '../../shared/prisma.service';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '15m' },
     }),
+    NivelesModule,
   ],
   controllers: [SolicitudesController],
   providers: [SolicitudesService, SolicitudesGateway, PrismaService],

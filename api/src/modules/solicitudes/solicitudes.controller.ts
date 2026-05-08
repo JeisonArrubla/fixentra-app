@@ -44,11 +44,13 @@ export class SolicitudesController {
   @Roles('tecnico')
   @ApiOperation({ summary: 'Ver servicios disponibles (polling fallback)' })
   async getDisponibles(
+    @CurrentUser() user: UserPayload,
     @Query('latitud') latitud: number,
     @Query('longitud') longitud: number,
     @Query('radioKm') radioKm?: number,
   ) {
     return this.solicitudesService.getSolicitudesDisponibles(
+      user.id,
       latitud,
       longitud,
       radioKm,

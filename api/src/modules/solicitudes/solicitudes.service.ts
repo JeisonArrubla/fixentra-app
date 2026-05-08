@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
+import { NivelesService } from '../niveles/niveles.service';
 import {
   CreateServicioDto,
   UpdateEstadoServicioDto,
@@ -14,7 +15,10 @@ import {
 
 @Injectable()
 export class SolicitudesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private nivelesService: NivelesService,
+  ) {}
 
   async eliminarSolicitud(
     solicitudId: string,
@@ -86,12 +90,26 @@ export class SolicitudesService {
   }
 
   async getSolicitudesDisponibles(
+    tecnicoId: string,
     latitud: number,
     longitud: number,
     radioKm: number = 10,
   ): Promise<any[]> {
+    const tecnico = await this.prisma.tecnico.findUnique({
+      where: { id: tecnicoId },
+      select: { nivel: true },
+    });
+
+    if (!tecnico) return [];
+
+    const tiempoEspera = this.nivelesService.obtenerTiempoEspera(tecnico.nivel);
+    const fechaLimite = new Date(Date.now() - tiempoEspera * 60 * 1000);
+
     const servicios = await this.prisma.servicio.findMany({
-      where: { estado: 'NUEVO' },
+      where: {
+        estado: 'NUEVO',
+        createdAt: { lte: fechaLimite },
+      },
       include: {
         direccion: true,
         cliente: {
@@ -286,8 +304,14 @@ export class SolicitudesService {
       return [];
     }
 
+    const tiempoEspera = this.nivelesService.obtenerTiempoEspera(tecnico.nivel);
+    const fechaLimite = new Date(Date.now() - tiempoEspera * 60 * 1000);
+
     return this.prisma.servicio.findMany({
-      where: { estado: 'NUEVO' },
+      where: {
+        estado: 'NUEVO',
+        createdAt: { lte: fechaLimite },
+      },
       include: {
         direccion: true,
         cliente: {
@@ -352,7 +376,7 @@ export class SolicitudesService {
       );
     }
 
-    return this.prisma.servicio.update({
+    const result = await this.prisma.servicio.update({
       where: { id: servicioId },
       data: {
         calificacion: dto.calificacion,
@@ -367,6 +391,12 @@ export class SolicitudesService {
         imagenes: true,
       },
     });
+
+    if (servicio.tecnicoId) {
+      await this.nivelesService.recalcularNivel(servicio.tecnicoId);
+    }
+
+    return result;
   }
 
   private haversine(

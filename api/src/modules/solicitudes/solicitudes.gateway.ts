@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../shared/prisma.service';
+import { NivelesService } from '../niveles/niveles.service';
 
 interface TecnicoConnection {
   socket: Socket;
@@ -28,6 +29,7 @@ export class SolicitudesGateway
   constructor(
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private nivelesService: NivelesService,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -120,7 +122,11 @@ export class SolicitudesGateway
         tecnico.longitud,
       );
 
-      if (distancia <= (tecnico.radioCoberturaKm || radioKm)) {
+      if (!(distancia <= (tecnico.radioCoberturaKm || radioKm))) continue;
+
+      const tiempoEspera = this.nivelesService.obtenerTiempoEspera(tecnico.nivel);
+
+      const emit = () => {
         const conexiones = this.tecnicosConectados.get(tecnico.id);
         if (conexiones) {
           for (const conn of conexiones) {
@@ -131,6 +137,12 @@ export class SolicitudesGateway
             });
           }
         }
+      };
+
+      if (tiempoEspera === 0) {
+        emit();
+      } else {
+        setTimeout(emit, tiempoEspera * 60 * 1000);
       }
     }
   }
