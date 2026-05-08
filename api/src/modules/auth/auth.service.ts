@@ -31,6 +31,7 @@ export interface UsuarioPayload {
   esCliente: boolean;
   esTecnico: boolean;
   disponibilidad?: boolean;
+  nivel?: string;
 }
 
 @Injectable()
@@ -134,6 +135,7 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente: !!usuario.clientePerfil,
       esTecnico: !!usuario.tecnicoPerfil,
+      nivel: usuario.tecnicoPerfil?.nivel,
     };
   }
 
@@ -226,6 +228,7 @@ export class AuthService {
       esCliente: !!usuario.clientePerfil,
       esTecnico: !!usuario.tecnicoPerfil,
       disponibilidad: usuario.tecnicoPerfil?.disponibilidad,
+      nivel: usuario.tecnicoPerfil?.nivel,
     };
   }
 }
