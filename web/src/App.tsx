@@ -16,6 +16,7 @@ import { ServicioNuevo } from './pages/tecnico/ServicioNuevo';
 import { ServicioDetalle as ClienteServicioDetalle } from './pages/cliente/ServicioDetalle';
 import { TecnicoPerfil } from './pages/tecnico/Perfil';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
+import { CalificarServicio } from './pages/cliente/CalificarServicio';
 import { Navbar } from './components/common/Navbar';
 import { BottomNav } from './components/common/BottomNav';
 import { PrivateRoute } from './components/common/PrivateRoute';
@@ -51,6 +52,7 @@ function AppRoutes() {
             <Route path="cliente/servicios" element={<ClienteServicios />} />
             <Route path="cliente/servicios/nuevo" element={<NuevoServicio />} />
             <Route path="cliente/servicios/nuevo/confirmar" element={<ConfirmarServicio />} />
+            <Route path="cliente/servicio/calificar/:id" element={<CalificarServicio />} />
             
             <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
             <Route path="tecnico/servicio/nuevo/:id" element={<ServicioNuevo />} />
