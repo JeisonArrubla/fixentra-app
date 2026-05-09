@@ -38,6 +38,7 @@ api/src/
 │   ├── decorators/         # Decoradores (Roles, CurrentUser, etc.)
 │   ├── filters/            # Filtros de excepciones
 │   ├── interceptors/       # Interceptores
+│   ├── helpers/            # Utilidades (floatEnv, stringEnv)
 │   └── validators/         # Validadores personalizados
 └── modules/                # Módulos funcionales
     ├── auth/               # Autenticación JWT
@@ -60,6 +61,16 @@ JWT_EXPIRES_IN="15m"
 JWT_REFRESH_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV="development"
+
+# Niveles técnicos - umbrales y tiempos de espera
+NIVEL_ORO_UMBRAL=4.2
+NIVEL_ORO_TIEMPO_ESPERA=0
+NIVEL_PLATA_UMBRAL=3.5
+NIVEL_PLATA_TIEMPO_ESPERA=10
+NIVEL_BRONCE_UMBRAL=2.8
+NIVEL_BRONCE_TIEMPO_ESPERA=30
+NIVEL_MADERA_UMBRAL=1.0
+NIVEL_MADERA_TIEMPO_ESPERA=60
 ```
 
 ## Endpoints Principales
