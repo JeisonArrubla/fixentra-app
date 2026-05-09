@@ -6,11 +6,16 @@ export interface NivelConfig {
   label: string;
 }
 
+function envNivel(nivel: string, key: string, defaultValue: number): number {
+  const val = process.env[`NIVEL_${nivel}_${key}`];
+  return val ? parseFloat(val) : defaultValue;
+}
+
 export const NIVELES_CONFIG: Record<NivelTecnico, NivelConfig> = {
-  [NivelTecnico.ORO]:    { umbral: 4.2, tiempoEspera: 0,   label: 'Oro' },
-  [NivelTecnico.PLATA]:  { umbral: 3.5, tiempoEspera: 1,  label: 'Plata' },
-  [NivelTecnico.BRONCE]: { umbral: 2.8, tiempoEspera: 2,  label: 'Bronce' },
-  [NivelTecnico.MADERA]: { umbral: 1.0, tiempoEspera: 3,  label: 'Madera' },
+  [NivelTecnico.ORO]:    { umbral: envNivel('ORO', 'UMBRAL', 4.2),    tiempoEspera: envNivel('ORO', 'TIEMPO_ESPERA', 0),   label: 'Oro' },
+  [NivelTecnico.PLATA]:  { umbral: envNivel('PLATA', 'UMBRAL', 3.5),  tiempoEspera: envNivel('PLATA', 'TIEMPO_ESPERA', 1),  label: 'Plata' },
+  [NivelTecnico.BRONCE]: { umbral: envNivel('BRONCE', 'UMBRAL', 2.8), tiempoEspera: envNivel('BRONCE', 'TIEMPO_ESPERA', 2),  label: 'Bronce' },
+  [NivelTecnico.MADERA]: { umbral: envNivel('MADERA', 'UMBRAL', 1.0), tiempoEspera: envNivel('MADERA', 'TIEMPO_ESPERA', 3),  label: 'Madera' },
 };
 
 export function determinarNivel(promedio: number): NivelTecnico {
@@ -19,10 +24,3 @@ export function determinarNivel(promedio: number): NivelTecnico {
   if (promedio >= NIVELES_CONFIG[NivelTecnico.BRONCE].umbral) return NivelTecnico.BRONCE;
   return NivelTecnico.MADERA;
 }
-
-// export const NIVELES_CONFIG: Record<NivelTecnico, NivelConfig> = {
-//   [NivelTecnico.ORO]:    { umbral: 4.2, tiempoEspera: 0,   label: 'Oro' },
-//   [NivelTecnico.PLATA]:  { umbral: 3.5, tiempoEspera: 10,  label: 'Plata' },
-//   [NivelTecnico.BRONCE]: { umbral: 2.8, tiempoEspera: 30,  label: 'Bronce' },
-//   [NivelTecnico.MADERA]: { umbral: 1.0, tiempoEspera: 60,  label: 'Madera' },
-// };
