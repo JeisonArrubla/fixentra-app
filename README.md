@@ -59,6 +59,16 @@ JWT_EXPIRES_IN="15m"
 JWT_REFRESH_EXPIRES_IN="7d"
 PORT=3000
 NODE_ENV="development"
+
+# Niveles técnicos - umbrales y tiempos de espera
+NIVEL_ORO_UMBRAL=4.2
+NIVEL_ORO_TIEMPO_ESPERA=0
+NIVEL_PLATA_UMBRAL=3.5
+NIVEL_PLATA_TIEMPO_ESPERA=10
+NIVEL_BRONCE_UMBRAL=2.8
+NIVEL_BRONCE_TIEMPO_ESPERA=30
+NIVEL_MADERA_UMBRAL=1.0
+NIVEL_MADERA_TIEMPO_ESPERA=60
 ```
 
 ### Inicializar Base de Datos
@@ -103,6 +113,7 @@ fixentra-app/
 │           ├── decorators/ # Decoradores personalizados
 │           ├── filters/    # Filtros de excepciones
 │           ├── interceptors/ # Interceptores
+│           ├── helpers/    # Utilidades (floatEnv, stringEnv)
 │           └── validators/ # Validadores personalizados
 ├── web/                    # Frontend React
 │   └── src/
@@ -223,6 +234,17 @@ Se usa Leaflet (OpenStreetMap) en lugar de Mapbox - funciona sin API keys, ideal
 
 Socket.IO implementado en el módulo chat para mensajería en tiempo real entre cliente y técnico.
 
+### Env Helpers
+
+Funciones utilitarias en `common/helpers/env.helper.ts` para leer variables de entorno con validación estricta:
+
+- `floatEnv(key)` — Lee y parsea un número decimal. Lanza error si falta o no es válido.
+- `stringEnv(key)` — Lee un string. Lanza error si está vacío o no existe.
+
+### Niveles de Técnico
+
+Los niveles (Madera, Bronce, Plata, Oro) se configuran desde variables de entorno (`NIVEL_{NIVEL}_UMBRAL`, `NIVEL_{NIVEL}_TIEMPO_ESPERA`). El umbral define el promedio de calificación mínimo para alcanzar el nivel, y el tiempo de espera retrasa la asignación de servicios nuevos según el nivel.
+
 ## Modelo de Datos
 
 - **Usuario**: Registro base con documento, correo y contraseña
@@ -234,3 +256,4 @@ Socket.IO implementado en el módulo chat para mensajería en tiempo real entre 
 - **Pago**: Información de pago por servicio
 - **Mensaje**: Chat entre cliente y técnico por servicio
 - **RefreshToken**: Tokens de refresco JWT
+- **NivelTecnico**: Enum con niveles Madera, Bronce, Plata, Oro (configurable por env)
