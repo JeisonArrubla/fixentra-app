@@ -50,6 +50,23 @@ web/src/components/common/
 └── ImageWithViewer.tsx    # Wrapper component for images
 ```
 
+### Env Helpers
+
+Utility functions in `api/src/common/helpers/env.helper.ts` for reading environment variables with strict validation:
+
+- `floatEnv(key)` — Reads and parses a float. Throws error if missing or NaN.
+- `stringEnv(key)` — Reads a string. Throws error if empty or missing.
+
+These fail fast at startup instead of using silent defaults.
+
+### Technician Levels System
+
+Technicians have levels (Madera, Bronce, Plata, Oro) configured via environment variables:
+- `NIVEL_{NIVEL}_UMBRAL` — Minimum average rating to reach the level
+- `NIVEL_{NIVEL}_TIEMPO_ESPERA` — Delay in minutos before new services are assigned to technicians of this level
+
+Configuration lives in `api/src/config/niveles.config.ts` using `floatEnv` helper.
+
 ## Critical Fixes Applied
 
 1. **Navbar**: Needs `<Outlet />` to render child routes
@@ -65,12 +82,18 @@ web/src/components/common/
 api/src/
 ├── app.module.ts
 ├── prisma/schema.prisma
+├── common/
+│   └── helpers/
+│       └── env.helper.ts
 └── modules/
     ├── auth/
+    ├── chat/
     ├── clientes/
+    ├── niveles/
     ├── solicitudes/
     ├── tecnicos/
-    └── upload/
+    ├── upload/
+    └── usuarios/
 ```
 
 ### Frontend
@@ -88,12 +111,19 @@ web/src/
 │   │   ├── ImageWithViewer.tsx
 │   │   ├── Modal.tsx
 │   │   ├── ConfirmModal.tsx
-│   │   ├── NavigationButton.tsx
+│   │   ├── Chat.tsx
+│   │   ├── StarRating.tsx
+│   │   ├── Description.tsx
 │   │   ├── SubmitButton.tsx
 │   │   ├── CancelButton.tsx
 │   │   ├── ActionButton.tsx
-│   │   ├── Description.tsx
-│   │   └── StarRating.tsx
+│   │   ├── NavigationButton.tsx
+│   │   ├── PageHeader.tsx
+│   │   ├── NavbarLink.tsx
+│   │   ├── Logo.tsx
+│   │   ├── FormContainer.tsx
+│   │   ├── FieldRow.tsx
+│   │   └── ButtonContainer.tsx
 │   └── tecnico/
 │       └── TecnicoStats.tsx
 ├── pages/
@@ -102,21 +132,24 @@ web/src/
 │   ├── cliente/
 │   │   ├── Dashboard.tsx
 │   │   ├── Direcciones.tsx
-│   │   ├── Solicitudes.tsx
-│   │   ├── SolicitudDetalle.tsx
-│   │   ├── NuevaSolicitud.tsx
-│   │   └── ConfirmarSolicitud.tsx
+│   │   ├── NuevaDireccion.tsx
+│   │   ├── Servicios.tsx
+│   │   ├── ServicioDetalle.tsx
+│   │   ├── NuevoServicio.tsx
+│   │   ├── ConfirmarServicio.tsx
+│   │   └── CalificarServicio.tsx
 │   └── tecnico/
 │       ├── Dashboard.tsx
+│       ├── ServicioNuevo.tsx
+│       ├── ServicioDetalle.tsx
 │       ├── MisTrabajos.tsx
-│       ├── SolicitudDetalle.tsx
 │       ├── TerminarServicio.tsx
 │       └── Perfil.tsx
 ├── contexts/
 │   ├── AuthContext.tsx
-│   ├── SolicitudContext.tsx
-│   └── ImageViewerContext.tsx
-└── services/api.ts
+│   └── ServicioContext.tsx
+├── services/api.ts
+└── hooks/
 ```
 
 ## Implemented Features
@@ -135,6 +168,9 @@ web/src/
 - Description component to hide descriptive text on mobile
 - Bottom navigation bar (mobile only)
 - Technician reputation stats (average rating, total ratings, completed services)
+- Chat in real time between client and technician (Socket.IO)
+- Technician levels system (Madera, Bronce, Plata, Oro) with configurable thresholds
+- Service completion with details and multiple images
 
 ## UI/UX Design System
 
@@ -179,6 +215,8 @@ web/src/
 7. Use `Description` component to hide descriptive text on mobile
 8. No back buttons in main list views; use BottomNav (mobile) and Navbar (desktop) for navigation
 9. All new views must include responsive design from 768px (md breakpoint)
+10. Use `floatEnv` helper for reading numeric env vars with strict validation instead of silent defaults
+11. Technician levels configuration should live in env vars for easy tuning without code changes
 
 ## Behavior Guidelines
 
@@ -197,15 +235,18 @@ web/src/
 
 /cliente/dashboard       → Client dashboard
 /cliente/direcciones      → Client addresses management
-/cliente/solicitudes       → Client requests list
-/cliente/solicitud/:id     → Client request detail with rating
-/cliente/solicitudes/nueva → New request wizard (step 1)
-/cliente/solicitudes/nueva/confirmar → New request confirmation (step 2)
+/cliente/direcciones/nueva → New address with map
+/cliente/servicios       → Client services list
+/cliente/servicios/nuevo → New service (step 1)
+/cliente/servicios/nuevo/confirmar → Confirm service (step 2)
+/cliente/servicio/:id     → Service detail with chat and rating
+/cliente/servicio/calificar/:id → Rate technician
 
-/tecnico/dashboard        → Technician dashboard (new requests)
-/tecnico/trabajos          → Technician work history
-/tecnico/solicitud/:id     → Request detail
-/tecnico/solicitud/:id/terminar → Finish service form
+/tecnico/dashboard        → Technician dashboard (available services)
+/tecnico/servicio/nuevo/:id → Accept service
+/tecnico/servicio/:id     → Service detail with chat
+/tecnico/servicio/:id/terminar → Complete service with details
+/tecnico/trabajos          → Work history
 /tecnico/perfil            → Technician profile with reputation stats
 
 /dashboard               → Redirects based on user tipo
