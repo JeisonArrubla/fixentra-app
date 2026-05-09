@@ -6,16 +6,31 @@ export interface NivelConfig {
   label: string;
 }
 
-function envNivel(nivel: string, key: string, defaultValue: number): number {
-  const val = process.env[`NIVEL_${nivel}_${key}`];
-  return val ? parseFloat(val) : defaultValue;
+function floatEnv(key: string, fallback: number): number {
+  return parseFloat(process.env[key] ?? String(fallback));
 }
 
 export const NIVELES_CONFIG: Record<NivelTecnico, NivelConfig> = {
-  [NivelTecnico.ORO]:    { umbral: envNivel('ORO', 'UMBRAL', 4.2),    tiempoEspera: envNivel('ORO', 'TIEMPO_ESPERA', 0),   label: 'Oro' },
-  [NivelTecnico.PLATA]:  { umbral: envNivel('PLATA', 'UMBRAL', 3.5),  tiempoEspera: envNivel('PLATA', 'TIEMPO_ESPERA', 1),  label: 'Plata' },
-  [NivelTecnico.BRONCE]: { umbral: envNivel('BRONCE', 'UMBRAL', 2.8), tiempoEspera: envNivel('BRONCE', 'TIEMPO_ESPERA', 2),  label: 'Bronce' },
-  [NivelTecnico.MADERA]: { umbral: envNivel('MADERA', 'UMBRAL', 1.0), tiempoEspera: envNivel('MADERA', 'TIEMPO_ESPERA', 3),  label: 'Madera' },
+  [NivelTecnico.ORO]: {
+    label: 'Oro',
+    umbral: floatEnv('NIVEL_ORO_UMBRAL', 4.2),
+    tiempoEspera: floatEnv('NIVEL_ORO_TIEMPO_ESPERA', 0),
+  },
+  [NivelTecnico.PLATA]: {
+    label: 'Plata',
+    umbral: floatEnv('NIVEL_PLATA_UMBRAL', 3.5),
+    tiempoEspera: floatEnv('NIVEL_PLATA_TIEMPO_ESPERA', 1),
+  },
+  [NivelTecnico.BRONCE]: {
+    label: 'Bronce',
+    umbral: floatEnv('NIVEL_BRONCE_UMBRAL', 2.8),
+    tiempoEspera: floatEnv('NIVEL_BRONCE_TIEMPO_ESPERA', 2),
+  },
+  [NivelTecnico.MADERA]: {
+    label: 'Madera',
+    umbral: floatEnv('NIVEL_MADERA_UMBRAL', 1.0),
+    tiempoEspera: floatEnv('NIVEL_MADERA_TIEMPO_ESPERA', 3),
+  },
 };
 
 export function determinarNivel(promedio: number): NivelTecnico {
