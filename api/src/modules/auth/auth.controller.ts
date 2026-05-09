@@ -26,6 +26,7 @@ interface UserPayload {
   apellido: string;
   esCliente: boolean;
   esTecnico: boolean;
+  disponibilidad?: boolean;
 }
 
 @ApiTags('auth')
@@ -61,6 +62,7 @@ export class AuthController {
         apellido: user.apellido,
         esCliente: user.esCliente,
         esTecnico: user.esTecnico,
+        disponibilidad: user.disponibilidad,
       },
     };
   }
@@ -80,14 +82,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Obtener perfil del usuario actual' })
   async getProfile(@CurrentUser() user: UserPayload) {
-    return {
-      id: user.id,
-      correo: user.correo,
-      nombre: user.nombre,
-      apellido: user.apellido,
-      esCliente: user.esCliente,
-      esTecnico: user.esTecnico,
-    };
+    return this.authService.getProfile(user.id);
   }
 
   @Post('logout')

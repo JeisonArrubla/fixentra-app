@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { tecnicosApi, solicitudesApi } from '../../services/api';
-import { MapPin, ArrowRight, Loader, CheckCircle } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { Description } from '../../components/common/Description';
+import { serviciosApi } from '../../services/api';
+import { MapPin, Loader, RefreshCw } from 'lucide-react';
+import { PageHeader, Modal, FormContainer, SubmitButton, ButtonContainer } from '../../components/common';
 
-interface Solicitud {
+interface Servicio {
   id: string;
   descripcion: string;
   estado: string;
@@ -18,10 +17,12 @@ interface Solicitud {
 
 export function TecnicoDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [cargando, setCargando] = useState(true);
-  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
-  const [cargandoSolicitudes, setCargandoSolicitudes] = useState(true);
-  const [disponibilidad, setDisponibilidad] = useState(true);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [cargandoServicios, setCargandoServicios] = useState(true);
+  const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
+  const [refrescando, setRefrescando] = useState(false);
 
   useEffect(() => {
     if (user !== null) {
@@ -31,28 +32,39 @@ export function TecnicoDashboard() {
 
   useEffect(() => {
     if (user?.esTecnico) {
-      cargarSolicitudes();
+      cargarServicios();
     }
   }, [user]);
 
-  const cargarSolicitudes = async () => {
+  const cargarServicios = async (esRefresh = false) => {
+    if (esRefresh) {
+      setRefrescando(true);
+    } else {
+      setCargandoServicios(true);
+    }
+    
     try {
-      const { data } = await solicitudesApi.getTodasNuevas();
-      setSolicitudes(data);
+      const { data } = await serviciosApi.getTodasNuevas();
+      setServicios(data);
     } catch (err) {
       console.error(err);
     } finally {
-      setCargandoSolicitudes(false);
+      if (esRefresh) {
+        setRefrescando(false);
+      } else {
+        setCargandoServicios(false);
+      }
     }
   };
 
-  const toggleDisponibilidad = async () => {
+  const handleVerServicio = async (id: string) => {
     try {
-      await tecnicosApi.toggleDisponibilidad(!disponibilidad);
-      setDisponibilidad(!disponibilidad);
-      toast.success(!disponibilidad ? 'Te has puesto disponible' : 'Te has puesto en offline');
+      await serviciosApi.getById(id);
+      navigate(`/tecnico/servicio/nuevo/${id}`);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al actualizar disponibilidad');
+      if (err.response?.status === 404) {
+        setMostrarModalCancelado(true);
+      }
     }
   };
 
@@ -76,93 +88,63 @@ export function TecnicoDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-light text-gray-900 mb-8">
-        Te damos la bienvenida, {user?.nombre}
-      </h1>
+      <PageHeader title={`Te damos la bienvenida, ${user?.nombre}`} />
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">Tu estado</h3>
-            <Description>Estás disponible para recibir solicitudes de servicios</Description>
-          </div>
-          <button
-            onClick={toggleDisponibilidad}
-            className={`px-4 py-2 rounded-md ${
-              disponibilidad
-                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-            }`}
-          >
-            <span className="flex items-center">
-              {disponibilidad ? (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" /> Disponible
-                </>
-              ) : (
-                <>
-                  <Loader className="h-4 w-4 mr-2" /> No Disponible
-                </>
-              )}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <Link
-          to="/tecnico/trabajos"
-          className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Mis trabajos</h3>
-              <Description>Historial de servicios realizados</Description>
-            </div>
-            <ArrowRight className="h-8 w-8 text-icon" />
-          </div>
-        </Link>
-      </div>
-
-      <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Nuevos servicios
-        </h3>
+      <FormContainer>
+        <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border">
         
-        {cargandoSolicitudes ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader className="h-6 w-6 animate-spin text-icon" />
-          </div>
-        ) : solicitudes.length === 0 ? (
-          <p className="text-gray-600 py-4">No hay solicitudes nuevas</p>
-        ) : (
-          <div className="space-y-3">
-            {solicitudes.map((sol) => (
-              <Link
-                key={sol.id}
-                to={`/tecnico/solicitud/${sol.id}`}
-                className="block bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
-              >
-                <div className="flex justify-between items-start">
+          {cargandoServicios ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader className="h-6 w-6 animate-spin text-icon" />
+            </div>
+          ) : user?.disponibilidad === false ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600 text-lg">Estás en estado</p>
+              <p className="text-gray-600 text-lg">"No Disponible"</p>
+              <p className="text-sm text-gray-500 mt-2">Activa tu disponibilidad desde tu perfil para ver nuevos servicios</p>
+            </div>
+          ) : servicios.length === 0 ? (
+            <PageHeader title="No hay servicios nuevos" />
+          ) : (
+            <div className="space-y-3">
+              <PageHeader title="Nuevos servicios disponibles" />
+              {servicios.map((serv) => (
+                <button
+                  key={serv.id}
+                  onClick={() => handleVerServicio(serv.id)}
+                  className="block w-full text-left bg-gradient-to-r from-green-50 to-white border-2 border-green-200 rounded-lg p-4 hover:from-green-100 hover:to-green-50 hover:border-green-400 hover:shadow-md transition-all"
+                >
                   <div className="flex-1">
-                    <p className="font-semibold text-green-900">{sol.descripcion}</p>
+                    <p className="font-semibold text-green-900">{serv.descripcion}</p>
                     <div className="flex items-center text-sm text-green-700 mt-1">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {sol.direccion.direccion}
+                      <MapPin className="h-4 w-4 mr-2" />
+                      {serv.direccion.direccion}
                     </div>
-                    <p className="text-sm text-green-600 mt-1">
-                      Cliente: {sol.cliente.nombre} {sol.cliente.apellido}
-                    </p>
-                    <p className="text-xs text-green-500 mt-1">
-                      {new Date(sol.createdAt).toLocaleString()}
-                    </p>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <ButtonContainer>
+          <SubmitButton
+            text="Refrescar"
+            onClick={() => cargarServicios(true)}
+            loading={refrescando}
+            icon={<RefreshCw className="h-4 w-4" />}
+          />
+        </ButtonContainer>
+      </FormContainer>
+
+      <Modal
+        isOpen={mostrarModalCancelado}
+        onClose={() => window.location.reload()}
+        title="Servicio cancelado"
+        dismissible={true}
+      >
+        <p className="text-gray-600">El cliente ha cancelado el servicio</p>
+      </Modal>
     </div>
   );
 }

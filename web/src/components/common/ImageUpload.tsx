@@ -65,11 +65,7 @@ export function ImageUpload({ images, onChange, maxImages = 2, disabled = false 
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
-        Fotos (máx {maxImages})
-      </label>
-      
+    <div className="space-y-2">      
       <div
         className={`
           border-2 border-dashed rounded-lg p-4 text-center

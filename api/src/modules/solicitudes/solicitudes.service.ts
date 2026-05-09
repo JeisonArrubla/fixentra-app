@@ -1,49 +1,56 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
+import { NivelesService } from '../niveles/niveles.service';
 import {
-  CreateSolicitudDto,
-  UpdateEstadoSolicitudDto,
-  CompletarSolicitudDto,
-  CalificarSolicitudDto,
+  CreateServicioDto,
+  UpdateEstadoServicioDto,
+  CompletarServicioDto,
+  CalificarServicioDto,
 } from './dto/solicitudes.dto';
 
 @Injectable()
 export class SolicitudesService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(SolicitudesService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    private nivelesService: NivelesService,
+  ) {}
 
   async eliminarSolicitud(
     solicitudId: string,
     clienteId: string,
   ): Promise<void> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
+    const servicio = await this.prisma.servicio.findUnique({
       where: { id: solicitudId },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    if (solicitud.clienteId !== clienteId) {
-      throw new ForbiddenException('No tienes autorización para eliminar esta solicitud');
+    if (servicio.clienteId !== clienteId) {
+      throw new ForbiddenException('No tienes autorización para eliminar este servicio');
     }
 
-    if (solicitud.estado !== 'NUEVA') {
-      throw new BadRequestException('Solo puedes eliminar solicitudes nuevas');
+    if (servicio.estado !== 'NUEVO') {
+      throw new BadRequestException('Solo puedes eliminar servicios nuevos');
     }
 
-    await this.prisma.solicitudServicio.delete({
+    await this.prisma.servicio.delete({
       where: { id: solicitudId },
     });
   }
 
   async crearSolicitud(
     clienteId: string,
-    dto: CreateSolicitudDto,
+    dto: CreateServicioDto,
   ): Promise<any> {
     const direccion = await this.prisma.direccion.findUnique({
       where: { id: dto.direccionId },
@@ -58,7 +65,7 @@ export class SolicitudesService {
       throw new ForbiddenException('La dirección no pertenece a este cliente');
     }
 
-    const solicitud = await this.prisma.solicitudServicio.create({
+    const servicio = await this.prisma.servicio.create({
       data: {
         clienteId,
         direccionId: dto.direccionId,
@@ -82,16 +89,30 @@ export class SolicitudesService {
       },
     });
 
-    return solicitud;
+    return servicio;
   }
 
   async getSolicitudesDisponibles(
+    tecnicoId: string,
     latitud: number,
     longitud: number,
     radioKm: number = 10,
   ): Promise<any[]> {
-    const solicitudes = await this.prisma.solicitudServicio.findMany({
-      where: { estado: 'NUEVA' },
+    const tecnico = await this.prisma.tecnico.findUnique({
+      where: { id: tecnicoId },
+      select: { nivel: true },
+    });
+
+    if (!tecnico) return [];
+
+    const tiempoEspera = this.nivelesService.obtenerTiempoEspera(tecnico.nivel);
+    const fechaLimite = new Date(Date.now() - tiempoEspera * 60 * 1000);
+
+    const servicios = await this.prisma.servicio.findMany({
+      where: {
+        estado: 'NUEVO',
+        createdAt: { lte: fechaLimite },
+      },
       include: {
         direccion: true,
         cliente: {
@@ -103,7 +124,7 @@ export class SolicitudesService {
       },
     });
 
-    return solicitudes.filter((s) => {
+    return servicios.filter((s) => {
       const distancia = this.haversine(
         latitud,
         longitud,
@@ -115,48 +136,48 @@ export class SolicitudesService {
   }
 
   async aceptarSolicitud(
-    solicitudId: string,
+    servicioId: string,
     tecnicoId: string,
   ): Promise<any> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+    const servicio = await this.prisma.servicio.findUnique({
+      where: { id: servicioId },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    if (solicitud.estado !== 'NUEVA') {
+    if (servicio.estado !== 'NUEVO') {
       throw new BadRequestException(
-        'La solicitud ya no está disponible',
+        'El servicio ya no está disponible',
       );
     }
 
-    if (solicitud.clienteId === tecnicoId) {
+    if (servicio.clienteId === tecnicoId) {
       throw new ForbiddenException(
-        'No puedes aceptar tu propia solicitud',
+        'No puedes aceptar tu propio servicio',
       );
     }
 
-    const result = await this.prisma.solicitudServicio.updateMany({
+    const result = await this.prisma.servicio.updateMany({
       where: {
-        id: solicitudId,
-        estado: 'NUEVA',
+        id: servicioId,
+        estado: 'NUEVO',
       },
       data: {
-        estado: 'ASIGNADA',
+        estado: 'ASIGNADO',
         tecnicoId,
       },
     });
 
     if (result.count === 0) {
       throw new BadRequestException(
-        'La solicitud fue tomada por otro técnico',
+        'El servicio fue tomado por otro técnico',
       );
     }
 
-    return this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+    return this.prisma.servicio.findUnique({
+      where: { id: servicioId },
       include: {
         direccion: true,
         cliente: {
@@ -170,32 +191,32 @@ export class SolicitudesService {
   }
 
   async terminarSolicitud(
-    solicitudId: string,
+    servicioId: string,
     tecnicoId: string,
   ): Promise<any> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+    const servicio = await this.prisma.servicio.findUnique({
+      where: { id: servicioId },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    if (solicitud.tecnicoId !== tecnicoId) {
+    if (servicio.tecnicoId !== tecnicoId) {
       throw new ForbiddenException(
-        'No tienes autorización para terminar esta solicitud',
+        'No tienes autorización para terminar este servicio',
       );
     }
 
-    if (solicitud.estado !== 'ASIGNADA') {
+    if (servicio.estado !== 'ASIGNADO') {
       throw new BadRequestException(
-        'La solicitud no está en estado asignada',
+        'El servicio no está en estado asignado',
       );
     }
 
-    return this.prisma.solicitudServicio.update({
-      where: { id: solicitudId },
-      data: { estado: 'TERMINADA' },
+    return this.prisma.servicio.update({
+      where: { id: servicioId },
+      data: { estado: 'TERMINADO' },
       include: {
         direccion: true,
         cliente: true,
@@ -212,7 +233,7 @@ export class SolicitudesService {
       ? { clienteId: usuarioId }
       : { tecnicoId: usuarioId };
 
-    return this.prisma.solicitudServicio.findMany({
+    return this.prisma.servicio.findMany({
       where,
       include: {
         direccion: true,
@@ -229,27 +250,27 @@ export class SolicitudesService {
   }
 
   async completarSolicitud(
-    solicitudId: string,
+    servicioId: string,
     tecnicoId: string,
-    dto: CompletarSolicitudDto,
+    dto: CompletarServicioDto,
   ): Promise<any> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+    const servicio = await this.prisma.servicio.findUnique({
+      where: { id: servicioId },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    if (solicitud.tecnicoId !== tecnicoId) {
+    if (servicio.tecnicoId !== tecnicoId) {
       throw new ForbiddenException(
-        'No tienes autorización para completar esta solicitud',
+        'No tienes autorización para completar este servicio',
       );
     }
 
-    if (solicitud.estado !== 'ASIGNADA') {
+    if (servicio.estado !== 'ASIGNADO') {
       throw new BadRequestException(
-        'La solicitud no está en estado asignada',
+        'El servicio no está en estado asignado',
       );
     }
 
@@ -259,10 +280,10 @@ export class SolicitudesService {
       );
     }
 
-    return this.prisma.solicitudServicio.update({
-      where: { id: solicitudId },
+    return this.prisma.servicio.update({
+      where: { id: servicioId },
       data: {
-        estado: 'COMPLETADO',
+        estado: 'TERMINADO',
         detallesCompletado: dto.detalles,
         imagenes: {
           create: dto.imagenes.map((url) => ({ url })),
@@ -277,9 +298,23 @@ export class SolicitudesService {
     });
   }
 
-  async getTodasNuevas(): Promise<any[]> {
-    return this.prisma.solicitudServicio.findMany({
-      where: { estado: 'NUEVA' },
+  async getTodasNuevas(tecnicoId: string): Promise<any[]> {
+    const tecnico = await this.prisma.tecnico.findUnique({
+      where: { id: tecnicoId },
+    });
+
+    if (!tecnico?.disponibilidad) {
+      return [];
+    }
+
+    const tiempoEspera = this.nivelesService.obtenerTiempoEspera(tecnico.nivel);
+    const fechaLimite = new Date(Date.now() - tiempoEspera * 60 * 1000);
+
+    return this.prisma.servicio.findMany({
+      where: {
+        estado: 'NUEVO',
+        createdAt: { lte: fechaLimite },
+      },
       include: {
         direccion: true,
         cliente: {
@@ -291,9 +326,9 @@ export class SolicitudesService {
     });
   }
 
-  async getSolicitudById(solicitudId: string): Promise<any> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+  async getSolicitudById(servicioId: string): Promise<any> {
+    const servicio = await this.prisma.servicio.findUnique({
+      where: { id: servicioId },
       include: {
         direccion: true,
         cliente: {
@@ -306,50 +341,51 @@ export class SolicitudesService {
       },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    return solicitud;
+    return servicio;
   }
 
   async calificarSolicitud(
-    solicitudId: string,
+    servicioId: string,
     clienteId: string,
-    dto: CalificarSolicitudDto,
+    dto: CalificarServicioDto,
   ): Promise<any> {
-    const solicitud = await this.prisma.solicitudServicio.findUnique({
-      where: { id: solicitudId },
+    const servicio = await this.prisma.servicio.findUnique({
+      where: { id: servicioId },
     });
 
-    if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada');
+    if (!servicio) {
+      throw new NotFoundException('Servicio no encontrado');
     }
 
-    if (solicitud.clienteId !== clienteId) {
+    if (servicio.clienteId !== clienteId) {
       throw new ForbiddenException(
-        'No tienes autorización para calificar esta solicitud',
+        'No tienes autorización para calificar este servicio',
       );
     }
 
-    if (solicitud.estado !== 'COMPLETADO' && solicitud.estado !== 'TERMINADA') {
+    if (servicio.estado !== 'TERMINADO') {
       throw new BadRequestException(
-        'Solo puedes calificar solicitudes completadas',
+        'Solo puedes calificar servicios terminados',
       );
     }
 
-    if (solicitud.calificacion !== null) {
+    if (servicio.calificacion !== null) {
       throw new BadRequestException(
-        'Esta solicitud ya fue calificada',
+        'Este servicio ya fue calificado',
       );
     }
 
-    return this.prisma.solicitudServicio.update({
-      where: { id: solicitudId },
+    const result = await this.prisma.servicio.update({
+      where: { id: servicioId },
       data: {
         calificacion: dto.calificacion,
         comentarioCalificacion: dto.comentario,
         fechaCalificacion: new Date(),
+        estado: 'CERRADO',
       },
       include: {
         direccion: true,
@@ -358,6 +394,15 @@ export class SolicitudesService {
         imagenes: true,
       },
     });
+
+    if (servicio.tecnicoId) {
+      this.logger.log(`Recalculando nivel para técnico ${servicio.tecnicoId} tras calificar servicio ${servicioId}`);
+      await this.nivelesService.recalcularNivel(servicio.tecnicoId);
+    } else {
+      this.logger.warn(`Servicio ${servicioId} no tiene tecnicoId, no se recalcula nivel`);
+    }
+
+    return result;
   }
 
   private haversine(

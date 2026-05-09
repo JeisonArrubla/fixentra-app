@@ -66,7 +66,7 @@ export class ClientesService {
 
     if (dto.esPrincipal) {
       await this.prisma.direccion.updateMany({
-        where: { clienteId: usuarioId },
+        where: { clienteId: usuarioId, eliminadoEn: null },
         data: { esPrincipal: false },
       });
     }
@@ -94,7 +94,7 @@ export class ClientesService {
     }
 
     return this.prisma.direccion.findMany({
-      where: { clienteId: usuarioId },
+      where: { clienteId: usuarioId, eliminadoEn: null },
       orderBy: { esPrincipal: 'desc' },
     });
   }
@@ -105,7 +105,7 @@ export class ClientesService {
     dto: UpdateDireccionDto,
   ): Promise<any> {
     const existente = await this.prisma.direccion.findFirst({
-      where: { id: direccionId, clienteId: usuarioId },
+      where: { id: direccionId, clienteId: usuarioId, eliminadoEn: null },
     });
 
     if (!existente) {
@@ -114,7 +114,7 @@ export class ClientesService {
 
     if (dto.esPrincipal) {
       await this.prisma.direccion.updateMany({
-        where: { clienteId: usuarioId },
+        where: { clienteId: usuarioId, eliminadoEn: null },
         data: { esPrincipal: false },
       });
     }
@@ -130,28 +130,29 @@ export class ClientesService {
     usuarioId: string,
   ): Promise<void> {
     const existente = await this.prisma.direccion.findFirst({
-      where: { id: direccionId, clienteId: usuarioId },
+      where: { id: direccionId, clienteId: usuarioId, eliminadoEn: null },
     });
 
     if (!existente) {
       throw new NotFoundException('Dirección no encontrada');
     }
 
-    const solicitudesActivas = await this.prisma.solicitudServicio.count({
+    const serviciosActivos = await this.prisma.servicio.count({
       where: {
         direccionId,
-        estado: { in: ['NUEVA', 'ASIGNADA'] },
+        estado: { in: ['NUEVO', 'ASIGNADO', 'TERMINADO'] },
       },
     });
 
-    if (solicitudesActivas > 0) {
+    if (serviciosActivos > 0) {
       throw new BadRequestException(
-        'No puedes eliminar esta dirección porque tiene solicitudes activas',
+        'Dirección relacionada a un servicio activo',
       );
     }
 
-    await this.prisma.direccion.delete({
+    await this.prisma.direccion.update({
       where: { id: direccionId },
+      data: { eliminadoEn: new Date() },
     });
   }
 
@@ -160,7 +161,7 @@ export class ClientesService {
     usuarioId: string,
   ): Promise<any> {
     const existente = await this.prisma.direccion.findFirst({
-      where: { id: direccionId, clienteId: usuarioId },
+      where: { id: direccionId, clienteId: usuarioId, eliminadoEn: null },
     });
 
     if (!existente) {
@@ -168,7 +169,7 @@ export class ClientesService {
     }
 
     await this.prisma.direccion.updateMany({
-      where: { clienteId: usuarioId },
+      where: { clienteId: usuarioId, eliminadoEn: null },
       data: { esPrincipal: false },
     });
 

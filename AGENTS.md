@@ -69,6 +69,7 @@ api/src/
     ├── auth/
     ├── clientes/
     ├── solicitudes/
+    ├── tecnicos/
     └── upload/
 ```
 
@@ -76,20 +77,25 @@ api/src/
 ```
 web/src/
 ├── App.tsx
-├── components/common/
-│   ├── Navbar.tsx
-│   ├── PrivateRoute.tsx
-│   ├── LocationPicker.tsx
-│   ├── ImageUpload.tsx
-│   ├── ImageViewer.tsx
-│   ├── ImageWithViewer.tsx
-│   ├── Modal.tsx
-│   ├── ConfirmModal.tsx
-│   ├── NavigationButton.tsx
-│   ├── SubmitButton.tsx
-│   ├── CancelButton.tsx
-│   ├── ActionButton.tsx
-│   └── Description.tsx
+├── components/
+│   ├── common/
+│   │   ├── Navbar.tsx
+│   │   ├── BottomNav.tsx
+│   │   ├── PrivateRoute.tsx
+│   │   ├── LocationPicker.tsx
+│   │   ├── ImageUpload.tsx
+│   │   ├── ImageViewer.tsx
+│   │   ├── ImageWithViewer.tsx
+│   │   ├── Modal.tsx
+│   │   ├── ConfirmModal.tsx
+│   │   ├── NavigationButton.tsx
+│   │   ├── SubmitButton.tsx
+│   │   ├── CancelButton.tsx
+│   │   ├── ActionButton.tsx
+│   │   ├── Description.tsx
+│   │   └── StarRating.tsx
+│   └── tecnico/
+│       └── TecnicoStats.tsx
 ├── pages/
 │   ├── auth/Login.tsx
 │   ├── auth/Register.tsx
@@ -97,13 +103,15 @@ web/src/
 │   │   ├── Dashboard.tsx
 │   │   ├── Direcciones.tsx
 │   │   ├── Solicitudes.tsx
+│   │   ├── SolicitudDetalle.tsx
 │   │   ├── NuevaSolicitud.tsx
 │   │   └── ConfirmarSolicitud.tsx
 │   └── tecnico/
 │       ├── Dashboard.tsx
 │       ├── MisTrabajos.tsx
 │       ├── SolicitudDetalle.tsx
-│       └── TerminarServicio.tsx
+│       ├── TerminarServicio.tsx
+│       └── Perfil.tsx
 ├── contexts/
 │   ├── AuthContext.tsx
 │   ├── SolicitudContext.tsx
@@ -114,8 +122,8 @@ web/src/
 ## Implemented Features
 
 - Authentication (login/register)
-- Client: dashboard, addresses management, requests management
-- Technician: dashboard showing new requests, detail view, work history, finish service
+- Client: dashboard, addresses management, requests management, request detail with rating
+- Technician: dashboard, detail view, work history, finish service, profile with reputation stats
 - Image upload with lightbox viewer
 - Delete confirmations for addresses and requests
 - GPS location picker with auto-detect
@@ -123,9 +131,24 @@ web/src/
 - Reusable button components (NavigationButton, SubmitButton, CancelButton, ActionButton)
 - Solicitud flow with context persistence (NuevaSolicitud → ConfirmarSolicitud)
 - Confirmation countdown feature for service requests
+- Rating system (clients rate technicians)
 - Description component to hide descriptive text on mobile
+- Bottom navigation bar (mobile only)
+- Technician reputation stats (average rating, total ratings, completed services)
 
 ## UI/UX Design System
+
+### Responsive Design
+- **Breakpoint**: `md:` (768px) - tablet and above
+- All new views must be responsive starting from 768px
+- **Mobile** (< 768px):
+  - Bottom navigation bar (`BottomNav.tsx`) - fixed, icon-based
+  - No back buttons in list views (use BottomNav for navigation)
+  - Content padding: `pb-16` to avoid overlap with bottom nav
+- **Tablet/Desktop** (≥ 768px):
+  - Top navbar (`Navbar.tsx`) - horizontal links
+  - BottomNav hidden (`md:hidden` on BottomNav)
+  - Use responsive classes: `hidden md:flex`, `md:hidden`, etc.
 
 ### Mobile-First Design
 - **Hide descriptive paragraphs on mobile**: Use `Description` component to hide `<p>` tags with secondary descriptions on mobile devices
@@ -140,10 +163,10 @@ web/src/
 
 ### Button Hierarchy
 1. **Primary actions**: `bg-green-600 text-white`
-2. **Navigation/Back**: `NavigationButton` component
-3. **Submit**: `SubmitButton` component (green)
-4. **Cancel**: `CancelButton` component (outline/gray)
-5. **Generic actions**: `ActionButton` component
+2. **Submit**: `SubmitButton` component (green)
+3. **Cancel**: `CancelButton` component (outline/gray)
+4. **Generic actions**: `ActionButton` component
+5. **Navigation/Back**: Avoid back buttons in main list views; use navigation bars instead
 
 ## Lessons Learned
 
@@ -154,6 +177,8 @@ web/src/
 5. Vite proxy needs to be configured for `/uploads` route to serve images in development
 6. Always check `user && user.tipo` before accessing user properties in routes
 7. Use `Description` component to hide descriptive text on mobile
+8. No back buttons in main list views; use BottomNav (mobile) and Navbar (desktop) for navigation
+9. All new views must include responsive design from 768px (md breakpoint)
 
 ## Behavior Guidelines
 
@@ -162,7 +187,7 @@ web/src/
 - After completing a task, stop and wait for user to indicate what to do next
 - Use existing code patterns and conventions when implementing new features
 - Prefer reusable, scalable components over one-off implementations
-- Follow the design system and mobile-first approach
+- Follow the responsive design strategy (768px breakpoint) and mobile-first approach
 
 ## Routes Structure
 
@@ -173,6 +198,7 @@ web/src/
 /cliente/dashboard       → Client dashboard
 /cliente/direcciones      → Client addresses management
 /cliente/solicitudes       → Client requests list
+/cliente/solicitud/:id     → Client request detail with rating
 /cliente/solicitudes/nueva → New request wizard (step 1)
 /cliente/solicitudes/nueva/confirmar → New request confirmation (step 2)
 
@@ -180,6 +206,7 @@ web/src/
 /tecnico/trabajos          → Technician work history
 /tecnico/solicitud/:id     → Request detail
 /tecnico/solicitud/:id/terminar → Finish service form
+/tecnico/perfil            → Technician profile with reputation stats
 
 /dashboard               → Redirects based on user tipo
 /                        → Root redirects to appropriate dashboard

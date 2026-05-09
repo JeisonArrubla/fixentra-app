@@ -30,6 +30,8 @@ export interface UsuarioPayload {
   apellido: string;
   esCliente: boolean;
   esTecnico: boolean;
+  disponibilidad?: boolean;
+  nivel?: string;
 }
 
 @Injectable()
@@ -98,6 +100,7 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente,
       esTecnico,
+      disponibilidad: esTecnico ? (dto.disponibilidadTecnico ?? true) : undefined,
     };
   }
 
@@ -132,6 +135,7 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente: !!usuario.clientePerfil,
       esTecnico: !!usuario.tecnicoPerfil,
+      nivel: usuario.tecnicoPerfil?.nivel,
     };
   }
 
@@ -223,6 +227,8 @@ export class AuthService {
       apellido: usuario.apellido,
       esCliente: !!usuario.clientePerfil,
       esTecnico: !!usuario.tecnicoPerfil,
+      disponibilidad: usuario.tecnicoPerfil?.disponibilidad,
+      nivel: usuario.tecnicoPerfil?.nivel,
     };
   }
 }

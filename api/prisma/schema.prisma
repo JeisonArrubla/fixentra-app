@@ -15,17 +15,24 @@ enum TipoDocumento {
   NIT
 }
 
-enum EstadoSolicitud {
-  NUEVA
-  ASIGNADA
-  TERMINADA
-  COMPLETADO
+enum EstadoServicio {
+  NUEVO
+  ASIGNADO
+  TERMINADO
+  CERRADO
 }
 
 enum EstadoPago {
   PENDIENTE
   PAGADO
   FALLIDO
+}
+
+enum NivelTecnico {
+  MADERA
+  BRONCE
+  PLATA
+  ORO
 }
 
 model Usuario {
@@ -42,9 +49,10 @@ model Usuario {
 
   clientePerfil       Cliente?
   tecnicoPerfil       Tecnico?
-  solicitudesCliente  SolicitudServicio[] @relation("SolicitudCliente")
-  solicitudesTecnico  SolicitudServicio[] @relation("SolicitudTecnico")
+  serviciosCliente    Servicio[] @relation("ServicioCliente")
+  serviciosTecnico    Servicio[] @relation("ServicioTecnico")
   refreshTokens       RefreshToken[]
+  mensajesEnviados    Mensaje[]  @relation("MensajeEmisor")
 
   @@map("usuarios")
   @@index([correo])
@@ -81,47 +89,51 @@ model Direccion {
   latitud      Float
   longitud     Float
   esPrincipal  Boolean @default(false) @map("es_principal")
+  eliminadoEn  DateTime? @map("eliminado_en")
 
-  solicitudes SolicitudServicio[]
+  servicios Servicio[]
 
   @@map("direcciones")
   @@index([clienteId])
+  @@index([eliminadoEn])
 }
 
 model Tecnico {
-  id                String    @id @map("id")
-  usuario           Usuario   @relation(fields: [id], references: [id], onDelete: Cascade)
-  disponibilidad    Boolean   @default(true)
+  id                String         @id @map("id")
+  usuario           Usuario        @relation(fields: [id], references: [id], onDelete: Cascade)
+  disponibilidad    Boolean        @default(true)
   latitud           Float?
   longitud          Float?
-  radioCoberturaKm  Float     @default(10.0) @map("radio_cobertura_km")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
+  radioCoberturaKm  Float          @default(10.0) @map("radio_cobertura_km")
+  nivel             NivelTecnico   @default(PLATA)
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
 
   @@map("tecnicos")
   @@index([disponibilidad])
 }
 
-model SolicitudServicio {
+model Servicio {
   id                  String          @id @default(uuid())
   clienteId           String          @map("cliente_id")
-  cliente             Usuario         @relation("SolicitudCliente", fields: [clienteId], references: [id])
+  cliente             Usuario         @relation("ServicioCliente", fields: [clienteId], references: [id])
   direccionId         String          @map("direccion_id")
   direccion           Direccion       @relation(fields: [direccionId], references: [id])
   descripcion         String
-  estado              EstadoSolicitud @default(NUEVA)
+  estado              EstadoServicio  @default(NUEVO)
   detallesCompletado  String?         @map("detalles_completado")
   tecnicoId           String?         @map("tecnico_id")
-  tecnico             Usuario?        @relation("SolicitudTecnico", fields: [tecnicoId], references: [id])
+  tecnico             Usuario?        @relation("ServicioTecnico", fields: [tecnicoId], references: [id])
   pago                Pago?
   imagenes            Imagen[]
+  mensajes            Mensaje[]
   calificacion         Int?
   comentarioCalificacion String?       @map("comentario_calificacion")
   fechaCalificacion    DateTime?       @map("fecha_calificacion")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
 
-  @@map("solicitudes_servicios")
+  @@map("servicios")
   @@index([estado])
   @@index([clienteId])
   @@index([tecnicoId])
@@ -130,18 +142,18 @@ model SolicitudServicio {
 model Imagen {
   id          String                 @id @default(uuid())
   url         String
-  solicitudId String?                @map("solicitud_id")
-  solicitud   SolicitudServicio?     @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  servicioId  String?                @map("servicio_id")
+  servicio    Servicio?              @relation(fields: [servicioId], references: [id], onDelete: Cascade)
   createdAt   DateTime               @default(now()) @map("created_at")
 
   @@map("imagenes")
-  @@index([solicitudId])
+  @@index([servicioId])
 }
 
 model Pago {
   id          String             @id @default(uuid())
-  solicitudId String             @unique @map("solicitud_id")
-  solicitud   SolicitudServicio  @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  servicioId  String             @unique @map("servicio_id")
+  servicio    Servicio           @relation(fields: [servicioId], references: [id], onDelete: Cascade)
   monto       Float
   estado      EstadoPago         @default(PENDIENTE)
   metodoPago  String?            @map("metodo_pago")
@@ -149,6 +161,22 @@ model Pago {
   updatedAt   DateTime           @updatedAt @map("updated_at")
 
   @@map("pagos")
-  @@index([solicitudId])
+  @@index([servicioId])
   @@index([estado])
+}
+
+model Mensaje {
+  id          String   @id @default(uuid())
+  servicioId  String   @map("servicio_id")
+  servicio    Servicio @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+  emisorId    String   @map("emisor_id")
+  emisor      Usuario  @relation("MensajeEmisor", fields: [emisorId], references: [id])
+  contenido   String
+  leido       Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("mensajes")
+  @@index([servicioId])
+  @@index([emisorId])
+  @@index([createdAt])
 }

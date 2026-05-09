@@ -1,19 +1,24 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { SolicitudProvider } from './contexts/SolicitudContext';
+import { ServicioProvider } from './contexts/ServicioContext';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ClienteDashboard } from './pages/cliente/Dashboard';
 import { ClienteDirecciones } from './pages/cliente/Direcciones';
-import { ClienteSolicitudes } from './pages/cliente/Solicitudes';
-import { NuevaSolicitud } from './pages/cliente/NuevaSolicitud';
-import { ConfirmarSolicitud } from './pages/cliente/ConfirmarSolicitud';
+import { ClienteNuevaDireccion } from './pages/cliente/NuevaDireccion';
+import { ClienteServicios } from './pages/cliente/Servicios';
+import { NuevoServicio } from './pages/cliente/NuevoServicio';
+import { ConfirmarServicio } from './pages/cliente/ConfirmarServicio';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
-import { SolicitudDetalle } from './pages/tecnico/SolicitudDetalle';
+import { ServicioDetalle as TecnicoServicioDetalle } from './pages/tecnico/ServicioDetalle';
+import { ServicioNuevo } from './pages/tecnico/ServicioNuevo';
+import { ServicioDetalle as ClienteServicioDetalle } from './pages/cliente/ServicioDetalle';
 import { TecnicoPerfil } from './pages/tecnico/Perfil';
 import { TerminarServicio } from './pages/tecnico/TerminarServicio';
+import { CalificarServicio } from './pages/cliente/CalificarServicio';
 import { Navbar } from './components/common/Navbar';
+import { BottomNav } from './components/common/BottomNav';
 import { PrivateRoute } from './components/common/PrivateRoute';
 import { ImageViewerProvider } from './components/common/ImageViewer';
 
@@ -35,22 +40,27 @@ function AppRoutes() {
       
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<Navbar />}>
-          <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
-          <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
+          <Route element={<BottomNav />}>
+            <Route path="" element={user && user.esTecnico ? <Navigate to="/tecnico/dashboard" replace /> : <Navigate to="/cliente/dashboard" replace />} />
+            <Route path="dashboard" element={<Navigate to={user && user.esTecnico ? "/tecnico/dashboard" : "/cliente/dashboard"} replace />} />
           
-          <Route path="cliente/solicitud/:id" element={<SolicitudDetalle />} />
+            <Route path="cliente/servicio/:id" element={<ClienteServicioDetalle />} />
 
-          <Route path="cliente/dashboard" element={<ClienteDashboard />} />
-          <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
-          <Route path="cliente/solicitudes" element={<ClienteSolicitudes />} />
-          <Route path="cliente/solicitudes/nueva" element={<NuevaSolicitud />} />
-          <Route path="cliente/solicitudes/nueva/confirmar" element={<ConfirmarSolicitud />} />
-          
-          <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
-          <Route path="tecnico/solicitud/:id" element={<SolicitudDetalle />} />
-          <Route path="tecnico/solicitud/:id/terminar" element={<TerminarServicio />} />
-          <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
-          <Route path="tecnico/perfil" element={<TecnicoPerfil />} />
+            <Route path="cliente/dashboard" element={<ClienteDashboard />} />
+            <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
+            <Route path="cliente/direcciones/nueva" element={<ClienteNuevaDireccion />} />
+            <Route path="cliente/servicios" element={<ClienteServicios />} />
+            <Route path="cliente/servicios/nuevo" element={<NuevoServicio />} />
+            <Route path="cliente/servicios/nuevo/confirmar" element={<ConfirmarServicio />} />
+            <Route path="cliente/servicio/calificar/:id" element={<CalificarServicio />} />
+            
+            <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />
+            <Route path="tecnico/servicio/nuevo/:id" element={<ServicioNuevo />} />
+            <Route path="tecnico/servicio/:id/terminar" element={<TerminarServicio />} />
+            <Route path="tecnico/servicio/:id" element={<TecnicoServicioDetalle />} />
+            <Route path="tecnico/trabajos" element={<TecnicoMisTrabajos />} />
+            <Route path="tecnico/perfil" element={<TecnicoPerfil />} />
+          </Route>
         </Route>
       </Route>
 
@@ -62,11 +72,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <SolicitudProvider>
+      <ServicioProvider>
         <ImageViewerProvider>
           <AppRoutes />
         </ImageViewerProvider>
-      </SolicitudProvider>
+      </ServicioProvider>
     </AuthProvider>
   );
 }

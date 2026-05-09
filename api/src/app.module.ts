@@ -8,6 +8,8 @@ import { ClientesModule } from './modules/clientes/clientes.module';
 import { TecnicosModule } from './modules/tecnicos/tecnicos.module';
 import { SolicitudesModule } from './modules/solicitudes/solicitudes.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { NivelesModule } from './modules/niveles/niveles.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { UploadModule } from './modules/upload/upload.module';
     TecnicosModule,
     SolicitudesModule,
     UploadModule,
+    ChatModule,
+    NivelesModule,
   ],
   providers: [PrismaService],
 })
