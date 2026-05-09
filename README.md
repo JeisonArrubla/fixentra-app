@@ -6,15 +6,20 @@ Plataforma marketplace para servicios técnicos del hogar.
 
 - **Backend**: Node.js + NestJS + Prisma + PostgreSQL
 - **Frontend**: React + Vite + Tailwind CSS
+- **Tiempo Real**: Socket.IO (chat)
+- **Mapas**: Leaflet (OpenStreetMap)
 
 ## Características
 
 - Autenticación JWT con refresh token
 - Roles separados: Cliente y Técnico
-- Sistema de pedidos/solicitudes de servicio
+- Sistema de pedidos/servicios con estados (NUEVO → ASIGNADO → TERMINADO → CERRADO)
 - Gestión de direcciones con geolocalización (Leaflet)
 - Subida de imágenes con lightbox viewer
+- Chat en tiempo real por servicio
+- Calificación de servicios (1-5 estrellas)
 - Dashboard personalizado por rol
+- Niveles de técnico (Madera, Bronce, Plata, Oro)
 
 ## Requisitos
 
@@ -82,66 +87,96 @@ npm run dev
 fixentra-app/
 ├── api/                    # Backend NestJS
 │   ├── prisma/
-│   │   └── schema.prisma   # Modelos de DB
+│   │   └── schema.prisma   # Modelos de DB (Usuario, Cliente, Tecnico, Servicio, etc.)
 │   └── src/
 │       ├── modules/
-│       │   ├── auth/       # Autenticación
-│       │   ├── clientes/   # Gestión clientes
-│       │   ├── tecnicos/   # Gestión técnicos
-│       │   ├── solicitudes/ # Pedidos
-│       │   └── upload/    # Subida imágenes
+│       │   ├── auth/       # Autenticación JWT
+│       │   ├── chat/       # Chat en tiempo real (Socket.IO)
+│       │   ├── clientes/   # Gestión clientes y direcciones
+│       │   ├── niveles/    # Lógica de niveles de técnico
+│       │   ├── solicitudes/ # Servicios (CRUD, estados)
+│       │   ├── tecnicos/   # Perfiles y disponibilidad
+│       │   ├── upload/     # Subida de imágenes (Strategy Pattern)
+│       │   └── usuarios/   # Gestión de usuarios
 │       └── common/
-│           ├── guards/
-│           └── decorators/
+│           ├── guards/     # Guards de autenticación y roles
+│           ├── decorators/ # Decoradores personalizados
+│           ├── filters/    # Filtros de excepciones
+│           ├── interceptors/ # Interceptores
+│           └── validators/ # Validadores personalizados
 ├── web/                    # Frontend React
 │   └── src/
 │       ├── components/
-│       │   └── common/    # Componentes reutilizables
+│       │   ├── common/     # Componentes reutilizables
+│       │   ├── auth/       # Componentes de autenticación
+│       │   ├── cliente/    # Componentes específicos de cliente
+│       │   └── tecnico/    # Componentes específicos de técnico
 │       ├── pages/
-│       │   ├── auth/      # Login, Register
-│       │   ├── cliente/  # Dashboard, Direcciones, Solicitudes
-│       │   └── tecnico/  # Dashboard, Mis trabajos
-│       ├── contexts/      # AuthContext
-│       └── services/      # API calls
-└── AGENTS.md              # Instrucciones del agente
+│       │   ├── auth/       # Login, Register
+│       │   ├── cliente/    # Dashboard, Direcciones, Servicios
+│       │   └── tecnico/    # Dashboard, Trabajos, Perfil
+│       ├── contexts/       # AuthContext, ServicioContext
+│       ├── hooks/          # Custom hooks
+│       ├── services/       # API calls (Axios)
+│       └── utils/          # Utilidades
+└── AGENTS.md               # Instrucciones del agente
 ```
 
 ## API Endpoints
 
-### Autenticación
+### Autenticación (`/api/auth`)
 | Método | Endpoint | Descripción |
-|--------|----------|------------|
-| POST | /api/auth/register | Registro usuario |
-| POST | /api/auth/login | Login (JWT) |
-| POST | /api/auth/refresh | Refresh token |
-| GET | /api/auth/profile | Perfil usuario |
+|--------|----------|-------------|
+| POST | /auth/register | Registro usuario |
+| POST | /auth/login | Login (JWT) |
+| POST | /auth/refresh | Refresh token |
+| POST | /auth/logout | Logout |
+| GET | /auth/profile | Perfil usuario |
 
-### Clientes
+### Clientes (`/api/clientes`)
 | Método | Endpoint | Descripción |
-|--------|----------|------------|
-| POST | /api/clientes/perfil | Crear perfil |
-| GET | /api/clientes/perfil | Ver perfil |
-| POST | /api/clientes/direcciones | Crear dirección |
-| GET | /api/clientes/direcciones | Listar |
-| PUT | /api/clientes/direcciones/:id | Actualizar |
-| DELETE | /api/clientes/direcciones/:id | Eliminar |
+|--------|----------|-------------|
+| GET | /clientes/perfil | Ver perfil |
+| POST | /clientes/direcciones | Crear dirección |
+| GET | /clientes/direcciones | Listar direcciones |
+| PUT | /clientes/direcciones/:id | Actualizar dirección |
+| DELETE | /clientes/direcciones/:id | Eliminar dirección |
+| PATCH | /clientes/direcciones/:id/principal | Marcar como principal |
 
-### Técnicos
+### Técnicos (`/api/tecnicos`)
 | Método | Endpoint | Descripción |
-|--------|----------|------------|
-| POST | /api/tecnicos/perfil | Crear perfil |
-| GET | /api/tecnicos/perfil | Ver perfil |
-| PATCH | /api/tecnicos/disponibilidad | Toggle |
+|--------|----------|-------------|
+| POST | /tecnicos/perfil | Crear perfil |
+| GET | /tecnicos/perfil | Ver perfil con estadísticas |
+| PATCH | /tecnicos/ubicacion | Actualizar ubicación |
+| PATCH | /tecnicos/disponibilidad | Toggle disponibilidad |
 
-### Solicitudes
+### Servicios (`/api/servicios`)
+| Método | Endpoint | Rol | Descripción |
+|--------|----------|-----|-------------|
+| POST | /servicios | cliente | Crear servicio |
+| GET | /servicios/disponibles | tecnico | Listar disponibles (geolocalización) |
+| GET | /servicios/todas | tecnico | Listar todas las nuevas |
+| GET | /servicios/mis-servicios | ambos | Mis servicios (query: tipo=cliente\|tecnico) |
+| GET | /servicios/:id | ambos | Detalle del servicio |
+| POST | /servicios/:id/aceptar | tecnico | Aceptar servicio |
+| PATCH | /servicios/:id/terminar | tecnico | Marcar como terminado |
+| PATCH | /servicios/:id/completar | tecnico | Completar con detalles e imágenes |
+| PATCH | /servicios/:id/calificar | cliente | Calificar servicio (1-5) |
+| DELETE | /servicios/:id | cliente | Eliminar servicio (solo estado NUEVO) |
+
+### Chat (`/api/chat`)
 | Método | Endpoint | Descripción |
-|--------|----------|------------|
-| POST | /api/solicitudes | Crear solicitud |
-| GET | /api/solicitudes/disponibles | Listar nuevas |
-| GET | /api/solicitudes/mis-solicitudes | Mis pedidos |
-| POST | /api/solicitudes/:id/aceptar | Aceptar |
-| PATCH | /api/solicitudes/:id/completar | Completar servicio |
-| DELETE | /api/solicitudes/:id | Eliminar |
+|--------|----------|-------------|
+| GET | /chat/:servicioId/mensajes | Obtener mensajes |
+| POST | /chat/:servicioId/mensajes | Enviar mensaje |
+| POST | /chat/:servicioId/mensajes/leidos | Marcar como leídos |
+
+### Upload (`/api/upload`)
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /upload/image | Subir una imagen |
+| POST | /upload/images | Subir múltiples imágenes (máx 2) |
 
 ## Rutas Frontend
 
@@ -149,24 +184,32 @@ fixentra-app/
 |------|-------------|
 | /login | Inicio de sesión |
 | /register | Registro |
+| /dashboard | Redirección según rol |
 | /cliente/dashboard | Dashboard cliente |
 | /cliente/direcciones | Gestión direcciones |
-| /cliente/solicitudes | Mis solicitudes |
-| /tecnico/dashboard | Nuevas solicitudes |
-| /tecnico/trabajos | Mis servicios |
-| /tecnico/solicitud/:id | Detalle solicitud |
-| /tecnico/solicitud/:id/terminar | Completar servicio |
+| /cliente/direcciones/nueva | Nueva dirección |
+| /cliente/servicios | Mis servicios |
+| /cliente/servicios/nuevo | Nuevo servicio (paso 1) |
+| /cliente/servicios/nuevo/confirmar | Confirmar servicio (paso 2) |
+| /cliente/servicio/:id | Detalle servicio |
+| /cliente/servicio/calificar/:id | Calificar servicio |
+| /tecnico/dashboard | Nuevos servicios disponibles |
+| /tecnico/servicio/nuevo/:id | Aceptar servicio |
+| /tecnico/servicio/:id | Detalle servicio |
+| /tecnico/servicio/:id/terminar | Completar servicio |
+| /tecnico/trabajos | Historial de trabajos |
+| /tecnico/perfil | Perfil con estadísticas |
 
 ## Decisiones de Arquitectura
 
-### Estrategia Pattern para Imágenes
+### Strategy Pattern para Imágenes
 
 El sistema de upload usa Strategy Pattern para permitir cambiar proveedores de almacenamiento sin modificar el código:
 
-```typescript
+```
 api/src/modules/upload/
 ├── interfaces/storage-provider.interface.ts  // Interfaz estrategia
-├── providers/local-storage.provider.ts        // Implementación local
+├── providers/local-storage.provider.ts       // Implementación local
 ├── upload.service.ts
 ├── upload.controller.ts
 └── upload.module.ts
@@ -174,11 +217,20 @@ api/src/modules/upload/
 
 ### Leaflet para Mapas
 
-Se usa Leaflet (OpenStreetMap) en lugar de Mapbox - funciona sin API keys.
+Se usa Leaflet (OpenStreetMap) en lugar de Mapbox - funciona sin API keys, ideal para desarrollo.
 
-## Notas Importantes
+### Chat en Tiempo Real
 
-1. **Navbar**: Necesita `<Outlet />` para renderizar rutas anidadas
-2. **Vite proxy**: Configurado para `/uploads` en desarrollo
-3. **Login**: Redirecciona según tipo de usuario
-4. **Prisma**: Después de modelos nuevos, ejecutar `npx prisma db push --force-reset`
+Socket.IO implementado en el módulo chat para mensajería en tiempo real entre cliente y técnico.
+
+## Modelo de Datos
+
+- **Usuario**: Registro base con documento, correo y contraseña
+- **Cliente**: Perfil de cliente vinculado a un usuario
+- **Tecnico**: Perfil de técnico con disponibilidad, ubicación, nivel y radio de cobertura
+- **Direccion**: Direcciones georreferenciadas asociadas a un cliente
+- **Servicio**: Solicitud de servicio con estados y calificación
+- **Imagen**: Imágenes asociadas a servicios
+- **Pago**: Información de pago por servicio
+- **Mensaje**: Chat entre cliente y técnico por servicio
+- **RefreshToken**: Tokens de refresco JWT
