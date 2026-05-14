@@ -262,17 +262,27 @@ resource "aws_instance" "main" {
   iam_instance_profile   = aws_iam_instance_profile.ec2.name
 
   user_data = templatefile("${path.module}/ec2-user-data.sh.tpl", {
-    project_name     = var.project_name
-    db_host          = aws_db_instance.main.address
-    db_port          = aws_db_instance.main.port
-    db_name          = aws_db_instance.main.db_name
-    db_user          = aws_db_instance.main.username
-    db_password      = var.db_password
-    github_repo_url  = var.github_repo_url
-    github_branch    = var.github_branch
-    s3_bucket_name   = aws_s3_bucket.images.id
-    aws_region       = var.aws_region
-    frontend_url     = "http://${aws_eip.main.public_ip}"
+    project_name               = var.project_name
+    db_host                    = aws_db_instance.main.address
+    db_port                    = aws_db_instance.main.port
+    db_name                    = aws_db_instance.main.db_name
+    db_user                    = aws_db_instance.main.username
+    db_password                = var.db_password
+    github_repo_url            = var.github_repo_url
+    github_branch              = var.github_branch
+    s3_bucket_name             = aws_s3_bucket.images.id
+    aws_region                 = var.aws_region
+    frontend_url               = "http://${aws_eip.main.public_ip}"
+    jwt_expires_in             = var.jwt_expires_in
+    jwt_refresh_expires_in     = var.jwt_refresh_expires_in
+    nivel_oro_umbral           = var.nivel_oro_umbral
+    nivel_oro_tiempo_espera    = var.nivel_oro_tiempo_espera
+    nivel_plata_umbral         = var.nivel_plata_umbral
+    nivel_plata_tiempo_espera  = var.nivel_plata_tiempo_espera
+    nivel_bronce_umbral        = var.nivel_bronce_umbral
+    nivel_bronce_tiempo_espera = var.nivel_bronce_tiempo_espera
+    nivel_madera_umbral        = var.nivel_madera_umbral
+    nivel_madera_tiempo_espera = var.nivel_madera_tiempo_espera
   })
 
   root_block_device {
