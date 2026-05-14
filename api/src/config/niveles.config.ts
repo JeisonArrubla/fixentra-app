@@ -1,4 +1,5 @@
 import { NivelTecnico } from '@prisma/client';
+import { floatEnv } from '../common/helpers/env.helper';
 
 export interface NivelConfig {
   umbral: number;
@@ -7,10 +8,26 @@ export interface NivelConfig {
 }
 
 export const NIVELES_CONFIG: Record<NivelTecnico, NivelConfig> = {
-  [NivelTecnico.ORO]:    { umbral: 4.2, tiempoEspera: 0,   label: 'Oro' },
-  [NivelTecnico.PLATA]:  { umbral: 3.5, tiempoEspera: 10,  label: 'Plata' },
-  [NivelTecnico.BRONCE]: { umbral: 2.8, tiempoEspera: 30,  label: 'Bronce' },
-  [NivelTecnico.MADERA]: { umbral: 1.0, tiempoEspera: 60,  label: 'Madera' },
+  [NivelTecnico.ORO]: {
+    label: 'Oro',
+    umbral: floatEnv('NIVEL_ORO_UMBRAL'),
+    tiempoEspera: floatEnv('NIVEL_ORO_TIEMPO_ESPERA'),
+  },
+  [NivelTecnico.PLATA]: {
+    label: 'Plata',
+    umbral: floatEnv('NIVEL_PLATA_UMBRAL'),
+    tiempoEspera: floatEnv('NIVEL_PLATA_TIEMPO_ESPERA'),
+  },
+  [NivelTecnico.BRONCE]: {
+    label: 'Bronce',
+    umbral: floatEnv('NIVEL_BRONCE_UMBRAL'),
+    tiempoEspera: floatEnv('NIVEL_BRONCE_TIEMPO_ESPERA'),
+  },
+  [NivelTecnico.MADERA]: {
+    label: 'Madera',
+    umbral: floatEnv('NIVEL_MADERA_UMBRAL'),
+    tiempoEspera: floatEnv('NIVEL_MADERA_TIEMPO_ESPERA'),
+  },
 };
 
 export function determinarNivel(promedio: number): NivelTecnico {
