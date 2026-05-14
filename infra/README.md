@@ -40,9 +40,19 @@ Variables opcionales (con valores por defecto):
 | `db_name` | `fixentra` | Nombre de la base de datos |
 | `db_user` | `postgres` | Usuario de PostgreSQL |
 | `github_repo_url` | `https://github.com/JeisonArrubla/fixentra-app.git` | Repositorio a desplegar |
-| `github_branch` | `main` | Rama a desplegar |
+| `github_branch` | `develop` | Rama a desplegar |
 | `ec2_instance_type` | `t3.micro` | Tipo de instancia EC2 |
 | `rds_instance_class` | `db.t3.micro` | Clase de RDS |
+| `jwt_expires_in` | `15m` | Expiración del token JWT |
+| `jwt_refresh_expires_in` | `7d` | Expiración del refresh token |
+| `nivel_oro_umbral` | `4.2` | Umbral mínimo para nivel Oro |
+| `nivel_oro_tiempo_espera` | `0` | Minutos de espera para Oro |
+| `nivel_plata_umbral` | `3.5` | Umbral mínimo para nivel Plata |
+| `nivel_plata_tiempo_espera` | `10` | Minutos de espera para Plata |
+| `nivel_bronce_umbral` | `2.8` | Umbral mínimo para nivel Bronce |
+| `nivel_bronce_tiempo_espera` | `30` | Minutos de espera para Bronce |
+| `nivel_madera_umbral` | `1.0` | Umbral mínimo para nivel Madera |
+| `nivel_madera_tiempo_espera` | `60` | Minutos de espera para Madera |
 
 ## Desplegar
 
