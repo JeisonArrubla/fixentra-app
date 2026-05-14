@@ -18,6 +18,8 @@ npm install -g pm2
 # --- Clonar repositorio ---
 cd /home/ubuntu
 git clone -b ${github_branch} ${github_repo_url} ${project_name}
+chown -R ubuntu:ubuntu /home/ubuntu/${project_name}
+usermod -aG ubuntu www-data
 cd ${project_name}
 
 # --- Escribir .env ---
