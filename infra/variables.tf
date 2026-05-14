@@ -42,7 +42,7 @@ variable "github_repo_url" {
 variable "github_branch" {
   description = "Rama del repositorio a desplegar"
   type        = string
-  default     = "develop"
+  default     = "main"
 }
 
 variable "ec2_instance_type" {

@@ -40,7 +40,7 @@ Variables opcionales (con valores por defecto):
 | `db_name` | `fixentra` | Nombre de la base de datos |
 | `db_user` | `postgres` | Usuario de PostgreSQL |
 | `github_repo_url` | `https://github.com/JeisonArrubla/fixentra-app.git` | Repositorio a desplegar |
-| `github_branch` | `develop` | Rama a desplegar |
+| `github_branch` | `main` | Rama a desplegar |
 | `ec2_instance_type` | `t3.micro` | Tipo de instancia EC2 |
 | `rds_instance_class` | `db.t3.micro` | Clase de RDS |
 
