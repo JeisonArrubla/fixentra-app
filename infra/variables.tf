@@ -56,3 +56,67 @@ variable "rds_instance_class" {
   type        = string
   default     = "db.t3.micro"
 }
+
+# --- JWT ---
+
+variable "jwt_expires_in" {
+  description = "Tiempo de expiración del token JWT"
+  type        = string
+  default     = "15m"
+}
+
+variable "jwt_refresh_expires_in" {
+  description = "Tiempo de expiración del refresh token JWT"
+  type        = string
+  default     = "7d"
+}
+
+# --- Niveles técnicos ---
+
+variable "nivel_oro_umbral" {
+  description = "Umbral de calificación para nivel Oro"
+  type        = number
+  default     = 4.2
+}
+
+variable "nivel_oro_tiempo_espera" {
+  description = "Minutos de espera para técnicos nivel Oro"
+  type        = number
+  default     = 0
+}
+
+variable "nivel_plata_umbral" {
+  description = "Umbral de calificación para nivel Plata"
+  type        = number
+  default     = 3.5
+}
+
+variable "nivel_plata_tiempo_espera" {
+  description = "Minutos de espera para técnicos nivel Plata"
+  type        = number
+  default     = 10
+}
+
+variable "nivel_bronce_umbral" {
+  description = "Umbral de calificación para nivel Bronce"
+  type        = number
+  default     = 2.8
+}
+
+variable "nivel_bronce_tiempo_espera" {
+  description = "Minutos de espera para técnicos nivel Bronce"
+  type        = number
+  default     = 30
+}
+
+variable "nivel_madera_umbral" {
+  description = "Umbral de calificación para nivel Madera"
+  type        = number
+  default     = 1.0
+}
+
+variable "nivel_madera_tiempo_espera" {
+  description = "Minutos de espera para técnicos nivel Madera"
+  type        = number
+  default     = 60
+}

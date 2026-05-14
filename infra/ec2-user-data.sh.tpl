@@ -27,8 +27,8 @@ cat > api/.env << EOF
 DATABASE_URL="postgresql://${db_user}:${db_password}@${db_host}:${db_port}/${db_name}?schema=public"
 JWT_SECRET="$(openssl rand -hex 32)"
 JWT_REFRESH_SECRET="$(openssl rand -hex 32)"
-JWT_EXPIRES_IN="15m"
-JWT_REFRESH_EXPIRES_IN="7d"
+JWT_EXPIRES_IN="${jwt_expires_in}"
+JWT_REFRESH_EXPIRES_IN="${jwt_refresh_expires_in}"
 PORT=3000
 NODE_ENV="production"
 FRONTEND_URL="${frontend_url}"
@@ -36,14 +36,14 @@ FRONTEND_URL="${frontend_url}"
 AWS_REGION="${aws_region}"
 S3_BUCKET="${s3_bucket_name}"
 
-NIVEL_ORO_UMBRAL=4.2
-NIVEL_ORO_TIEMPO_ESPERA=0
-NIVEL_PLATA_UMBRAL=3.5
-NIVEL_PLATA_TIEMPO_ESPERA=10
-NIVEL_BRONCE_UMBRAL=2.8
-NIVEL_BRONCE_TIEMPO_ESPERA=30
-NIVEL_MADERA_UMBRAL=1.0
-NIVEL_MADERA_TIEMPO_ESPERA=60
+NIVEL_ORO_UMBRAL=${nivel_oro_umbral}
+NIVEL_ORO_TIEMPO_ESPERA=${nivel_oro_tiempo_espera}
+NIVEL_PLATA_UMBRAL=${nivel_plata_umbral}
+NIVEL_PLATA_TIEMPO_ESPERA=${nivel_plata_tiempo_espera}
+NIVEL_BRONCE_UMBRAL=${nivel_bronce_umbral}
+NIVEL_BRONCE_TIEMPO_ESPERA=${nivel_bronce_tiempo_espera}
+NIVEL_MADERA_UMBRAL=${nivel_madera_umbral}
+NIVEL_MADERA_TIEMPO_ESPERA=${nivel_madera_tiempo_espera}
 EOF
 
 # --- Configurar Nginx ---
