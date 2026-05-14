@@ -108,13 +108,13 @@ systemctl restart nginx
 
 # --- Instalar dependencias del backend ---
 cd /home/ubuntu/${project_name}/api
-npm ci
+npm install
 npx prisma generate
 npx prisma db push
 
 # --- Instalar dependencias del frontend y build ---
 cd /home/ubuntu/${project_name}/web
-npm ci
+npm install
 npm run build
 
 # --- Compilar backend ---
