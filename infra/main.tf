@@ -263,7 +263,7 @@ resource "aws_instance" "main" {
 
   user_data = templatefile("${path.module}/ec2-user-data.sh.tpl", {
     project_name     = var.project_name
-    db_host          = aws_db_instance.main.endpoint
+    db_host          = aws_db_instance.main.address
     db_port          = aws_db_instance.main.port
     db_name          = aws_db_instance.main.db_name
     db_user          = aws_db_instance.main.username
