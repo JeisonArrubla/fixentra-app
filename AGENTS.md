@@ -57,6 +57,8 @@ Utility functions in `api/src/common/helpers/env.helper.ts` for reading environm
 - `floatEnv(key)` — Reads and parses a float. Throws error if missing or NaN.
 - `stringEnv(key)` — Reads a string. Throws error if empty or missing.
 
+`floatEnv` is imported by `api/src/config/niveles.config.ts` and any other module needing strict env validation.
+
 These fail fast at startup instead of using silent defaults.
 
 ### Technician Levels System
@@ -94,6 +96,17 @@ api/src/
     ├── tecnicos/
     ├── upload/
     └── usuarios/
+```
+
+### Infrastructure
+```
+infra/
+├── main.tf                   # VPC, EC2, RDS, S3, IAM, Security Groups
+├── variables.tf              # Variables de Terraform (DB, JWT, niveles)
+├── outputs.tf                # Outputs (IP pública, RDS endpoint, bucket)
+├── ec2-user-data.sh.tpl      # Bootstrap del servidor EC2
+├── README.md                 # Instrucciones de deploy
+└── .gitignore
 ```
 
 ### Frontend
@@ -171,6 +184,9 @@ web/src/
 - Chat in real time between client and technician (Socket.IO)
 - Technician levels system (Madera, Bronce, Plata, Oro) with configurable thresholds
 - Service completion with details and multiple images
+- AWS infrastructure as code (Terraform): VPC, EC2, RDS, S3, IAM
+- Automated server bootstrap with user-data script (clone, build, deploy)
+- Environment variables controlled via Terraform for all configurable values
 
 ## UI/UX Design System
 
@@ -217,6 +233,11 @@ web/src/
 9. All new views must include responsive design from 768px (md breakpoint)
 10. Use `floatEnv` helper for reading numeric env vars with strict validation instead of silent defaults
 11. Technician levels configuration should live in env vars for easy tuning without code changes
+12. Use `stringEnv` helper alongside `floatEnv` for required string env vars
+13. `npm ci` requires a `package-lock.json` in git; use `npm install` when the lockfile is gitignored
+14. RDS `endpoint` includes port (`host:5432`), use `address` when appending the port separately in Terraform templates
+15. Nginx runs as `www-data`; files under `/home/ubuntu/` need either `chmod o+rX` or `www-data` in the `ubuntu` group
+16. Terraform with `templatefile()` is effective for passing dynamic env vars to EC2 user-data scripts
 
 ## Behavior Guidelines
 
@@ -226,6 +247,37 @@ web/src/
 - Use existing code patterns and conventions when implementing new features
 - Prefer reusable, scalable components over one-off implementations
 - Follow the responsive design strategy (768px breakpoint) and mobile-first approach
+
+## Deployment (AWS + Terraform)
+
+The infrastructure is managed as code in `infra/`:
+
+- **EC2** (t3.micro) — Ubuntu 24.04, runs Node.js + Nginx + PM2
+- **RDS** (db.t3.micro) — PostgreSQL 16, accessible only from EC2
+- **S3** — Bucket for images (IAM role attached to EC2)
+- **VPC** — Isolated network with public subnets
+- **Elastic IP** — Static IP for the app
+
+### Deploy
+
+```bash
+cd infra
+terraform init
+terraform apply
+```
+
+The user-data script (`ec2-user-data.sh.tpl`) bootstraps everything automatically:
+1. Installs Node.js 22, Git, Nginx, PM2
+2. Clones the repo from GitHub
+3. Writes `.env` from Terraform variables (DB, JWT, niveles)
+4. Configures Nginx as reverse proxy
+5. Runs `npm install`, `prisma generate`, `prisma db push`
+6. Builds frontend (Vite) and compiles backend (NestJS)
+7. Starts backend with PM2 (auto-restart on reboot)
+
+### After Deploy
+
+Access the app via the public IP from `terraform output ec2_public_ip`.
 
 ## Routes Structure
 
