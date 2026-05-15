@@ -35,6 +35,65 @@ enum NivelTecnico {
   ORO
 }
 
+model CategoriaServicio {
+  id        String           @id @default(uuid())
+  nombre    String           @unique
+  slug      String           @unique
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  productos ProductoServicioCategoria[]
+
+  @@map("categorias_servicio")
+}
+
+model ProductoServicio {
+  id              String           @id @default(uuid())
+  nombre          String
+  descripcion     String
+  slug            String           @unique
+  precioBase      Float            @map("precio_base")
+  imagenUrl       String?          @map("imagen_url")
+  incluye         String?
+  noIncluye       String?
+  notaInformativa String?          @map("nota_informativa")
+  soportaCantidad Boolean          @default(false) @map("soporta_cantidad")
+  activo          Boolean          @default(true)
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  categorias     ProductoServicioCategoria[]
+  reglasPrecio   ReglaPrecio[]
+  solicitudes    Servicio[]
+
+  @@map("productos_servicio")
+  @@index([activo])
+  @@index([slug])
+}
+
+model ProductoServicioCategoria {
+  productoId  String           @map("producto_id")
+  categoriaId String           @map("categoria_id")
+  producto    ProductoServicio @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  categoria   CategoriaServicio @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+
+  @@id([productoId, categoriaId])
+  @@map("productos_servicio_categorias")
+}
+
+model ReglaPrecio {
+  id              String           @id @default(uuid())
+  productoId      String           @map("producto_id")
+  producto        ProductoServicio @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  tipo            String           // "cantidad" | "boolean_extra"
+  clave           String           // "retirar_elemento"
+  etiqueta        String
+  precioAdicional Float?           @map("precio_adicional")
+  createdAt       DateTime         @default(now()) @map("created_at")
+
+  @@map("reglas_precio")
+  @@index([productoId])
+}
+
 model Usuario {
   id            String         @id @default(uuid())
   nombre        String
@@ -114,29 +173,38 @@ model Tecnico {
 }
 
 model Servicio {
-  id                  String          @id @default(uuid())
-  clienteId           String          @map("cliente_id")
-  cliente             Usuario         @relation("ServicioCliente", fields: [clienteId], references: [id])
-  direccionId         String          @map("direccion_id")
-  direccion           Direccion       @relation(fields: [direccionId], references: [id])
+  id                  String             @id @default(uuid())
+  clienteId           String             @map("cliente_id")
+  cliente             Usuario            @relation("ServicioCliente", fields: [clienteId], references: [id])
+  direccionId         String             @map("direccion_id")
+  direccion           Direccion          @relation(fields: [direccionId], references: [id])
   descripcion         String
-  estado              EstadoServicio  @default(NUEVO)
-  detallesCompletado  String?         @map("detalles_completado")
-  tecnicoId           String?         @map("tecnico_id")
-  tecnico             Usuario?        @relation("ServicioTecnico", fields: [tecnicoId], references: [id])
+  estado              EstadoServicio     @default(NUEVO)
+  detallesCompletado  String?            @map("detalles_completado")
+  tecnicoId           String?            @map("tecnico_id")
+  tecnico             Usuario?           @relation("ServicioTecnico", fields: [tecnicoId], references: [id])
+  productoId          String?            @map("producto_id")
+  producto            ProductoServicio?  @relation(fields: [productoId], references: [id])
+  cantidad            Int?               @default(1)
+  opciones            Json?
+  precioBase          Float?             @map("precio_base")
+  subtotal            Float?
+  tarifaServicio      Float?             @map("tarifa_servicio")
+  total               Float?
   pago                Pago?
   imagenes            Imagen[]
   mensajes            Mensaje[]
   calificacion         Int?
-  comentarioCalificacion String?       @map("comentario_calificacion")
-  fechaCalificacion    DateTime?       @map("fecha_calificacion")
-  createdAt           DateTime        @default(now()) @map("created_at")
-  updatedAt           DateTime        @updatedAt @map("updated_at")
+  comentarioCalificacion String?          @map("comentario_calificacion")
+  fechaCalificacion    DateTime?          @map("fecha_calificacion")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
 
   @@map("servicios")
   @@index([estado])
   @@index([clienteId])
   @@index([tecnicoId])
+  @@index([productoId])
 }
 
 model Imagen {
