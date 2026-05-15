@@ -38,7 +38,12 @@ async function main() {
       imagenUrl: '/images/calentador-card.jpg',
       categorias: {
         deleteMany: {},
-        create: Object.values(catMap).map((id) => ({ categoriaId: id })),
+        create: [
+          { categoriaId: catMap.instalaciones },
+          { categoriaId: catMap.plomeria },
+          { categoriaId: catMap.gas },
+          { categoriaId: catMap.electrodomesticos },
+        ].filter(Boolean),
       },
       reglasPrecio: {
         deleteMany: {},
@@ -77,7 +82,12 @@ async function main() {
         ],
       },
       categorias: {
-        create: Object.values(catMap).map((id) => ({ categoriaId: id })),
+        create: [
+          { categoriaId: catMap.instalaciones },
+          { categoriaId: catMap.plomeria },
+          { categoriaId: catMap.gas },
+          { categoriaId: catMap.electrodomesticos },
+        ].filter(Boolean),
       },
     },
   });
