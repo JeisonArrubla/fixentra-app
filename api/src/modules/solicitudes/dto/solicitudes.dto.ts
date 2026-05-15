@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, MaxLength, IsInt, Min, Max } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, MaxLength, IsInt, Min, Max, IsBoolean, IsNumber } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EstadoServicio } from '@prisma/client';
 
@@ -10,13 +10,47 @@ export class CreateServicioDto {
 
   @ApiProperty({ example: 'Necesito reparacion de tuberia' })
   @IsString()
-  @IsNotEmpty()
   descripcion: string;
 
   @ApiPropertyOptional({ type: [String], description: 'URLs de imágenes' })
   @IsArray()
   @IsOptional()
   imagenes?: string[];
+
+  @ApiPropertyOptional({ description: 'ID del producto de servicio' })
+  @IsString()
+  @IsOptional()
+  productoServicioId?: string;
+
+  @ApiPropertyOptional({ description: 'Cantidad', default: 1 })
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  cantidad?: number;
+
+  @ApiPropertyOptional({ description: 'Opciones adicionales (retirarElemento, etc)' })
+  @IsOptional()
+  opciones?: Record<string, any>;
+
+  @ApiPropertyOptional({ description: 'Precio base snapshot' })
+  @IsNumber()
+  @IsOptional()
+  precioBase?: number;
+
+  @ApiPropertyOptional({ description: 'Subtotal' })
+  @IsNumber()
+  @IsOptional()
+  subtotal?: number;
+
+  @ApiPropertyOptional({ description: 'Tarifa de servicio' })
+  @IsNumber()
+  @IsOptional()
+  tarifaServicio?: number;
+
+  @ApiPropertyOptional({ description: 'Total' })
+  @IsNumber()
+  @IsOptional()
+  total?: number;
 }
 
 export class AceptarServicioDto {

@@ -65,11 +65,31 @@ export class SolicitudesService {
       throw new ForbiddenException('La dirección no pertenece a este cliente');
     }
 
+    const descripcion =
+      dto.descripcion ||
+      (dto.productoServicioId
+        ? (await this.prisma.productoServicio.findUnique({
+            where: { id: dto.productoServicioId },
+            select: { nombre: true },
+          }))?.nombre || ''
+        : '');
+
+    if (!descripcion) {
+      throw new BadRequestException('Debes proporcionar una descripción del servicio');
+    }
+
     const servicio = await this.prisma.servicio.create({
       data: {
         clienteId,
         direccionId: dto.direccionId,
-        descripcion: dto.descripcion,
+        descripcion,
+        productoId: dto.productoServicioId,
+        cantidad: dto.cantidad ?? 1,
+        opciones: dto.opciones ?? undefined,
+        precioBase: dto.precioBase,
+        subtotal: dto.subtotal,
+        tarifaServicio: dto.tarifaServicio,
+        total: dto.total,
         imagenes: dto.imagenes?.length
           ? {
               create: dto.imagenes.map((url) => ({ url })),
@@ -86,6 +106,7 @@ export class SolicitudesService {
           },
         },
         imagenes: true,
+        producto: true,
       },
     });
 
