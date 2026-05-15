@@ -63,12 +63,20 @@ export function ClienteDashboard() {
       {productos.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {productos.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => navigate(`/cliente/servicios/nuevo/${p.slug}`)}
-              className="text-left bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md hover:border-green-300 transition-all"
-            >
-              <h3 className="font-semibold text-gray-900 text-lg mb-2">{p.nombre}</h3>
+              <button
+                key={p.id}
+                onClick={() => navigate(`/cliente/servicios/nuevo/${p.slug}`)}
+                className="text-left bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md hover:border-green-300 transition-all overflow-hidden"
+              >
+                {p.imagenUrl && (
+                  <img
+                    src={p.imagenUrl}
+                    alt={p.nombre}
+                    className="w-full h-40 object-cover -mx-5 -mt-5 mb-4"
+                    style={{ width: 'calc(100% + 2.5rem)' }}
+                  />
+                )}
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">{p.nombre}</h3>
               <p className="text-sm text-gray-500 mb-3 line-clamp-2">{p.descripcion}</p>
               <div className="flex flex-wrap gap-1 mb-3">
                 {p.categorias.map((c) => (
