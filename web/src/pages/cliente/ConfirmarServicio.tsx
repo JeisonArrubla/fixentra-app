@@ -107,9 +107,6 @@ export function ConfirmarServicio() {
             {draft.productoServicioId && (
               <>
                 <FieldRow label="Cantidad" value={String(draft.cantidad)} />
-                {draft.retirarElemento && (
-                  <FieldRow label="Retirar elemento existente" value="Sí" />
-                )}
               </>
             )}
 
@@ -137,6 +134,7 @@ export function ConfirmarServicio() {
               subtotal={draft.subtotal!}
               tarifaServicio={draft.tarifaServicio!}
               total={draft.total!}
+              extras={draft.retirarElemento ? [{ label: 'Retiro de elemento existente', precio: 30000 }] : undefined}
             />
           </div>
         )}
