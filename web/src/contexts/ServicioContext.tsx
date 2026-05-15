@@ -4,11 +4,21 @@ interface ServicioDraft {
   direccionId: string;
   descripcion: string;
   imagenes: string[];
+  productoServicioId?: string;
+  productoSlug?: string;
+  productoNombre?: string;
+  precioBase?: number;
+  cantidad: number;
+  retirarElemento: boolean;
+  subtotal?: number;
+  tarifaServicio?: number;
+  total?: number;
 }
 
 interface ServicioContextType {
   draft: ServicioDraft;
   setDraft: (draft: ServicioDraft) => void;
+  updateDraft: (partial: Partial<ServicioDraft>) => void;
   clearDraft: () => void;
   hasDraft: boolean;
 }
@@ -19,6 +29,8 @@ const initialDraft: ServicioDraft = {
   direccionId: '',
   descripcion: '',
   imagenes: [],
+  cantidad: 1,
+  retirarElemento: false,
 };
 
 const ServicioContext = createContext<ServicioContextType | undefined>(undefined);
@@ -48,6 +60,10 @@ export function ServicioProvider({ children }: { children: ReactNode }) {
     setDraftState(newDraft);
   };
 
+  const updateDraft = (partial: Partial<ServicioDraft>) => {
+    setDraftState((prev) => ({ ...prev, ...partial }));
+  };
+
   const clearDraft = () => {
     setDraftState(initialDraft);
     if (typeof window !== 'undefined') {
@@ -58,7 +74,7 @@ export function ServicioProvider({ children }: { children: ReactNode }) {
   const hasDraft = draft.direccionId !== '' || draft.descripcion !== '' || draft.imagenes.length > 0;
 
   return (
-    <ServicioContext.Provider value={{ draft, setDraft, clearDraft, hasDraft }}>
+    <ServicioContext.Provider value={{ draft, setDraft, updateDraft, clearDraft, hasDraft }}>
       {children}
     </ServicioContext.Provider>
   );

@@ -182,8 +182,18 @@ export const tecnicosApi = {
 };
 
 export const serviciosApi = {
-  crear: (data: { direccionId: string; descripcion: string; imagenes?: string[] }) =>
-    api.post('/servicios', data),
+  crear: (data: {
+    direccionId: string;
+    descripcion: string;
+    imagenes?: string[];
+    productoServicioId?: string;
+    cantidad?: number;
+    opciones?: Record<string, any>;
+    precioBase?: number;
+    subtotal?: number;
+    tarifaServicio?: number;
+    total?: number;
+  }) => api.post('/servicios', data),
 
   getDisponibles: (latitud: number, longitud: number, radioKm?: number) =>
     api.get('/servicios/disponibles', { params: { latitud, longitud, radioKm } }),
@@ -217,6 +227,18 @@ export const chatApi = {
 
   marcarLeidos: (servicioId: string) =>
     api.post(`/chat/${servicioId}/mensajes/leidos`),
+};
+
+export const catalogosApi = {
+  listarProductos: () => api.get('/catalogos/productos'),
+
+  getProductoBySlug: (slug: string) =>
+    api.get(`/catalogos/productos/${slug}`),
+
+  calcularPrecio: (data: { slug: string; cantidad?: number; retirarElemento?: boolean }) =>
+    api.post('/catalogos/productos/calcular', data),
+
+  listarCategorias: () => api.get('/catalogos/categorias'),
 };
 
 export default api;
