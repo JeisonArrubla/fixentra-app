@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServicio } from '../../contexts/ServicioContext';
 import { serviciosApi, clientesApi } from '../../services/api';
-import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow, FormContainer, ButtonContainer } from '../../components/common';
+import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow, FormContainer, ButtonContainer, PrecioBreakdown } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -87,9 +87,6 @@ export function ConfirmarServicio() {
     }
   };
 
-  const formatPrecio = (val?: number) =>
-    val !== undefined ? `$${val.toLocaleString('es-CO')}` : null;
-
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <PageHeader title="Confirma los datos de tu solicitud" />
@@ -136,21 +133,11 @@ export function ConfirmarServicio() {
         {draft.productoServicioId && draft.total !== undefined && (
           <div className="bg-gray-50 p-4 rounded-md mb-6 border">
             <h3 className="font-semibold text-gray-800 mb-3">Resumen de precios</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span>{formatPrecio(draft.subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Tarifa de servicio (8%)</span>
-                <span>{formatPrecio(draft.tarifaServicio)}</span>
-              </div>
-              <hr className="my-2" />
-              <div className="flex justify-between text-lg font-bold text-green-700">
-                <span>Total</span>
-                <span>{formatPrecio(draft.total)}</span>
-              </div>
-            </div>
+            <PrecioBreakdown
+              subtotal={draft.subtotal!}
+              tarifaServicio={draft.tarifaServicio!}
+              total={draft.total!}
+            />
           </div>
         )}
 

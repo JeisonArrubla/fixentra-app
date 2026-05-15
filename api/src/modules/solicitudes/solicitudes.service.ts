@@ -359,6 +359,12 @@ export class SolicitudesService {
           select: { nombre: true, apellido: true, correo: true },
         },
         imagenes: true,
+        producto: {
+          include: {
+            reglasPrecio: true,
+            categorias: { include: { categoria: true } },
+          },
+        },
       },
     });
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { catalogosApi, clientesApi } from '../../services/api';
 import { useServicio } from '../../contexts/ServicioContext';
-import { PageHeader, NavigationButton, ButtonContainer, FormContainer, SubmitButton, FieldRow } from '../../components/common';
+import { PageHeader, NavigationButton, ButtonContainer, FormContainer, SubmitButton, FieldRow, PrecioBreakdown } from '../../components/common';
 import { ImageUpload } from '../../components/common/ImageUpload';
 import { Loader, MapPin, Minus, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -167,42 +167,17 @@ export function CalcularServicio() {
         {precio && !calculando && (
           <div className="mt-6 bg-gray-50 p-4 rounded-md border">
             <h3 className="font-semibold text-gray-800 mb-3">Resumen de precios</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Precio unitario</span>
-                <span>${precio.precioBase.toLocaleString('es-CO')}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Cantidad</span>
-                <span>{precio.cantidad}</span>
-              </div>
-              <div className="flex justify-between font-medium">
-                <span>Subtotal</span>
-                <span>${precio.subtotal.toLocaleString('es-CO')}</span>
-              </div>
-              {precio.retirarElemento && (
-                <div className="flex justify-between text-orange-600">
-                  <span>Retiro de elemento existente</span>
-                  <span>+$30,000</span>
-                </div>
-              )}
-              <div className="flex justify-between text-gray-600">
-                <span>Tarifa de servicio (8%)</span>
-                <span>${precio.tarifaServicio.toLocaleString('es-CO')}</span>
-              </div>
-              <hr className="my-2" />
-              <div className="flex justify-between text-lg font-bold text-green-700">
-                <span>Total</span>
-                <span>${precio.total.toLocaleString('es-CO')}</span>
-              </div>
-            </div>
+            <PrecioBreakdown
+              precioBase={precio.precioBase}
+              cantidad={precio.cantidad}
+              subtotal={precio.subtotal}
+              tarifaServicio={precio.tarifaServicio}
+              total={precio.total}
+              showFull
+              extras={precio.retirarElemento ? [{ label: 'Retiro de elemento existente', precio: 30000 }] : undefined}
+              notaInformativa={precio.notaInformativa}
+            />
           </div>
-        )}
-
-        {precio?.notaInformativa && (
-          <p className="mt-4 text-xs text-gray-500 bg-blue-50 p-3 rounded-md">
-            {precio.notaInformativa}
-          </p>
         )}
 
         <ButtonContainer>

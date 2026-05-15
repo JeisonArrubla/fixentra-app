@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { serviciosApi } from '../../services/api';
-import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer, NavigationButton, Chat } from '../../components/common';
+import { ImageGridWithViewer, PageHeader, FieldRow, Modal, FormContainer, SubmitButton, ButtonContainer, NavigationButton, Chat, PrecioBreakdown } from '../../components/common';
 import { CheckCircle, Loader, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
+
+interface ProductoInfo {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  incluye?: string | null;
+  noIncluye?: string | null;
+  notaInformativa?: string | null;
+}
 
 interface ServicioDetalle {
   id: string;
@@ -29,6 +38,12 @@ interface ServicioDetalle {
   calificacion?: number | null;
   comentarioCalificacion?: string | null;
   fechaCalificacion?: string | null;
+  producto?: ProductoInfo | null;
+  precioBase?: number | null;
+  cantidad?: number | null;
+  subtotal?: number | null;
+  tarifaServicio?: number | null;
+  total?: number | null;
 }
 
 export function ServicioNuevo() {
@@ -124,7 +139,36 @@ export function ServicioNuevo() {
         )}
 
         <FormContainer className="space-y-4">
-          <FieldRow label="Descripción" value={servicio.descripcion} />
+
+          {servicio.producto && (
+            <div className="bg-gray-50 p-4 rounded-md border space-y-3">
+              <h3 className="font-semibold text-gray-800">{servicio.producto.nombre}</h3>
+              {servicio.producto.descripcion && (
+                <p className="text-sm text-gray-600">{servicio.producto.descripcion}</p>
+              )}
+              {servicio.producto.incluye && (
+                <div>
+                  <p className="text-sm font-medium text-green-700">Incluye:</p>
+                  <p className="text-sm text-gray-600">{servicio.producto.incluye}</p>
+                </div>
+              )}
+              {servicio.producto.noIncluye && (
+                <div>
+                  <p className="text-sm font-medium text-red-700">No incluye:</p>
+                  <p className="text-sm text-gray-600">{servicio.producto.noIncluye}</p>
+                </div>
+              )}
+              <PrecioBreakdown
+                precioBase={servicio.precioBase ?? undefined}
+                cantidad={servicio.cantidad ?? undefined}
+                subtotal={servicio.subtotal ?? 0}
+                tarifaServicio={servicio.tarifaServicio ?? 0}
+                total={servicio.total ?? 0}
+                showFull
+                notaInformativa={servicio.producto.notaInformativa}
+              />
+            </div>
+          )}
 
           <FieldRow label="Ubicación" value={servicio.direccion.direccion} />
 
