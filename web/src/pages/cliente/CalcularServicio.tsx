@@ -7,6 +7,10 @@ import { ImageUpload } from '../../components/common/ImageUpload';
 import { Loader, MapPin, Minus, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+interface ReglaPrecio {
+  clave: string;
+}
+
 interface Direccion {
   id: string;
   direccion: string;
@@ -36,6 +40,14 @@ export function CalcularServicio() {
   const [cantidad, setCantidad] = useState(draft.cantidad);
   const [retirarElemento, setRetirarElemento] = useState(draft.retirarElemento);
   const [imagenes, setImagenes] = useState<string[]>(draft.imagenes);
+  const [reglas, setReglas] = useState<ReglaPrecio[]>([]);
+
+  useEffect(() => {
+    if (!slug) return;
+    catalogosApi.getProductoBySlug(slug).then((res) => {
+      setReglas(res.data.reglasPrecio || []);
+    });
+  }, [slug]);
 
   useEffect(() => {
     clientesApi
@@ -140,15 +152,17 @@ export function CalcularServicio() {
             </button>
           </div>
 
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={retirarElemento}
-              onChange={(e) => setRetirarElemento(e.target.checked)}
-              className="h-5 w-5 rounded border-gray-300"
-            />
-            <span className="text-gray-700">Retirar elemento existente</span>
-          </label>
+          {reglas.some((r) => r.clave === 'retirar_elemento') && (
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={retirarElemento}
+                onChange={(e) => setRetirarElemento(e.target.checked)}
+                className="h-5 w-5 rounded border-gray-300"
+              />
+              <span className="text-gray-700">Retirar elemento existente</span>
+            </label>
+          )}
 
           <FieldRow label="Puedes agregar fotos que describan mejor la solicitud (opcional)" />
           <ImageUpload
