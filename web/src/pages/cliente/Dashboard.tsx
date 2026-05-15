@@ -1,16 +1,42 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { PageHeader, NavigationButton, ButtonContainer, FormContainer } from '../../components/common';
+import { catalogosApi } from '../../services/api';
+import { PageHeader } from '../../components/common';
+import { Tag } from 'lucide-react';
+
+interface ProductoCategoria {
+  categoria: { nombre: string; slug: string };
+}
+
+interface Producto {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  slug: string;
+  precioBase: number;
+  imagenUrl: string | null;
+  categorias: ProductoCategoria[];
+}
 
 export function ClienteDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [cargando, setCargando] = useState(true);
+  const [productos, setProductos] = useState<Producto[]>([]);
 
   useEffect(() => {
     if (user !== null) {
       setCargando(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    catalogosApi
+      .listarProductos()
+      .then((res) => setProductos(res.data))
+      .catch(() => {});
+  }, []);
 
   if (cargando) {
     return (
@@ -32,15 +58,45 @@ export function ClienteDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <PageHeader title={`¿Cómo podemos ayudarte hoy?`} />
-      <FormContainer>
-        {
-          <PageHeader title={`¿Necesitas un técnico?`} subtitle={`Crea una nueva solicitud de servicio y técnicos calificados te ayudarán.`} />
-        }
-        <ButtonContainer>
-          <NavigationButton to="/cliente/servicios/nuevo" text="Solicitar servicio" />
-        </ButtonContainer>
-      </FormContainer>
+      <PageHeader title="¿Cómo podemos ayudarte hoy?" />
+
+      {productos.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {productos.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => navigate(`/cliente/servicios/nuevo/${p.slug}`)}
+                className="text-left bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md hover:border-green-300 transition-all overflow-hidden"
+              >
+                {p.imagenUrl && (
+                  <img
+                    src={p.imagenUrl}
+                    alt={p.nombre}
+                    className="w-full h-40 object-cover -mx-5 -mt-5 mb-4"
+                    style={{ width: 'calc(100% + 2.5rem)' }}
+                  />
+                )}
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">{p.nombre}</h3>
+              <p className="text-sm text-gray-500 mb-3 line-clamp-2">{p.descripcion}</p>
+              <div className="flex flex-wrap gap-1 mb-3">
+                {p.categorias.map((c) => (
+                  <span
+                    key={c.categoria.slug}
+                    className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {c.categoria.nombre}
+                  </span>
+                ))}
+              </div>
+              <p className="text-green-700 font-bold text-xl">
+                ${p.precioBase.toLocaleString('es-CO')}
+              </p>
+            </button>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }

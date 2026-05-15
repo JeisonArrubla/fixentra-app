@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServicio } from '../../contexts/ServicioContext';
 import { serviciosApi, clientesApi } from '../../services/api';
-import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow, FormContainer, ButtonContainer } from '../../components/common';
+import { NavigationButton, SubmitButton, CancelButton, PageHeader, FieldRow, FormContainer, ButtonContainer, PrecioBreakdown } from '../../components/common';
 import toast from 'react-hot-toast';
 
 interface DireccionInfo {
@@ -70,6 +70,13 @@ export function ConfirmarServicio() {
         direccionId: draft.direccionId,
         descripcion: draft.descripcion,
         imagenes: draft.imagenes,
+        productoServicioId: draft.productoServicioId,
+        cantidad: draft.cantidad,
+        opciones: { retirarElemento: draft.retirarElemento },
+        precioBase: draft.precioBase,
+        subtotal: draft.subtotal,
+        tarifaServicio: draft.tarifaServicio,
+        total: draft.total,
       });
       clearDraft();
       toast.success('Servicio enviado correctamente');
@@ -88,15 +95,20 @@ export function ConfirmarServicio() {
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <div className="space-y-4">
             <FieldRow
+              label="Servicio"
+              value={draft.productoNombre || draft.descripcion}
+            />
+
+            <FieldRow
               label="Dirección"
               value={direccion?.direccion || 'Cargando...'}
             />
 
-            <FieldRow
-              label="Descripción del servicio"
-              value={draft.descripcion}
-              valueClassName="whitespace-pre-wrap"
-            />
+            {draft.productoServicioId && (
+              <>
+                <FieldRow label="Cantidad" value={String(draft.cantidad)} />
+              </>
+            )}
 
             {draft.imagenes.length > 0 && (
               <FieldRow label="Imágenes Adjuntas">
@@ -115,8 +127,23 @@ export function ConfirmarServicio() {
           </div>
         </div>
 
+        {draft.productoServicioId && draft.total !== undefined && (
+          <div className="bg-gray-50 p-4 rounded-md mb-6 border">
+            <h3 className="font-semibold text-gray-800 mb-3">Resumen de precios</h3>
+            <PrecioBreakdown
+              subtotal={draft.subtotal!}
+              tarifaServicio={draft.tarifaServicio!}
+              total={draft.total!}
+              extras={draft.retirarElemento ? [{ label: 'Retiro de elemento existente', precio: 30000 }] : undefined}
+            />
+          </div>
+        )}
+
         <ButtonContainer>
-          <NavigationButton to="/cliente/servicios/nuevo" text="Editar" />
+          <NavigationButton
+            to={`/cliente/servicios/nuevo/${draft.productoSlug}/calcular`}
+            text="Editar"
+          />
           {contadorActivo ? (
             <CancelButton
               text={`Cancelar (${segundosRestantes}s)`}

@@ -7,7 +7,8 @@ import { ClienteDashboard } from './pages/cliente/Dashboard';
 import { ClienteDirecciones } from './pages/cliente/Direcciones';
 import { ClienteNuevaDireccion } from './pages/cliente/NuevaDireccion';
 import { ClienteServicios } from './pages/cliente/Servicios';
-import { NuevoServicio } from './pages/cliente/NuevoServicio';
+import { ProductoDetalle } from './pages/cliente/ProductoDetalle';
+import { CalcularServicio } from './pages/cliente/CalcularServicio';
 import { ConfirmarServicio } from './pages/cliente/ConfirmarServicio';
 import { TecnicoDashboard } from './pages/tecnico/Dashboard';
 import { TecnicoMisTrabajos } from './pages/tecnico/MisTrabajos';
@@ -50,8 +51,9 @@ function AppRoutes() {
             <Route path="cliente/direcciones" element={<ClienteDirecciones />} />
             <Route path="cliente/direcciones/nueva" element={<ClienteNuevaDireccion />} />
             <Route path="cliente/servicios" element={<ClienteServicios />} />
-            <Route path="cliente/servicios/nuevo" element={<NuevoServicio />} />
             <Route path="cliente/servicios/nuevo/confirmar" element={<ConfirmarServicio />} />
+            <Route path="cliente/servicios/nuevo/:slug/calcular" element={<CalcularServicio />} />
+            <Route path="cliente/servicios/nuevo/:slug" element={<ProductoDetalle />} />
             <Route path="cliente/servicio/calificar/:id" element={<CalificarServicio />} />
             
             <Route path="tecnico/dashboard" element={<TecnicoDashboard />} />

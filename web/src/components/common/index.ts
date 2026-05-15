@@ -13,3 +13,4 @@ export { NavbarLink } from './NavbarLink';
 export { Logo } from './Logo';
 export { ButtonContainer } from './ButtonContainer';
 export { FormContainer } from './FormContainer';
+export { PrecioBreakdown } from './PrecioBreakdown';

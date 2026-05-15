@@ -111,7 +111,7 @@ export function ClienteServicios() {
 
       <FormContainer>
         <ButtonContainer>
-          <NavigationButton to="/cliente/servicios/nuevo" text="Solicitar servicio" />
+          <NavigationButton to="/cliente/dashboard" text="Solicitar servicio" />
         </ButtonContainer>
         {servicios.length === 0 ? (
           <div className="text-center py-12 text-gray-600">

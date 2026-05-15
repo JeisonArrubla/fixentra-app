@@ -10,6 +10,7 @@ import { SolicitudesModule } from './modules/solicitudes/solicitudes.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { NivelesModule } from './modules/niveles/niveles.module';
+import { CatalogosModule } from './modules/catalogos/catalogos.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { NivelesModule } from './modules/niveles/niveles.module';
     UploadModule,
     ChatModule,
     NivelesModule,
+    CatalogosModule,
   ],
   providers: [PrismaService],
 })

@@ -130,7 +130,13 @@ fixentra-app/
 │       ├── hooks/          # Custom hooks
 │       ├── services/       # API calls (Axios)
 │       └── utils/          # Utilidades
-└── AGENTS.md               # Instrucciones del agente
+├── infra/                  # Infraestructura AWS (Terraform)
+│   ├── main.tf             # VPC, EC2, RDS, S3, IAM, Security Groups
+│   ├── variables.tf        # Variables de Terraform
+│   ├── outputs.tf          # Outputs (IP pública, RDS endpoint, bucket)
+│   ├── ec2-user-data.sh.tpl # Bootstrap del servidor
+│   └── README.md           # Instrucciones de deploy
+├── AGENTS.md               # Instrucciones del agente
 ```
 
 ## API Endpoints
@@ -234,16 +240,50 @@ Se usa Leaflet (OpenStreetMap) en lugar de Mapbox - funciona sin API keys, ideal
 
 Socket.IO implementado en el módulo chat para mensajería en tiempo real entre cliente y técnico.
 
-### Env Helpers
+### Env Helpers (Fail-fast)
 
 Funciones utilitarias en `common/helpers/env.helper.ts` para leer variables de entorno con validación estricta:
 
 - `floatEnv(key)` — Lee y parsea un número decimal. Lanza error si falta o no es válido.
 - `stringEnv(key)` — Lee un string. Lanza error si está vacío o no existe.
 
+Estas funciones fallan al arrancar en lugar de usar defaults silenciosos.
+
 ### Niveles de Técnico
 
 Los niveles (Madera, Bronce, Plata, Oro) se configuran desde variables de entorno (`NIVEL_{NIVEL}_UMBRAL`, `NIVEL_{NIVEL}_TIEMPO_ESPERA`). El umbral define el promedio de calificación mínimo para alcanzar el nivel, y el tiempo de espera retrasa la asignación de servicios nuevos según el nivel.
+
+## Deploy en AWS (Terraform)
+
+La infraestructura se define como código en `infra/` usando Terraform:
+
+- **EC2** (t3.micro) — Ubuntu 24.04 + Node.js 22 + Nginx + PM2
+- **RDS** (db.t3.micro) — PostgreSQL 16
+- **S3** — Bucket para imágenes (listo para usar cuando se implemente S3StorageProvider)
+- **VPC** — Red aislada con subnets públicas
+- **Elastic IP** — IP pública fija para acceder a la app
+
+### Desplegar
+
+```bash
+cd infra
+terraform init
+terraform apply
+```
+
+### Acceder
+
+```bash
+open "http://$(terraform output -raw ec2_public_ip)"
+```
+
+### Destruir
+
+```bash
+terraform destroy
+```
+
+> **Nota**: Sin dominio propio. Para SSL/HTTPS, agregar un dominio y Certbot.
 
 ## Modelo de Datos
 
