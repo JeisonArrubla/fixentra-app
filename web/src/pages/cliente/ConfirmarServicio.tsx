@@ -116,14 +116,6 @@ export function ConfirmarServicio() {
               </>
             )}
 
-            {!draft.productoServicioId && (
-              <FieldRow
-                label="Descripción"
-                value={draft.descripcion}
-                valueClassName="whitespace-pre-wrap"
-              />
-            )}
-
             {draft.imagenes.length > 0 && (
               <FieldRow label="Imágenes Adjuntas">
                 <div className="grid grid-cols-2 gap-2">
@@ -164,11 +156,7 @@ export function ConfirmarServicio() {
 
         <ButtonContainer>
           <NavigationButton
-            to={
-              draft.productoSlug
-                ? `/cliente/servicios/nuevo/${draft.productoSlug}/calcular`
-                : '/cliente/servicios/nuevo'
-            }
+            to={`/cliente/servicios/nuevo/${draft.productoSlug}/calcular`}
             text="Editar"
           />
           {contadorActivo ? (

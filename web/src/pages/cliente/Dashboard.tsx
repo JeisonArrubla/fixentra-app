@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { catalogosApi } from '../../services/api';
-import { PageHeader, NavigationButton, ButtonContainer, FormContainer } from '../../components/common';
+import { PageHeader } from '../../components/common';
 import { Tag } from 'lucide-react';
 
 interface ProductoCategoria {
@@ -89,15 +89,6 @@ export function ClienteDashboard() {
         </div>
       )}
 
-      <FormContainer>
-        <PageHeader
-          title="¿Necesitas un técnico?"
-          subtitle="Crea una nueva solicitud de servicio y técnicos calificados te ayudarán."
-        />
-        <ButtonContainer>
-          <NavigationButton to="/cliente/servicios/nuevo" text="Solicitar servicio personalizado" />
-        </ButtonContainer>
-      </FormContainer>
     </div>
   );
 }
