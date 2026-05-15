@@ -3,7 +3,12 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const categorias = await Promise.all([
+  const cats = await Promise.all([
+    prisma.categoriaServicio.upsert({
+      where: { slug: 'instalaciones' },
+      update: {},
+      create: { nombre: 'Instalaciones', slug: 'instalaciones' },
+    }),
     prisma.categoriaServicio.upsert({
       where: { slug: 'plomeria' },
       update: {},
@@ -20,10 +25,27 @@ async function main() {
       create: { nombre: 'Electrodomésticos', slug: 'electrodomesticos' },
     }),
   ]);
+  const catMap = Object.fromEntries(cats.map((c) => [c.slug, c.id]));
 
   const producto = await prisma.productoServicio.upsert({
     where: { slug: 'instalacion-calentador-agua' },
-    update: {},
+    update: {
+      categorias: {
+        deleteMany: {},
+        create: Object.values(catMap).map((id) => ({ categoriaId: id })),
+      },
+      reglasPrecio: {
+        deleteMany: {},
+        create: [
+          {
+            tipo: 'boolean_extra',
+            clave: 'retirar_elemento',
+            etiqueta: 'Retirar elemento existente',
+            precioAdicional: 30000,
+          },
+        ],
+      },
+    },
     create: {
       nombre: 'Instalación de calentador de agua',
       descripcion:
@@ -49,14 +71,14 @@ async function main() {
         ],
       },
       categorias: {
-        create: categorias.map((c) => ({ categoriaId: c.id })),
+        create: Object.values(catMap).map((id) => ({ categoriaId: id })),
       },
     },
   });
 
   console.log('Seed completado:');
-  console.log(`  ${categorias.length} categorías creadas`);
-  console.log(`  1 producto creado: ${producto.nombre}`);
+  console.log(`  ${Object.keys(catMap).length} categorías: ${Object.keys(catMap).join(', ')}`);
+  console.log(`  1 producto: ${producto.nombre}`);
 }
 
 main()
