@@ -70,6 +70,13 @@ export function ConfirmarServicio() {
         direccionId: draft.direccionId,
         descripcion: draft.descripcion,
         imagenes: draft.imagenes,
+        productoServicioId: draft.productoServicioId,
+        cantidad: draft.cantidad,
+        opciones: { retirarElemento: draft.retirarElemento },
+        precioBase: draft.precioBase,
+        subtotal: draft.subtotal,
+        tarifaServicio: draft.tarifaServicio,
+        total: draft.total,
       });
       clearDraft();
       toast.success('Servicio enviado correctamente');
@@ -80,6 +87,9 @@ export function ConfirmarServicio() {
     }
   };
 
+  const formatPrecio = (val?: number) =>
+    val !== undefined ? `$${val.toLocaleString('es-CO')}` : null;
+
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <PageHeader title="Confirma los datos de tu solicitud" />
@@ -88,15 +98,31 @@ export function ConfirmarServicio() {
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <div className="space-y-4">
             <FieldRow
+              label="Servicio"
+              value={draft.productoNombre || draft.descripcion}
+            />
+
+            <FieldRow
               label="Dirección"
               value={direccion?.direccion || 'Cargando...'}
             />
 
-            <FieldRow
-              label="Descripción del servicio"
-              value={draft.descripcion}
-              valueClassName="whitespace-pre-wrap"
-            />
+            {draft.productoServicioId && (
+              <>
+                <FieldRow label="Cantidad" value={String(draft.cantidad)} />
+                {draft.retirarElemento && (
+                  <FieldRow label="Retirar elemento existente" value="Sí" />
+                )}
+              </>
+            )}
+
+            {!draft.productoServicioId && (
+              <FieldRow
+                label="Descripción"
+                value={draft.descripcion}
+                valueClassName="whitespace-pre-wrap"
+              />
+            )}
 
             {draft.imagenes.length > 0 && (
               <FieldRow label="Imágenes Adjuntas">
@@ -115,8 +141,36 @@ export function ConfirmarServicio() {
           </div>
         </div>
 
+        {draft.productoServicioId && draft.total !== undefined && (
+          <div className="bg-gray-50 p-4 rounded-md mb-6 border">
+            <h3 className="font-semibold text-gray-800 mb-3">Resumen de precios</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Subtotal</span>
+                <span>{formatPrecio(draft.subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Tarifa de servicio (8%)</span>
+                <span>{formatPrecio(draft.tarifaServicio)}</span>
+              </div>
+              <hr className="my-2" />
+              <div className="flex justify-between text-lg font-bold text-green-700">
+                <span>Total</span>
+                <span>{formatPrecio(draft.total)}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <ButtonContainer>
-          <NavigationButton to="/cliente/servicios/nuevo" text="Editar" />
+          <NavigationButton
+            to={
+              draft.productoSlug
+                ? `/cliente/servicios/nuevo/${draft.productoSlug}/calcular`
+                : '/cliente/servicios/nuevo'
+            }
+            text="Editar"
+          />
           {contadorActivo ? (
             <CancelButton
               text={`Cancelar (${segundosRestantes}s)`}
