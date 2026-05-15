@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { catalogosApi, clientesApi } from '../../services/api';
 import { useServicio } from '../../contexts/ServicioContext';
 import { PageHeader, NavigationButton, ButtonContainer, FormContainer, SubmitButton, FieldRow } from '../../components/common';
+import { ImageUpload } from '../../components/common/ImageUpload';
 import { Loader, MapPin, Minus, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -34,6 +35,7 @@ export function CalcularServicio() {
   const [precio, setPrecio] = useState<PrecioCalculado | null>(null);
   const [cantidad, setCantidad] = useState(draft.cantidad);
   const [retirarElemento, setRetirarElemento] = useState(draft.retirarElemento);
+  const [imagenes, setImagenes] = useState<string[]>(draft.imagenes);
 
   useEffect(() => {
     clientesApi
@@ -77,6 +79,7 @@ export function CalcularServicio() {
       subtotal: precio.subtotal,
       tarifaServicio: precio.tarifaServicio,
       total: precio.total,
+      imagenes,
     });
     navigate('/cliente/servicios/nuevo/confirmar');
   };
@@ -146,6 +149,13 @@ export function CalcularServicio() {
             />
             <span className="text-gray-700">Retirar elemento existente</span>
           </label>
+
+          <FieldRow label="Puedes agregar fotos que describan mejor la solicitud (opcional)" />
+          <ImageUpload
+            images={imagenes}
+            onChange={setImagenes}
+            maxImages={2}
+          />
         </div>
 
         {calculando && (
