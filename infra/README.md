@@ -112,3 +112,9 @@ Si un deploy anterior dejó `dist/` con permisos de root, el siguiente build fal
 con `EACCES: permission denied, rmdir`.  
 **Solución**: agregar `rm -rf api/dist web/dist` antes de compilar en el script
 de bootstrap.
+
+### Seed automático en deploy
+El script de bootstrap ejecuta `npx prisma db seed` automáticamente después de
+`prisma db push`. Como el seed usa `upsert` en todas sus operaciones, es seguro
+re-ejecutarlo en depliegues sucesivos — no duplica datos ni daña registros
+existentes.

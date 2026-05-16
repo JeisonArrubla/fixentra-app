@@ -114,6 +114,7 @@ cd /home/ubuntu/${project_name}/api
 npm install
 npx prisma generate
 npx prisma db push
+npx prisma db seed
 
 # --- Instalar dependencias del frontend y build ---
 cd /home/ubuntu/${project_name}/web
