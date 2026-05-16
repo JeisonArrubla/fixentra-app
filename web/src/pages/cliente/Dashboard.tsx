@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { catalogosApi } from '../../services/api';
 import { PageHeader } from '../../components/common';
-import { Tag } from 'lucide-react';
 
 interface ProductoCategoria {
   categoria: { nombre: string; slug: string };
@@ -77,18 +76,6 @@ export function ClienteDashboard() {
                   />
                 )}
                 <h3 className="font-semibold text-gray-900 text-lg mb-2">{p.nombre}</h3>
-              <p className="text-sm text-gray-500 mb-3 line-clamp-2">{p.descripcion}</p>
-              <div className="flex flex-wrap gap-1 mb-3">
-                {p.categorias.map((c) => (
-                  <span
-                    key={c.categoria.slug}
-                    className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
-                  >
-                    <Tag className="h-3 w-3 mr-1" />
-                    {c.categoria.nombre}
-                  </span>
-                ))}
-              </div>
               <p className="text-green-700 font-bold text-xl">
                 ${p.precioBase.toLocaleString('es-CO')}
               </p>
