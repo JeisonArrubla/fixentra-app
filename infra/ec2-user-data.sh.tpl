@@ -18,8 +18,6 @@ npm install -g pm2
 # --- Clonar repositorio ---
 cd /home/ubuntu
 git clone -b ${github_branch} ${github_repo_url} ${project_name}
-chown -R ubuntu:ubuntu /home/ubuntu/${project_name}
-usermod -aG ubuntu www-data
 cd ${project_name}
 
 # --- Escribir .env ---
@@ -108,6 +106,9 @@ rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl restart nginx
 
+# --- Limpiar builds previos (evita errores de permisos root) ---
+rm -rf /home/ubuntu/${project_name}/api/dist /home/ubuntu/${project_name}/web/dist
+
 # --- Instalar dependencias del backend ---
 cd /home/ubuntu/${project_name}/api
 npm install
@@ -123,9 +124,13 @@ npm run build
 cd /home/ubuntu/${project_name}/api
 npm run build
 
+# --- Asegurar permisos para ubuntu ---
+chown -R ubuntu:ubuntu /home/ubuntu/${project_name}
+usermod -aG ubuntu www-data
+
 # --- Iniciar backend con PM2 ---
 cd /home/ubuntu/${project_name}
-pm2 start api/dist/main.js --name "${project_name}-api"
+pm2 start api/dist/src/main.js --name "${project_name}-api"
 pm2 save
 env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
 

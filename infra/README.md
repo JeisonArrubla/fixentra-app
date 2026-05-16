@@ -92,3 +92,23 @@ Esto elimina todos los recursos (EC2, RDS, S3, VPC). Los datos de la base de dat
   Para un equipo, configura un backend remoto (S3 + DynamoDB).
 - Sin dominio: la app se accede vía IP pública. Para SSL/HTTPS más adelante,
   asigna un dominio y usa Certbot (Let's Encrypt) o un ALB con ACM.
+
+## Lecciones aprendidas
+
+### Los builds deben ejecutarse como `ubuntu`, no como `root`
+El script de bootstrap (`ec2-user-data.sh.tpl`) se ejecuta como root. Si `npm run build`
+corre como root, los archivos `dist/` y `tsconfig.tsbuildinfo` quedan con propietario
+`root`, lo que impide re-compilar después sin `sudo`.  
+**Solución**: el `chown -R ubuntu:ubuntu` debe ejecutarse **después** de los builds,
+no antes.
+
+### Ruta de salida de NestJS
+NestJS con `include: ["src/**/*"]` en `tsconfig.json` compila `src/main.ts` a
+`dist/src/main.js`, no `dist/main.js`.  
+**Solución**: PM2 debe apuntar a `api/dist/src/main.js`.
+
+### `dist/` previo con permisos incorrectos bloquea el build
+Si un deploy anterior dejó `dist/` con permisos de root, el siguiente build falla
+con `EACCES: permission denied, rmdir`.  
+**Solución**: agregar `rm -rf api/dist web/dist` antes de compilar en el script
+de bootstrap.
