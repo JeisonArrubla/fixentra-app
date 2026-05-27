@@ -125,7 +125,7 @@ npm run build
 
 # --- Iniciar backend con PM2 ---
 cd /home/ubuntu/${project_name}
-pm2 start api/dist/main.js --name "${project_name}-api"
+pm2 start api/dist/src/main.js --name "${project_name}-api"
 pm2 save
 env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
 
