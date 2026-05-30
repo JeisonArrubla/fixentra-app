@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Full-stack marketplace app for home services.
+Full-stack marketplace app for home services. See `BUSINESS.md` for the complete business model description.
 
 - **Backend**: Node.js + NestJS + Prisma + PostgreSQL
 - **Frontend**: React + Vite + Tailwind CSS
@@ -69,6 +69,23 @@ Technicians have levels (Madera, Bronce, Plata, Oro) configured via environment 
 
 Configuration lives in `api/src/config/niveles.config.ts` using `floatEnv` helper.
 
+### Catalog System (Products & Categories)
+
+Services are now based on catalog products (`ProductoServicio`) with categories (`CategoriaServicio`):
+- Products have a slug, base price, description, and optional price rules
+- Price calculation includes: `precioBase * cantidad + opciones extras + tarifaServicio (8%)`
+- The `CatalogosModule` (`api/src/modules/catalogos/`) handles listing, detail, and price calculation
+- The frontend flow is: select product → view detail → calculate price → confirm → create
+
+### Price Breakdown Display
+
+The `PrecioBreakdown` component (`web/src/components/common/PrecioBreakdown.tsx`) displays a detailed price breakdown:
+- Precio base × cantidad
+- Extras (retirar elemento, etc.)
+- Subtotal
+- Tarifa de servicio (8%)
+- Total
+
 ## Critical Fixes Applied
 
 1. **Navbar**: Needs `<Outlet />` to render child routes
@@ -84,11 +101,19 @@ Configuration lives in `api/src/config/niveles.config.ts` using `floatEnv` helpe
 api/src/
 ├── app.module.ts
 ├── prisma/schema.prisma
+├── config/
+│   └── niveles.config.ts
+├── shared/
+│   └── prisma.service.ts
 ├── common/
-│   └── helpers/
-│       └── env.helper.ts
+│   ├── guards/
+│   ├── decorators/
+│   ├── helpers/
+│   │   └── env.helper.ts
+│   └── validators/
 └── modules/
     ├── auth/
+    ├── catalogos/
     ├── chat/
     ├── clientes/
     ├── niveles/
@@ -115,6 +140,8 @@ web/src/
 ├── App.tsx
 ├── components/
 │   ├── common/
+│   │   ├── index.ts             # Barrel exports
+│   │   ├── button-config.ts     # Global button configuration
 │   │   ├── Navbar.tsx
 │   │   ├── BottomNav.tsx
 │   │   ├── PrivateRoute.tsx
@@ -136,7 +163,8 @@ web/src/
 │   │   ├── Logo.tsx
 │   │   ├── FormContainer.tsx
 │   │   ├── FieldRow.tsx
-│   │   └── ButtonContainer.tsx
+│   │   ├── ButtonContainer.tsx
+│   │   └── PrecioBreakdown.tsx
 │   └── tecnico/
 │       └── TecnicoStats.tsx
 ├── pages/
@@ -148,7 +176,8 @@ web/src/
 │   │   ├── NuevaDireccion.tsx
 │   │   ├── Servicios.tsx
 │   │   ├── ServicioDetalle.tsx
-│   │   ├── NuevoServicio.tsx
+│   │   ├── ProductoDetalle.tsx
+│   │   ├── CalcularServicio.tsx
 │   │   ├── ConfirmarServicio.tsx
 │   │   └── CalificarServicio.tsx
 │   └── tecnico/
@@ -184,6 +213,9 @@ web/src/
 - Chat in real time between client and technician (Socket.IO)
 - Technician levels system (Madera, Bronce, Plata, Oro) with configurable thresholds
 - Service completion with details and multiple images
+- Catalog system (products with categories, slugs, price rules)
+- Price breakdown display (base price, extras, subtotal, 8% service fee, total)
+- Product detail page with "calcular" flow
 - AWS infrastructure as code (Terraform): VPC, EC2, RDS, S3, IAM
 - Automated server bootstrap with user-data script (clone, build, deploy)
 - Environment variables controlled via Terraform for all configurable values
@@ -238,6 +270,7 @@ web/src/
 14. RDS `endpoint` includes port (`host:5432`), use `address` when appending the port separately in Terraform templates
 15. Nginx runs as `www-data`; files under `/home/ubuntu/` need either `chmod o+rX` or `www-data` in the `ubuntu` group
 16. Terraform with `templatefile()` is effective for passing dynamic env vars to EC2 user-data scripts
+17. Catalog-based services replaced the generic "NuevoServicio" flow; services now reference a ProductoServicio with price rules instead of free-form descriptions
 
 ## Behavior Guidelines
 
@@ -289,7 +322,8 @@ Access the app via the public IP from `terraform output ec2_public_ip`.
 /cliente/direcciones      → Client addresses management
 /cliente/direcciones/nueva → New address with map
 /cliente/servicios       → Client services list
-/cliente/servicios/nuevo → New service (step 1)
+/cliente/servicios/nuevo/:slug → Product detail (catalog)
+/cliente/servicios/nuevo/:slug/calcular → Calculate price (step 1)
 /cliente/servicios/nuevo/confirmar → Confirm service (step 2)
 /cliente/servicio/:id     → Service detail with chat and rating
 /cliente/servicio/calificar/:id → Rate technician

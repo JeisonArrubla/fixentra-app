@@ -6,20 +6,9 @@ Plataforma marketplace para servicios técnicos del hogar.
 
 - **Backend**: Node.js + NestJS + Prisma + PostgreSQL
 - **Frontend**: React + Vite + Tailwind CSS
-- **Tiempo Real**: Socket.IO (chat)
+- **Tiempo Real**: Socket.IO (chat + notificaciones)
 - **Mapas**: Leaflet (OpenStreetMap)
-
-## Características
-
-- Autenticación JWT con refresh token
-- Roles separados: Cliente y Técnico
-- Sistema de pedidos/servicios con estados (NUEVO → ASIGNADO → TERMINADO → CERRADO)
-- Gestión de direcciones con geolocalización (Leaflet)
-- Subida de imágenes con lightbox viewer
-- Chat en tiempo real por servicio
-- Calificación de servicios (1-5 estrellas)
-- Dashboard personalizado por rol
-- Niveles de técnico (Madera, Bronce, Plata, Oro)
+- **Despliegue**: AWS (EC2, RDS, S3) via Terraform + Nginx + PM2
 
 ## Requisitos
 
@@ -97,44 +86,48 @@ npm run dev
 fixentra-app/
 ├── api/                    # Backend NestJS
 │   ├── prisma/
-│   │   └── schema.prisma   # Modelos de DB (Usuario, Cliente, Tecnico, Servicio, etc.)
-│   └── src/
-│       ├── modules/
-│       │   ├── auth/       # Autenticación JWT
-│       │   ├── chat/       # Chat en tiempo real (Socket.IO)
-│       │   ├── clientes/   # Gestión clientes y direcciones
-│       │   ├── niveles/    # Lógica de niveles de técnico
-│       │   ├── solicitudes/ # Servicios (CRUD, estados)
-│       │   ├── tecnicos/   # Perfiles y disponibilidad
-│       │   ├── upload/     # Subida de imágenes (Strategy Pattern)
-│       │   └── usuarios/   # Gestión de usuarios
-│       └── common/
-│           ├── guards/     # Guards de autenticación y roles
-│           ├── decorators/ # Decoradores personalizados
-│           ├── filters/    # Filtros de excepciones
-│           ├── interceptors/ # Interceptores
-│           ├── helpers/    # Utilidades (floatEnv, stringEnv)
-│           └── validators/ # Validadores personalizados
+│   │   └── schema.prisma   # Modelos de DB (10 modelos, 4 enums)
+│   ├── src/
+│   │   ├── config/         # Configuración (niveles.config.ts)
+│   │   ├── shared/         # PrismaService (singleton)
+│   │   ├── common/
+│   │   │   ├── guards/     # JwtAuthGuard, RolesGuard
+│   │   │   ├── decorators/ # CurrentUser, Roles
+│   │   │   ├── filters/    # Filtros de excepciones
+│   │   │   ├── interceptors/ # Interceptores
+│   │   │   ├── helpers/    # floatEnv, stringEnv
+│   │   │   └── validators/ # IsDocumento
+│   │   └── modules/
+│   │       ├── auth/       # Autenticación JWT (Passport)
+│   │       ├── catalogos/  # Catálogo de productos y categorías
+│   │       ├── chat/       # Chat en tiempo real (Socket.IO)
+│   │       ├── clientes/   # Gestión clientes y direcciones
+│   │       ├── niveles/    # Lógica de niveles de técnico
+│   │       ├── solicitudes/ # Servicios (CRUD, estados, WebSocket)
+│   │       ├── tecnicos/   # Perfiles y disponibilidad
+│   │       ├── upload/     # Subida de imágenes (Strategy Pattern)
+│   │       └── usuarios/   # Servicios internos de usuario
+│       └── main.ts         # Entry point
 ├── web/                    # Frontend React
 │   └── src/
+│       ├── assets/         # Recursos estáticos (logo)
 │       ├── components/
-│       │   ├── common/     # Componentes reutilizables
-│       │   ├── auth/       # Componentes de autenticación
-│       │   ├── cliente/    # Componentes específicos de cliente
-│       │   └── tecnico/    # Componentes específicos de técnico
+│       │   ├── common/     # 25+ componentes reutilizables
+│       │   └── tecnico/    # TecnicoStats
 │       ├── pages/
 │       │   ├── auth/       # Login, Register
-│       │   ├── cliente/    # Dashboard, Direcciones, Servicios
+│       │   ├── cliente/    # Dashboard, Direcciones, Servicios, Productos
 │       │   └── tecnico/    # Dashboard, Trabajos, Perfil
 │       ├── contexts/       # AuthContext, ServicioContext
-│       ├── hooks/          # Custom hooks
-│       ├── services/       # API calls (Axios)
-│       └── utils/          # Utilidades
+│       ├── hooks/          # Custom hooks (vacíos)
+│       ├── services/       # API calls (Axios con interceptores)
+│       └── utils/          # Utilidades (vacíos)
 ├── infra/                  # Infraestructura AWS (Terraform)
 │   ├── main.tf             # VPC, EC2, RDS, S3, IAM, Security Groups
 │   ├── variables.tf        # Variables de Terraform
 │   ├── outputs.tf          # Outputs (IP pública, RDS endpoint, bucket)
 │   ├── ec2-user-data.sh.tpl # Bootstrap del servidor
+│   ├── terraform.tfvars    # Valores de variables
 │   └── README.md           # Instrucciones de deploy
 ├── AGENTS.md               # Instrucciones del agente
 ```
@@ -182,6 +175,14 @@ fixentra-app/
 | PATCH | /servicios/:id/calificar | cliente | Calificar servicio (1-5) |
 | DELETE | /servicios/:id | cliente | Eliminar servicio (solo estado NUEVO) |
 
+### Catálogos (`/api/catalogos`)
+| Método | Endpoint | Rol | Descripción |
+|--------|----------|-----|-------------|
+| GET | /catalogos/productos | ambos | Listar productos activos |
+| GET | /catalogos/productos/:slug | ambos | Detalle de producto con reglas |
+| POST | /catalogos/productos/calcular | cliente | Calcular precio (desglose completo) |
+| GET | /catalogos/categorias | ambos | Listar categorías con productos |
+
 ### Chat (`/api/chat`)
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -206,8 +207,9 @@ fixentra-app/
 | /cliente/direcciones | Gestión direcciones |
 | /cliente/direcciones/nueva | Nueva dirección |
 | /cliente/servicios | Mis servicios |
-| /cliente/servicios/nuevo | Nuevo servicio (paso 1) |
-| /cliente/servicios/nuevo/confirmar | Confirmar servicio (paso 2) |
+| /cliente/servicios/nuevo/:slug | Detalle de producto del catálogo |
+| /cliente/servicios/nuevo/:slug/calcular | Calcular precio del servicio |
+| /cliente/servicios/nuevo/confirmar | Confirmar servicio |
 | /cliente/servicio/:id | Detalle servicio |
 | /cliente/servicio/calificar/:id | Calificar servicio |
 | /tecnico/dashboard | Nuevos servicios disponibles |
@@ -287,13 +289,23 @@ terraform destroy
 
 ## Modelo de Datos
 
-- **Usuario**: Registro base con documento, correo y contraseña
-- **Cliente**: Perfil de cliente vinculado a un usuario
+### Enums
+- **TipoDocumento**: CC, CE, PASAPORTE, NIT
+- **EstadoServicio**: NUEVO, ASIGNADO, TERMINADO, CERRADO
+- **EstadoPago**: PENDIENTE, PAGADO, FALLIDO
+- **NivelTecnico**: MADERA, BRONCE, PLATA, ORO (configurable por env)
+
+### Modelos
+- **Usuario**: Registro base con nombre, documento, correo, celular y contraseña
+- **Cliente**: Perfil de cliente vinculado a un usuario (1:1)
 - **Tecnico**: Perfil de técnico con disponibilidad, ubicación, nivel y radio de cobertura
-- **Direccion**: Direcciones georreferenciadas asociadas a un cliente
-- **Servicio**: Solicitud de servicio con estados y calificación
+- **Direccion**: Direcciones georreferenciadas asociadas a un cliente (soft delete)
+- **CategoriaServicio**: Categorías de productos de servicio (ej: Jardinería, Plomería)
+- **ProductoServicio**: Productos del catálogo con precio base, descripción e imágenes
+- **ProductoServicioCategoria**: Relación N:M entre productos y categorías
+- **ReglaPrecio**: Reglas de precio por producto (cantidad, extras booleanos)
+- **Servicio**: Solicitud de servicio con estados, producto asociado, cantidades, opciones, desglose de precio, calificación y fechas
 - **Imagen**: Imágenes asociadas a servicios
-- **Pago**: Información de pago por servicio
+- **Pago**: Información de pago por servicio (1:1 con Servicio)
 - **Mensaje**: Chat entre cliente y técnico por servicio
 - **RefreshToken**: Tokens de refresco JWT
-- **NivelTecnico**: Enum con niveles Madera, Bronce, Plata, Oro (configurable por env)

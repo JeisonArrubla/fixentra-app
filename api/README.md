@@ -9,9 +9,9 @@ API RESTful para el marketplace de servicios del hogar construida con NestJS.
 - **ORM**: Prisma 5
 - **Base de Datos**: PostgreSQL 14+
 - **Autenticación**: Passport (JWT + Local)
-- **WebSockets**: Socket.IO
+- **WebSockets**: Socket.IO (chat + notificaciones de solicitudes)
 - **Validación**: class-validator + class-transformer
-- **Documentación**: Swagger
+- **Documentación**: Swagger (OpenAPI 3)
 
 ## Scripts
 
@@ -30,22 +30,26 @@ API RESTful para el marketplace de servicios del hogar construida con NestJS.
 
 ```
 api/src/
-├── main.ts                 # Entry point
-├── app.module.ts           # Módulo raíz
-├── config/                 # Configuración (entorno, validación)
+├── main.ts                 # Entry point (NestFactory, Swagger, CORS)
+├── app.module.ts           # Módulo raíz (8 módulos funcionales + Config + ServeStatic)
+├── config/
+│   └── niveles.config.ts   # Config niveles técnicos desde env vars
+├── shared/
+│   └── prisma.service.ts   # Singleton PrismaClient (injectable)
 ├── common/                 # Código compartido
 │   ├── guards/             # JwtAuthGuard, RolesGuard
-│   ├── decorators/         # Decoradores (Roles, CurrentUser, etc.)
-│   ├── filters/            # Filtros de excepciones
-│   ├── interceptors/       # Interceptores
-│   ├── helpers/            # Utilidades (floatEnv, stringEnv)
-│   └── validators/         # Validadores personalizados
+│   ├── decorators/         # CurrentUser, Roles
+│   ├── filters/            # Filtros de excepciones (vacíos - preparado)
+│   ├── interceptors/       # Interceptores (vacíos - preparado)
+│   ├── helpers/            # floatEnv, stringEnv (fail-fast)
+│   └── validators/         # IsDocumento (validación tipo documento)
 └── modules/                # Módulos funcionales
-    ├── auth/               # Autenticación JWT
-    ├── chat/               # Chat en tiempo real (Socket.IO gateway + REST)
-    ├── clientes/           # Gestión de clientes y direcciones
+    ├── auth/               # Autenticación JWT (Passport strategies)
+    ├── catalogos/          # Catálogo de productos y categorías
+    ├── chat/               # Chat (Socket.IO gateway + REST)
+    ├── clientes/           # Gestión clientes y direcciones
     ├── niveles/            # Lógica de niveles y reputación
-    ├── solicitudes/        # Servicios (CRUD, estados, geolocalización)
+    ├── solicitudes/        # Servicios (CRUD + Socket.IO gateway)
     ├── tecnicos/           # Perfiles, disponibilidad, ubicación
     ├── upload/             # Subida de imágenes (Strategy Pattern)
     └── usuarios/           # Servicios internos de usuario
@@ -84,30 +88,76 @@ Prefix: `/api` (configurado en `main.ts`)
 - `POST /auth/logout` - Cerrar sesión
 - `GET /auth/profile` - Obtener perfil
 
+### Auth
+- `POST /auth/register` - Registrar usuario
+- `POST /auth/login` - Iniciar sesión con JWT
+- `POST /auth/refresh` - Refrescar token
+- `POST /auth/logout` - Cerrar sesión
+- `GET /auth/profile` - Obtener perfil del usuario autenticado
+
 ### Clientes
 - `GET /clientes/perfil` - Perfil del cliente
 - CRUD de direcciones (`/clientes/direcciones`)
-- `PATCH /clientes/direcciones/:id/principal` - Dirección principal
+- `PATCH /clientes/direcciones/:id/principal` - Marcar como principal
+- Soft delete con validación (no eliminar si tiene servicios activos)
 
 ### Técnicos
-- `POST /tecnicos/perfil` - Crear perfil
-- `GET /tecnicos/perfil` - Perfil con stats
-- `PATCH /tecnicos/ubicacion` - Actualizar ubicación
+- `POST /tecnicos/perfil` - Crear/completar perfil técnico
+- `GET /tecnicos/perfil` - Perfil con estadísticas (promedio, reseñas, completados)
+- `PATCH /tecnicos/ubicacion` - Actualizar ubicación GPS
 - `PATCH /tecnicos/disponibilidad` - Toggle disponibilidad
+
+### Catálogos
+- `GET /catalogos/productos` - Listar productos activos del catálogo
+- `GET /catalogos/productos/:slug` - Detalle de producto con reglas de precio
+- `POST /catalogos/productos/calcular` - Calcular precio (desglose: subtotal, tarifa 8%, total)
+- `GET /catalogos/categorias` - Listar categorías con productos asociados
 
 ### Servicios
 - CRUD de servicios con filtros por estado
-- Aceptar, terminar, completar, calificar
+- Aceptar, terminar, completar (con detalles e imágenes), calificar
 - Geolocalización para búsqueda de servicios disponibles
+- Asociación con productos del catálogo (ProductoServicio)
+- WebSocket (Socket.IO) para notificaciones en tiempo real de nuevos servicios
+- Precio calculado con desglose (precioBase, cantidad, opciones, subtotal, tarifaServicio, total)
 
 ### Chat
 - Mensajería REST + Socket.IO en tiempo real
+- Marcar mensajes como leídos
 
 ### Upload
-- Subida de imágenes (single y múltiple)
+- Subida de imágenes (single y múltiple, máx 2 simultáneas)
+- Strategy Pattern (actualmente LocalStorage, preparado para S3)
 
-## Modelos (Prisma)
+## Modelos (Prisma) — 10 modelos, 4 enums
 
-Usuario → Cliente | Tecnico → Direcciones → Servicio → Imagen, Pago, Mensaje
+### Enums
+- `TipoDocumento`: CC, CE, PASAPORTE, NIT
+- `EstadoServicio`: NUEVO, ASIGNADO, TERMINADO, CERRADO
+- `EstadoPago`: PENDIENTE, PAGADO, FALLIDO
+- `NivelTecnico`: MADERA, BRONCE, PLATA, ORO
+
+### Modelos
+- **Usuario** — Registro base: nombre, apellido, documento, correo, celular, contraseña. Relaciona 1:1 con Cliente y Tecnico.
+- **RefreshToken** — Tokens JWT de refresco con expiración.
+- **Cliente** — Perfil de cliente. Tiene muchas direcciones.
+- **Direccion** — Dirección georreferenciada con latitud/longitud, soft delete (`eliminadoEn`).
+- **Tecnico** — Perfil de técnico: disponibilidad, ubicación GPS, radio de cobertura, nivel (enum NivelTecnico).
+- **CategoriaServicio** — Categorías del catálogo (ej: Jardinería, Plomería).
+- **ProductoServicio** — Productos del catálogo: nombre, slug, precioBase, imagen, incluye/noIncluye, soportaCantidad, activo.
+- **ProductoServicioCategoria** — Join table N:M entre productos y categorías.
+- **ReglaPrecio** — Reglas de precio por producto (tipo: cantidad | boolean_extra).
+- **Servicio** — Solicitud: asociada a producto del catálogo, cantidad, opciones (JSON), desglose de precio (precioBase, subtotal, tarifaServicio, total), estados, calificación con comentario y fecha.
+- **Imagen** — URLs de imágenes asociadas a servicios.
+- **Pago** — Pago 1:1 con servicio, monto, estado, método de pago.
+- **Mensaje** — Chat por servicio, con emisor, contenido, leído.
+
+### Relaciones clave
+- Usuario → Cliente (1:1, PK compartida) | Tecnico (1:1, PK compartida)
+- Cliente → Direcciones (1:N)
+- ProductoServicio ↔ CategoriaServicio (N:M via ProductoServicioCategoria)
+- ProductoServicio → ReglaPrecio (1:N)
+- ProductoServicio → Servicio (1:N)
+- Servicio → Imagen (1:N), Pago (1:1), Mensaje (1:N)
 
 El schema completo está en `prisma/schema.prisma`.
